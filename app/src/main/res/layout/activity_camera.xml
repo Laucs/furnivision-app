@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/furni_green_dark2">
+
+    <RelativeLayout
+        android:id="@+id/cameraLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="3sp"
+        android:visibility="visible">
+
+    <TextureView
+        android:id="@+id/textureView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"/>
+
+    <TextView
+        android:id="@+id/Furni_Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10sp"
+        android:background="@color/transparent"
+        android:text="@string/camera_title"
+        android:textAlignment="center"
+        android:textColor="@color/furni_green_light"
+        android:textSize="17sp" />
+
+    <LinearLayout
+        android:id="@+id/camButtonContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:padding="20sp">
+
+        <Button
+            android:id="@+id/galleryButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/cam_gallery_inactive"
+            android:text="@string/empty"
+            android:layout_margin="20sp"/>
+
+        <Button
+            android:id="@+id/captureButton"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@drawable/cam_capture_active"
+            android:text="@string/empty"
+            android:layout_margin="20sp"/>
+
+        <Button
+            android:id="@+id/videoButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/cam_video_inactive"
+            android:text="@string/empty"
+            android:layout_margin="20sp"/>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/SettingsBtn"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="20dp"
+        android:background="@drawable/cam_settings"
+        android:text="@string/empty"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/galleryLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="3sp"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/galleryImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/galButtonContainer"/>
+
+        <TextView
+            android:id="@+id/Furni_Title2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10sp"
+            android:background="@color/transparent"
+            android:text="@string/gallery_title"
+            android:textAlignment="center"
+            android:textColor="@color/furni_green_light"
+            android:textSize="17sp" />
+
+        <LinearLayout
+            android:id="@+id/galButtonContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:padding="20sp">
+
+            <Button
+                android:id="@+id/prevButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/cam_previous_button"
+                android:text="@string/empty"
+                android:layout_margin="20sp"/>
+
+            <Button
+                android:id="@+id/backButton"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@drawable/cam_back_button"
+                android:text="@string/empty"
+                android:layout_margin="20sp"/>
+
+            <Button
+                android:id="@+id/nextButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/cam_next_button"
+                android:text="@string/empty"
+                android:layout_margin="20sp"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/videoLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="3sp"
+        android:visibility="gone">
+
+        <TextureView
+            android:id="@+id/videoTextureView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"/>
+
+        <TextView
+            android:id="@+id/Furni_Title3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10sp"
+            android:background="@color/transparent"
+            android:text="@string/furnivision_video"
+            android:textAlignment="center"
+            android:textColor="@color/furni_green_light"
+            android:textSize="17sp" />
+
+        <LinearLayout
+            android:id="@+id/vidButtonContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:padding="20sp">
+
+            <Button
+                android:id="@+id/vidGalleryButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/cam_gallery_inactive"
+                android:text="@string/empty"
+                android:layout_margin="20sp"/>
+
+            <Button
+                android:id="@+id/videoRecButton"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@drawable/cam_video_active"
+                android:text="@string/empty"
+                android:layout_margin="20sp"/>
+
+            <Button
+                android:id="@+id/vidCameraButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/cam_capture_inactive"
+                android:text="@string/empty"
+                android:layout_margin="20sp"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

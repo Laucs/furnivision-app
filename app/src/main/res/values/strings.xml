@@ -1,0 +1,72 @@
+<resources>
+    <string name="app_name">FURNIVISION</string>
+    <string name="furnivision">furnivision</string>
+    <string name="furniture" />
+    <string name="login">login</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="create_an_account">
+        Create an account
+    </string>
+    <string name="create_an_account_underlined">
+        Create an account
+    </string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="or">or</string>
+    <string name="google">Google</string>
+    <string name="facebook">Facebook</string>
+    <string name="phone">Phone Number</string>
+    <string name="name">Name</string>
+    <string name="signup">Signup</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="design_desc">design</string>
+    <string name="home">Home</string>
+    <string name="cart_image_desc">cart button</string>
+    <string name="home_image_desc">home button</string>
+    <string name="shop_image_desc">shop button</string>
+    <string name="ar_image_desc">augmented reality camera button</string>
+    <string name="profile_image_desc">profile button</string>
+    <string name="profile">Profile</string>
+    <string name="cart">Cart</string>
+    <string name="add_to_cart">Add to Cart</string>
+    <string name="ar_camera">AR Camera</string>
+    <string name="shop">Shop</string>
+    <string name="furnivision_logo_desc">Furnivision logo</string>
+    <string name="loading">Loading...</string>
+    <string name="or_sign_up_with">or sign up with</string>
+    <string name="already_have_an_account">Already have an Account?</string>
+    <string name="welcome">Welcome</string>
+    <string name="search">Search</string>
+    <string name="welcome_dashboard">Welcome,</string>
+    <string name="sofa_button">sofa button</string>
+    <string name="bed_button">bed button</string>
+    <string name="table_button">table button</string>
+    <string name="lamp_button">lamp button</string>
+    <string name="item">item</string>
+    <string name="favorite_button">favorite button</string>
+    <string name="proceed_button">proceed button</string>
+    <string name="rate_icon">rate icon</string>
+    <string name="sold_icon">sold icon</string>
+    <string name="title_small">Furnivision</string>
+    <string name="title_caps">FURNIVISION</string>
+    <string name="empty"> </string>
+    <string name="start_cd_1">Furniture Image 1</string>
+    <string name="start_cd_2">Furniture Image 2</string>
+    <string name="start_cd_3">Furniture Image 3</string>
+    <string name="camera_title">  Furnivision  \nCamera</string>
+    <string name="gallery_title">FurniVision\nGallery</string>
+    <string name="furnivision_video">FurniVision\nVideo</string>
+    <string name="back_button">back button</string>
+    <string name="add_button">add button</string>
+    <string name="furniture_selected">furniture selected</string>
+    <string name="stock">Stock:</string>
+    <string name="colors">Colors:</string>
+    <string name="dimensions">Dimensions:</string>
+    <string name="price">Price:</string>
+    <string name="description">Description:</string>
+    <string name="name_title">Name:</string>
+    <string name="sample">Sample</string>
+    <string name="total">Total</string>
+    <string name="dollar">$</string>
+    <string name="check_out">check out</string>
+</resources>

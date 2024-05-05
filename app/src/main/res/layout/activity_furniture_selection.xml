@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/light_gray">
+
+    <RelativeLayout
+        android:id="@+id/header_selection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <ImageView
+            android:layout_width="800dp"
+            android:layout_height="400dp"
+            android:layout_marginTop="-230dp"
+            android:scaleType="fitXY"
+            android:scaleX="-2"
+            android:scaleY="-1"
+            android:src="@drawable/bg_blob"
+            android:contentDescription="@string/design_desc"/>
+
+        <ImageButton
+            android:id="@+id/backBtn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="0dp"
+            android:layout_margin="25dp"
+            android:backgroundTint="#00FFFFFF"
+            android:scaleType="fitXY"
+            android:src="@drawable/back_btn_fill"
+            android:contentDescription="@string/back_button"/>
+
+        <ImageButton
+            android:id="@+id/addBtn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:padding="0dp"
+            android:layout_margin="25dp"
+            android:backgroundTint="#00FFFFFF"
+            android:scaleType="fitXY"
+            android:src="@drawable/add_btn"
+            android:contentDescription="@string/add_button"/>
+
+    </RelativeLayout>
+
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/furnitureListViewer"
+        android:layout_width="wrap_content"
+        android:layout_height="320dp"
+        android:layout_below="@id/header_selection"
+        android:layout_marginTop="-115dp" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/furnitureListViewer"
+        android:layout_alignBottom="@id/furnitureListViewer"
+        android:layout_alignEnd="@id/furnitureListViewer"
+        android:layout_alignStart="@id/furnitureListViewer">
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/previousBtn"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginStart="10dp"
+            android:padding="0dp"
+            android:layout_centerVertical="true"
+            android:backgroundTint="#00FFFFFF"
+            android:src="@drawable/previous_btn"
+            android:scaleType="fitXY" />
+
+        <ImageView
+            android:id="@+id/furnitureImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@+id/previousBtn"
+            android:layout_toStartOf="@+id/nextBtn"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/furniture_selected"/>
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/nextBtn"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginRight="10dp"
+            android:padding="0dp"
+            android:layout_centerVertical="true"
+            android:backgroundTint="#00FFFFFF"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/next_btn"
+            android:scaleType="fitXY" />
+
+    </RelativeLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/furnitureDetails"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginVertical="15dp"
+        android:layout_marginHorizontal="30dp"
+        android:layout_above="@id/menu_bar"
+        android:layout_below="@id/furnitureListViewer"
+        app:cardCornerRadius="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:scrollbars="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/furnitureName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/name_title"/>
+
+                    <TextView
+                        android:id="@+id/furnitureDesc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/description"/>
+
+                    <TextView
+                        android:id="@+id/furniturePrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/price"/>
+
+                    <TextView
+                        android:id="@+id/furnitureDimensions"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/dimensions"/>
+
+                    <TextView
+                        android:id="@+id/furnitureStocks"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/stock"/>
+
+                    <TextView
+                        android:id="@+id/furniAvailColors"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/colors" />
+
+                </LinearLayout>
+
+            </ScrollView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/addButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
+                    android:text="BUY"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:background="@drawable/button_default_style"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/addToCartButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="20dp"
+                    android:layout_marginStart="5dp"
+                    android:text="@string/add_to_cart"
+                    android:textStyle="bold"
+                    android:textColor="@color/primary_darker"
+                    android:background="@drawable/btn_hollow"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+
+</RelativeLayout>

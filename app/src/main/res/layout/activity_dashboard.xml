@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F4F4F4">
+
+    <TextView
+        android:id="@+id/top"
+        android:layout_width="match_parent"
+        android:layout_height="90sp"
+        android:layout_alignParentTop="true"
+        android:background="#396057"
+        android:text="@string/welcome_dashboard"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:padding="10sp"/>
+
+    <TextView
+        android:id="@+id/emailTextView"
+        android:layout_width="200sp"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:layout_marginStart="20sp"
+        android:layout_marginTop="35sp"
+        android:textColor="@color/white"
+        android:textSize="25sp"
+        android:ellipsize="end"/>
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="70sp"
+        android:layout_height="70sp"
+        android:layout_margin="10sp"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/furni_logo"
+        android:contentDescription="@string/furnivision_logo_desc"/>
+
+    <EditText
+        android:id="@+id/search_bar"
+        android:layout_width="240sp"
+        android:layout_height="wrap_content"
+        android:hint="@string/search"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/emailTextView"
+        android:padding="10sp"
+        android:textSize="15sp"
+        android:background="@drawable/white_background"
+        android:autofillHints="none"
+        android:inputType="text" />
+
+    <HorizontalScrollView
+        android:id="@+id/dashboard_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:layout_below="@+id/search_bar">
+
+        <LinearLayout
+            android:id="@+id/dashboard_navigation_container"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/chair_button"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_margin="20dp"
+                android:background="@drawable/green_border"
+                android:src="@drawable/ic_chair1_foreground"
+                android:contentDescription="@string/sofa_button" />
+
+            <ImageButton
+                android:id="@+id/bed_button"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_margin="20dp"
+                android:background="@drawable/white_background"
+                android:src="@drawable/ic_bed1_foreground"
+                android:contentDescription="@string/bed_button" />
+
+            <ImageButton
+                android:id="@+id/table_button"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_margin="20dp"
+                android:background="@drawable/white_background"
+                android:src="@drawable/ic_table_foreground"
+                android:contentDescription="@string/table_button" />
+
+            <ImageButton
+                android:id="@+id/lamp_button"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_margin="20dp"
+                android:background="@drawable/white_background"
+                android:src="@drawable/ic_table_foreground"
+                android:contentDescription="@string/lamp_button" />
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <include
+        android:id="@+id/content"
+        layout="@layout/dashboard_content"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_below="@+id/dashboard_navigation"/>
+
+</RelativeLayout>

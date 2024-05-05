@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/pageContainer"
+            android:layout_height="0dp"
+            android:layout_width="match_parent"
+            layout="@layout/activity_dashboard"
+            android:layout_weight="1"/>
+
+        <LinearLayout
+            android:id="@+id/menu_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/white"
+            android:padding="6sp"
+            android:gravity="center">
+
+            <LinearLayout
+                android:id="@+id/home_menu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginHorizontal="17dp"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/imgHome"
+                    android:layout_width="40sp"
+                    android:layout_height="40sp"
+                    android:src="@drawable/home_logo_fill"
+                    android:contentDescription="@string/home_image_desc" />
+
+                <TextView
+                    android:id="@+id/titleHome"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:fontFamily="@font/quicksand"
+                    android:text="@string/home"
+                    android:textSize="12sp"
+                    android:textColor="@color/primary_darker" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/shop_menu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginHorizontal="17dp"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/imgShop"
+                    android:layout_width="40sp"
+                    android:layout_height="40sp"
+                    android:src="@drawable/shop_bag_hollow"
+                    android:contentDescription="@string/shop_image_desc" />
+
+                <TextView
+                    android:id="@+id/titleShop"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:fontFamily="@font/quicksand"
+                    android:text="@string/shop"
+                    android:textSize="12sp"
+                    android:textColor="@color/primary_darker" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ar_menu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginHorizontal="17dp"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="40sp"
+                    android:layout_height="40sp"
+                    android:src="@drawable/try_ar_logo"
+                    android:contentDescription="@string/ar_image_desc" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:fontFamily="@font/quicksand"
+                    android:text="@string/ar_camera"
+                    android:textSize="12sp"
+                    android:textColor="@color/primary_darker" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/cart_menu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginHorizontal="17dp"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="40sp"
+                    android:layout_height="40sp"
+                    android:src="@drawable/cart_logo"
+                    android:contentDescription="@string/cart_image_desc" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:fontFamily="@font/quicksand"
+                    android:text="@string/cart"
+                    android:textSize="12sp"
+                    android:textColor="@color/primary_darker" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/profile_menu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="6dp"
+                android:layout_marginHorizontal="17dp"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="40sp"
+                    android:layout_height="40sp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/profile_logo_outline"
+                    android:contentDescription="@string/profile_image_desc" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:fontFamily="@font/quicksand"
+                    android:text="@string/profile"
+                    android:textSize="12sp"
+                    android:textColor="@color/primary_darker" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>
