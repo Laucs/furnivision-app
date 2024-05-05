@@ -70,9 +70,9 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginVertical="20dp"
+        android:layout_marginVertical="120dp"
         android:paddingVertical="18dp"
         android:paddingHorizontal="30dp"
         android:background="@color/white"
@@ -106,9 +106,9 @@
             android:layout_alignTop="@id/currency_sign"
             android:layout_below="@id/total_textview"
             android:layout_marginHorizontal="30dp"
-            android:inputType="numberDecimal"
+            android:inputType="none"
             android:clickable="false"
-            android:text="20,000"
+            android:text="0"
             android:textSize="15sp"
             android:textColor="@color/primary"
             android:fontFamily="@font/montserrat"
