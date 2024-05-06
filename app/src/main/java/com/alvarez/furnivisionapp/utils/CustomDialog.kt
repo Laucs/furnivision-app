@@ -22,7 +22,7 @@ class CustomDialog(private val view: ViewParent, private val context: Context) :
         requestWindowFeature(Window.FEATURE_NO_TITLE)
 
         if (view is ViewGroup) {
-            val parentView = view as ViewGroup
+            val parentView = view
             furnitureImageView = parentView.findViewWithTag("furnitureImage") as ImageView
 
             // Check if furnitureImageView is not null before setting its drawable
