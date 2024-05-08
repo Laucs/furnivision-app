@@ -74,4 +74,8 @@
     <string name="shop_through_you_favorite_stores">Shop through you favorite stores.</string>
     <string name="next">next</string>
     <string name="furniture_image">Furniture Image</string>
+    <string name="pref_key">cartProducts_202</string>
+    <string name="add_furnitures">add furnitures</string>
+    <string name="lorem_ipsum_8">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</string>
+    <string name="sample_price">##,###</string>
 </resources>

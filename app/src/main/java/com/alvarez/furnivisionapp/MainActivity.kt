@@ -15,16 +15,17 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.LayoutManager
+import com.alvarez.furnivisionapp.data.CartItem
 import com.alvarez.furnivisionapp.data.Furniture
 import com.alvarez.furnivisionapp.data.Shop
 import com.alvarez.furnivisionapp.utils.CameraFunctions
+import com.alvarez.furnivisionapp.utils.CartListAdapter
 import com.alvarez.furnivisionapp.utils.HomePageFunctions
 import com.alvarez.furnivisionapp.utils.ShopListAdapter
+import kotlin.math.log
 
 class MainActivity : AppCompatActivity() {
 
@@ -34,7 +35,9 @@ class MainActivity : AppCompatActivity() {
     private var activePage: Int? = null
     private lateinit var activeButton: LinearLayout
     private var furniIndex: Int = 0
-
+    private var cartShop: Shop? = null
+    private var cartFurniture: StringBuilder = StringBuilder()
+    private var cartSummary: HashMap<String, Int>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,7 +91,7 @@ class MainActivity : AppCompatActivity() {
             pageContainer.removeAllViews()
             inflatedPage = layoutInflater.inflate(cartPage, null) as RelativeLayout
             pageContainer.addView(inflatedPage)
-            initCartPage()
+            initCartPage(pageContainer)
         }
         profileButton.setOnClickListener {
             activePage = profilePage
@@ -185,7 +188,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    @SuppressLint("SetTextI18n", "DefaultLocale")
+    @SuppressLint("SetTextI18n", "DefaultLocale", "CommitPrefEdits")
     private fun initFurniSelectPage(shop: Shop, pageContainer: ViewGroup){
 
         var backBtn: ImageButton = findViewById(R.id.backBtn)
@@ -198,17 +201,18 @@ class MainActivity : AppCompatActivity() {
             furniIndex = 0
         }
 
-        var nextBtn: ImageButton = findViewById(R.id.nextBtn)
-        var prevBtn: ImageButton = findViewById(R.id.previousBtn)
+        val nextBtn: ImageButton = findViewById(R.id.nextBtn)
+        val prevBtn: ImageButton = findViewById(R.id.previousBtn)
+        val addToCartBtn: Button = findViewById(R.id.addToCartButton)
 
-        var imageView: ImageView = findViewById(R.id.furnitureImage)
-        var nameTextView: TextView = findViewById(R.id.furnitureName)
-        var descTextView: TextView = findViewById(R.id.furnitureDesc)
-        var priceTextView: TextView = findViewById(R.id.furniturePrice)
-        var dimensionsTextView: TextView = findViewById(R.id.furnitureDimensions)
-        var stocksTextView: TextView = findViewById(R.id.furnitureStocks)
+        val imageView: ImageView = findViewById(R.id.furnitureImage)
+        val nameTextView: TextView = findViewById(R.id.furnitureName)
+        val descTextView: TextView = findViewById(R.id.furnitureDesc)
+        val priceTextView: TextView = findViewById(R.id.furniturePrice)
+        val dimensionsTextView: TextView = findViewById(R.id.furnitureDimensions)
+        val stocksTextView: TextView = findViewById(R.id.furnitureStocks)
 
-        var df = DecimalFormat("#0.00")
+        val df = DecimalFormat("#0.00")
 
         imageView.setImageResource(shop.furnitures[furniIndex].img)
         nameTextView.text = getString(R.string.name_title) + shop.furnitures[furniIndex].name
@@ -239,6 +243,31 @@ class MainActivity : AppCompatActivity() {
                 priceTextView.text = getString(R.string.price) + df.format(shop.furnitures[furniIndex].stocks)
                 dimensionsTextView.text = getString(R.string.dimensions) + shop.furnitures[furniIndex].dimensions
                 stocksTextView.text = getString(R.string.stock) + shop.furnitures[furniIndex].stocks.toString()            }
+        }
+
+        addToCartBtn.setOnClickListener {
+            // If the cart shop is null, set it to the current shop
+            if (cartShop == null) {
+                cartShop = shop
+            }
+
+            // If the cart shop matches the current shop and the cart shop is not null
+            if (cartShop?.id == shop.id) {
+                // Extract the current furniture ID
+                val currentFurnitureId = shop.furnitures[furniIndex].id.toString()
+
+                // Append the current furniture ID to the cartFurniture string
+                cartFurniture.append(currentFurnitureId).append(",")
+
+                Log.d("id", currentFurnitureId)
+            }
+
+            // Split the cartFurniture string, trim each item, and count occurrences
+            val cart: List<String> = cartFurniture.trim().split(",").map { it.trim() }
+
+            Log.d("cartF", cartFurniture.split(",").toString())
+            cartSummary = countFurnitureOccurrences(cart.toTypedArray())
+            Log.d("cartS", cartSummary!!.toString())
         }
     }
 
@@ -283,12 +312,47 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    private fun initCartPage() {
+    private fun initCartPage(pageContainer: ViewGroup) {
+        val furnitures = cartShop?.furnitures
+        val cartItemList = cartFurniture?.split(',').toString().trim(' ')
 
+        Log.d("d", cartItemList!!.toString())
+
+        if (cartItemList != null) {
+            val cartItems = cartSummary?.mapNotNull { (id, count) ->
+                val furniture = furnitures?.find { it.id == id }
+                furniture?.let { CartItem(it, count) }
+            }?.toTypedArray()
+
+            if (cartItems != null) {
+                Log.d("cartItems", cartItems.toList().toString())
+            }
+
+            val cartListing: RecyclerView = findViewById(R.id.cart_recycler_view)
+            val adapter = CartListAdapter(cartItems ?: emptyArray())
+            cartListing.adapter = adapter
+            cartListing.apply {
+                this.adapter = adapter
+                layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
+            }
+        }
     }
 
     private fun initProfilePage() {
 
+    }
+
+    fun countFurnitureOccurrences(furnitureArray: Array<String>): HashMap<String, Int> {
+        val furnitureCountMap = HashMap<String, Int>()
+
+        for (furniture in furnitureArray) {
+            if (furniture.isNotBlank()) {
+                val count = furnitureCountMap.getOrDefault(furniture, 0)
+                furnitureCountMap[furniture] = count + 1
+            }
+        }
+
+        return furnitureCountMap
     }
 
 
