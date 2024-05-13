@@ -8,13 +8,13 @@
     <RelativeLayout
         android:id="@+id/accountHeader"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="60dp"
         android:background="#396057">
 
         <ImageButton
             android:id="@+id/backButton"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:layout_marginStart="15dp"
@@ -32,8 +32,7 @@
             android:fontFamily="@font/spartan_medium"
             android:text="Payment Methods"
             android:textColor="@color/white"
-            android:textStyle="bold"
-            android:textSize="25sp" />
+            android:textSize="20sp" />
 
     </RelativeLayout>
 
@@ -300,6 +299,7 @@
         android:padding="15dp"
         android:text="Add Payment Method"
         android:textColor="@color/white"
-        android:textSize="15sp" />
+        android:textSize="15sp"
+        android:textAllCaps="false"/>
 
 </RelativeLayout>
