@@ -2,6 +2,7 @@ package com.alvarez.furnivisionapp
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.hardware.camera2.CameraManager
 import android.icu.text.DecimalFormat
 import android.os.Bundle
@@ -15,16 +16,16 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.LayoutManager
+import com.alvarez.furnivisionapp.data.AuthUtility
 import com.alvarez.furnivisionapp.data.Furniture
 import com.alvarez.furnivisionapp.data.Shop
 import com.alvarez.furnivisionapp.utils.CameraFunctions
 import com.alvarez.furnivisionapp.utils.HomePageFunctions
 import com.alvarez.furnivisionapp.utils.ShopListAdapter
+import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
 
@@ -289,6 +290,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun initProfilePage() {
 
+        val logoutButton: Button = findViewById(R.id.logout_button)
+        logoutButton.setOnClickListener {
+            AuthUtility.signOut(this)
+            val intent = Intent(this, LoginRegistrationActivity::class.java)
+            startActivity(intent)
+        }
     }
 
 
