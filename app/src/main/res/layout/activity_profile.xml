@@ -184,8 +184,7 @@
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:layout_centerHorizontal="true"
-                    android:background="@drawable/toreceive_icon"
-                    android:scaleType="centerCrop"/>
+                    android:background="@drawable/toreceive_icon" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -225,7 +224,7 @@
 
         </LinearLayout>
         <RelativeLayout
-            android:id="@+id/accountInfoRow1"
+            android:id="@+id/accountInfoButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -290,7 +289,7 @@
             android:layout_toEndOf="@id/cashImage"/>
 
         <RelativeLayout
-            android:id="@+id/deliveryAddRow3"
+            android:id="@+id/paymentMethodsButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -330,7 +329,7 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/paymentMethodsRow2"
+            android:id="@+id/deliveryAddressButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
