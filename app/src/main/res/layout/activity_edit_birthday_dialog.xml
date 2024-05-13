@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="20dp"
+    android:background="@color/white">
+
+
+
+    <TextView
+        android:id="@+id/editBirthday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="40dp"
+        android:fontFamily="@font/spartan_medium"
+        android:text="Select Date"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold"/>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editBirthday"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical">
+
+        <DatePicker
+            android:id="@+id/datePicker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@id/datePicker">
+
+            <Button
+                android:id="@+id/cancelBtn"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Cancel"
+                android:background="@drawable/gray_button_border"
+                android:textAllCaps="false"
+                android:textSize="20sp"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/deleteBtn"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/primary_darker"
+                android:background="@drawable/gray_button_border"
+                android:textAllCaps="false"
+                android:textSize="20sp"
+                android:text="Submit" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>
