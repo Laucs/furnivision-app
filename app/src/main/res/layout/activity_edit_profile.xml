@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F4F4F4">
+
+    <RelativeLayout
+        android:id="@+id/accountHeader"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="#FFF">
+
+        <ImageButton
+            android:id="@+id/backButton"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="15dp"
+            android:background="@drawable/green_back_button"
+            android:contentDescription="Back" />
+
+        <TextView
+            android:id="@+id/nameTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="20dp"
+            android:layout_toEndOf="@id/backButton"
+            android:fontFamily="@font/spartan_medium"
+            android:text="Edit Profile"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+        <ImageButton
+            android:id="@+id/applyChangesBtn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="15dp"
+            android:background="@drawable/check_icon" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/editPicture"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="#396057"
+        android:layout_below="@id/accountHeader">
+
+        <ImageButton
+            android:id="@+id/profilePic"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="15dp"
+            android:background="@drawable/round_shape"
+            android:src="@drawable/profile_pic_ed"
+            android:scaleType="centerCrop"
+            android:contentDescription="Profile Picture"
+            android:clipToOutline="true"
+            android:outlineProvider="background" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editPicture"
+        android:orientation="vertical"
+        android:layout_marginTop="10dp"
+        android:background="#F4F4F4">
+
+        <RelativeLayout
+            android:id="@+id/nameRow1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/white"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp">
+
+            <TextView
+                android:id="@+id/nameLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Name"
+                android:layout_centerVertical="true"
+                android:textSize="18sp"
+                android:fontFamily="@font/montserrat"
+                android:textColor="@color/black"
+                android:layout_marginStart="15dp"/>
+            <TextView
+                android:id="@+id/nameTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Set now"
+                android:layout_toStartOf="@id/nameEditBtn"
+                android:textSize="18sp"
+                android:fontFamily="@font/montserrat"
+                android:textColor="@color/black"
+                android:layout_marginEnd="15dp"/>
+
+            <ImageButton
+                android:id="@+id/nameEditBtn"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="15dp"
+                android:background="@drawable/right_next_icon" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/bioRow2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/white"
+            android:layout_marginTop="2dp"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp">
+
+            <TextView
+                android:id="@+id/bioLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bio"
+                android:layout_centerVertical="true"
+                android:textSize="18sp"
+                android:fontFamily="@font/montserrat"
+                android:textColor="@color/black"
+                android:layout_marginStart="15dp"/>
+            <TextView
+                android:id="@+id/bioTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Set now"
+                android:layout_toStartOf="@id/bioEditBtn"
+                android:textSize="18sp"
+                android:fontFamily="@font/montserrat"
+                android:textColor="@color/black"
+                android:layout_marginEnd="15dp"/>
+
+            <ImageButton
+                android:id="@+id/bioEditBtn"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="15dp"
+                android:background="@drawable/right_next_icon" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/genderRow3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/white"
+            android:layout_marginTop="20dp"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp">
+
+            <TextView
+                android:id="@+id/genderLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Gender"
+                android:layout_centerVertical="true"
+                android:textSize="18sp"
+                android:fontFamily="@font/montserrat"
+                android:textColor="@color/black"
+                android:layout_marginStart="15dp"/>
+            <TextView
+                android:id="@+id/genderTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Set now"
+                android:layout_toStartOf="@id/genderEditBtn"
+                android:textSize="18sp"
+                android:fontFamily="@font/montserrat"
+                android:textColor="@color/black"
+                android:layout_marginEnd="15dp"/>
+
+            <ImageButton
+                android:id="@+id/genderEditBtn"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="15dp"
+                android:background="@drawable/right_next_icon" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/birthdayRow4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/white"
+            android:layout_marginTop="2dp"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp">
+
+            <TextView
+                android:id="@+id/bdayLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Birthday"
+                android:layout_centerVertical="true"
+                android:textSize="18sp"
+                android:fontFamily="@font/montserrat"
+                android:textColor="@color/black"
+                android:layout_marginStart="15dp"/>
+            <TextView
+                android:id="@+id/bdayTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Set now"
+                android:layout_toStartOf="@id/bdayEditBtn"
+                android:textSize="18sp"
+                android:fontFamily="@font/montserrat"
+                android:textColor="@color/black"
+                android:layout_marginEnd="15dp"/>
+
+            <ImageButton
+                android:id="@+id/bdayEditBtn"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="15dp"
+                android:background="@drawable/right_next_icon" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/phoneRow5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/white"
+            android:layout_marginTop="20dp"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp">
+
+            <TextView
+                android:id="@+id/phoneLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Gender"
+                android:layout_centerVertical="true"
+                android:textSize="18sp"
+                android:fontFamily="@font/montserrat"
+                android:textColor="@color/black"
+                android:layout_marginStart="15dp"/>
+            <TextView
+                android:id="@+id/phoneTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Set now"
+                android:layout_toStartOf="@id/phoneEditBtn"
+                android:textSize="18sp"
+                android:fontFamily="@font/montserrat"
+                android:textColor="@color/black"
+                android:layout_marginEnd="15dp"/>
+
+            <ImageButton
+                android:id="@+id/phoneEditBtn"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="15dp"
+                android:background="@drawable/right_next_icon" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/emailRow6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/white"
+            android:layout_marginTop="2dp"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp">
+
+            <TextView
+                android:id="@+id/emailLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Birthday"
+                android:layout_centerVertical="true"
+                android:textSize="18sp"
+                android:fontFamily="@font/montserrat"
+                android:textColor="@color/black"
+                android:layout_marginStart="15dp"/>
+            <TextView
+                android:id="@+id/emailTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Set now"
+                android:layout_toStartOf="@id/emailEditBtn"
+                android:textSize="18sp"
+                android:fontFamily="@font/montserrat"
+                android:textColor="@color/black"
+                android:layout_marginEnd="15dp"/>
+
+            <ImageButton
+                android:id="@+id/emailEditBtn"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="15dp"
+                android:background="@drawable/right_next_icon" />
+        </RelativeLayout>
+
+
+
+    </LinearLayout>
+
+</RelativeLayout>
