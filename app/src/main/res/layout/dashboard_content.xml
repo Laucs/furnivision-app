@@ -31,7 +31,7 @@
                 android:layout_height="180dp"
                 app:contentPadding="10dp"
                 app:cardCornerRadius="10sp"
-                android:layout_marginHorizontal="10sp">
+                android:layout_marginEnd="15dp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -120,7 +120,7 @@
                 android:layout_height="180dp"
                 app:contentPadding="10dp"
                 app:cardCornerRadius="10sp"
-                android:layout_marginHorizontal="10sp">
+                android:layout_marginEnd="15dp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -209,7 +209,7 @@
                 android:layout_height="180dp"
                 app:contentPadding="10dp"
                 app:cardCornerRadius="10sp"
-                android:layout_marginHorizontal="10sp">
+                android:layout_marginEnd="15dp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -301,17 +301,18 @@
         android:layout_width="100sp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/favorites_container"
-        android:layout_marginTop="30sp"
+        android:layout_marginTop="20dp"
         android:text="Popular"
         android:textColor="#396057"
         android:textSize="20sp"/>
 
     <TextView
-        android:layout_width="100sp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/favorites_container"
-        android:layout_toEndOf="@+id/popular"
-        android:layout_marginTop="35sp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="20sp"
+        android:layout_marginEnd="25dp"
         android:text="See all"
         android:textColor="#396057" />
 
@@ -330,11 +331,11 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/white_chair100"
-                android:layout_width="150dp"
+                android:layout_width="180dp"
                 android:layout_height="130dp"
                 app:contentPadding="10dp"
                 app:cardCornerRadius="10sp"
-                android:layout_marginHorizontal="10sp">
+                android:layout_marginEnd="15dp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -342,12 +343,13 @@
 
                     <ImageButton
                         android:id="@+id/pop1"
-                        android:tag="furnitureImage"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@drawable/white_background"
+                        android:contentDescription="@string/item"
                         android:src="@drawable/samplechair3"
-                        android:contentDescription="@string/item" />
+                        android:tag="furnitureImage"
+                        android:scaleType="centerInside"/>
 
                     <TextView
                         android:layout_width="match_parent"
@@ -420,11 +422,11 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/lgray_chair100"
-                android:layout_width="150dp"
+                android:layout_width="180dp"
                 android:layout_height="130dp"
                 app:contentPadding="10dp"
                 app:cardCornerRadius="10sp"
-                android:layout_marginHorizontal="10sp">
+                android:layout_marginEnd="15dp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -510,11 +512,11 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/lgray_chair101"
-                android:layout_width="150dp"
+                android:layout_width="180dp"
                 android:layout_height="130dp"
                 app:contentPadding="10dp"
                 app:cardCornerRadius="10sp"
-                android:layout_marginHorizontal="10sp">
+                android:layout_marginEnd="15dp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
