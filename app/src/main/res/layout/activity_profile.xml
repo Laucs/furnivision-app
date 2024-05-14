@@ -15,7 +15,9 @@
         <RelativeLayout
             android:id="@+id/profileDiv"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="5dp">
             <ImageButton
                 android:id="@+id/profilePic"
                 android:layout_width="80dp"
@@ -65,21 +67,23 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/profileDiv"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="15dp">
+
             <ImageButton
                 android:id="@+id/settingsButton"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
+                android:background="@drawable/settings_icon"
                 android:layout_toStartOf="@id/cartButton"
-                android:layout_marginEnd="10dp"
-                android:background="@drawable/settings_icon" />
+                android:layout_marginEnd="15dp"/>
+
             <ImageButton
                 android:id="@+id/cartButton"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_alignParentEnd="true"
-                android:background="@drawable/cart_icon_white" />
+                android:background="@drawable/cart_icon_white"
+                android:layout_alignParentEnd="true"/>
         </RelativeLayout>
 
 
@@ -101,16 +105,17 @@
             android:background="@color/white"
             android:paddingTop="10dp"
             android:paddingBottom="10dp">
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_toEndOf="@id/cashImage"
+                android:fontFamily="@font/glacial_indifference_regular"
                 android:text="My Purchases"
                 android:textColor="#737373"
                 android:textSize="18sp"
-                android:fontFamily="@font/glacial_indifference_regular"
-                android:textStyle="bold"
-                android:layout_marginStart="20dp"
-                android:layout_toEndOf="@id/cashImage"/>
+                android:textStyle="bold" />
         </LinearLayout>
 
         <LinearLayout
@@ -119,7 +124,7 @@
             android:orientation="horizontal"
             android:background="@color/white"
             android:layout_marginTop="5dp"
-            android:padding="8dp"
+            android:padding="2dp"
             android:layout_gravity="center">
 
             <RelativeLayout
@@ -138,7 +143,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/toPayIcon"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="10dp"
                     android:text="To Pay"
                     android:layout_centerHorizontal="true"
                     android:textSize="14sp"
@@ -165,7 +170,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/toShipIcon"
                     android:text="To Ship"
-                    android:layout_marginTop="18dp"
+                    android:layout_marginTop="12dp"
                     android:layout_centerHorizontal="true"
                     android:textSize="14sp"
                     android:fontFamily="@font/montserrat"/>
@@ -190,7 +195,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/toReceiveIcon"
                     android:text="To Receive"
-                    android:layout_marginTop="17dp"
+                    android:layout_marginTop="10dp"
                     android:layout_centerHorizontal="true"
                     android:textSize="14sp"
                     android:fontFamily="@font/montserrat"/>
@@ -208,6 +213,7 @@
                     android:id="@+id/toRateIcon"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
+                    android:layout_marginTop="2dp"
                     android:layout_centerHorizontal="true"
                     android:background="@drawable/torate_icon" />
                 <TextView
@@ -217,21 +223,22 @@
                     android:text="To Rate"
                     android:layout_centerHorizontal="true"
                     android:textSize="14sp"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="8dp"
                     android:fontFamily="@font/montserrat"/>
 
             </RelativeLayout>
 
         </LinearLayout>
+
         <RelativeLayout
             android:id="@+id/accountInfoButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:background="@color/white"
-            android:paddingTop="20dp"
+            android:paddingTop="10dp"
             android:layout_marginTop="20dp"
-            android:paddingBottom="20dp">
+            android:paddingBottom="10dp">
 
             <ImageView
                 android:id="@+id/accountInfoIcon"
@@ -294,9 +301,9 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:background="@color/white"
-            android:paddingTop="20dp"
+            android:paddingTop="10dp"
             android:layout_marginTop="10dp"
-            android:paddingBottom="20dp">
+            android:paddingBottom="10dp">
 
             <ImageView
                 android:id="@+id/cardIcon"
@@ -334,9 +341,9 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:background="@color/white"
-            android:paddingTop="20dp"
+            android:paddingTop="10dp"
             android:layout_marginTop="10dp"
-            android:paddingBottom="20dp">
+            android:paddingBottom="10dp">
 
             <ImageView
                 android:id="@+id/addressIcon"
@@ -368,17 +375,8 @@
                 android:background="@drawable/right_next_icon" />
         </RelativeLayout>
 
+
     </LinearLayout>
 
-<<<<<<< Lemuel
-=======
-    <Button
-        android:id="@+id/logout_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Logout"
-        android:contentDescription="logout"
-        android:layout_centerHorizontal="true"/>
->>>>>>> master
 
 </RelativeLayout>

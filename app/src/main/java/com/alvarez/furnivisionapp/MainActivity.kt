@@ -52,6 +52,7 @@ class MainActivity : AppCompatActivity() {
         val cameraButton: LinearLayout = findViewById(R.id.ar_menu)
         val cartButton: LinearLayout = findViewById(R.id.cart_menu)
         val profileButton: LinearLayout = findViewById(R.id.profile_menu)
+
         activeButton = homeButton
 
         // Layouts
@@ -273,8 +274,8 @@ class MainActivity : AppCompatActivity() {
             Log.d("cartS", cartSummary!!.toString())
         }
     }
-
     private fun initCameraPage() {
+
         val cameraLayout: RelativeLayout = findViewById(R.id.cameraLayout)
         val galleryLayout: RelativeLayout  = findViewById(R.id.galleryLayout)
         val videoLayout: RelativeLayout  = findViewById(R.id.videoLayout)
@@ -343,7 +344,59 @@ class MainActivity : AppCompatActivity() {
 
     private fun initProfilePage() {
 
-        val logoutButton: Button = findViewById(R.id.logout_button)
+        val settingsButton: ImageButton = findViewById(R.id.settingsButton)
+        val cartButton: ImageButton = findViewById(R.id.cartButton)
+        val toPayButton: Button = findViewById(R.id.toPayButton)
+        val toShipButton: Button = findViewById(R.id.toShipButton)
+        val toReceiveButton: Button = findViewById(R.id.toReceiveButton)
+        val toRateButton: Button = findViewById(R.id.toRateButton)
+        val accountInfoButton: RelativeLayout = findViewById(R.id.accountInfoButton)
+        val paymentMethodsButton: RelativeLayout = findViewById(R.id.paymentMethodsButton)
+        val deliveryAddressButton: RelativeLayout = findViewById(R.id.deliveryAddressButton)
+        val logoutButton: RelativeLayout = findViewById(R.id.logout_button)
+
+        // Navigation Logic
+        val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
+
+        settingsButton.setOnClickListener {
+            activePage = (R.layout.activity_settings)
+            pageContainer.removeAllViews()
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_settings, null) as RelativeLayout)
+        }
+
+        toPayButton.setOnClickListener {
+            // Add your functionality for the "To Pay" button here
+        }
+
+        toShipButton.setOnClickListener {
+            // Add your functionality for the "To Ship" button here
+        }
+
+        toReceiveButton.setOnClickListener {
+            // Add your functionality for the "To Receive" button here
+        }
+
+        toRateButton.setOnClickListener {
+            // Add your functionality for the "To Rate" button here
+        }
+
+        accountInfoButton.setOnClickListener {
+            // Add your functionality for the "Account Info" button here
+        }
+
+        paymentMethodsButton.setOnClickListener {
+            // Add your functionality for the "Payment Methods" button here
+        }
+
+        deliveryAddressButton.setOnClickListener {
+            // Add your functionality for the "Delivery Address" button here
+        }
+
+        logoutButton.setOnClickListener {
+            AuthUtility.signOut(this)
+            val intent = Intent(this, LoginRegistrationActivity::class.java)
+            startActivity(intent)
+        }
         logoutButton.setOnClickListener {
             AuthUtility.signOut(this)
             val intent = Intent(this, LoginRegistrationActivity::class.java)
