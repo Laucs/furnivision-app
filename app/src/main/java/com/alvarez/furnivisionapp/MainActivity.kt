@@ -2,6 +2,7 @@ package com.alvarez.furnivisionapp
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.hardware.camera2.CameraManager
 import android.icu.text.DecimalFormat
 import android.os.Bundle
@@ -12,12 +13,15 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.RadioGroup
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.alvarez.furnivisionapp.data.AuthUtility
 import com.alvarez.furnivisionapp.data.CartItem
 import com.alvarez.furnivisionapp.data.Furniture
 import com.alvarez.furnivisionapp.data.Shop
@@ -25,6 +29,8 @@ import com.alvarez.furnivisionapp.utils.CameraFunctions
 import com.alvarez.furnivisionapp.utils.CartListAdapter
 import com.alvarez.furnivisionapp.utils.HomePageFunctions
 import com.alvarez.furnivisionapp.utils.ShopListAdapter
+import com.alvarez.furnivisionapp.data.SessionManager
+import com.google.firebase.auth.FirebaseAuth
 import kotlin.math.log
 
 class MainActivity : AppCompatActivity() {
@@ -49,6 +55,7 @@ class MainActivity : AppCompatActivity() {
         val cameraButton: LinearLayout = findViewById(R.id.ar_menu)
         val cartButton: LinearLayout = findViewById(R.id.cart_menu)
         val profileButton: LinearLayout = findViewById(R.id.profile_menu)
+
         activeButton = homeButton
 
         // Layouts
@@ -182,10 +189,6 @@ class MainActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
         }
 
-
-
-
-
     }
 
     @SuppressLint("SetTextI18n", "DefaultLocale", "CommitPrefEdits")
@@ -270,8 +273,8 @@ class MainActivity : AppCompatActivity() {
             Log.d("cartS", cartSummary!!.toString())
         }
     }
-
     private fun initCameraPage() {
+
         val cameraLayout: RelativeLayout = findViewById(R.id.cameraLayout)
         val galleryLayout: RelativeLayout  = findViewById(R.id.galleryLayout)
         val videoLayout: RelativeLayout  = findViewById(R.id.videoLayout)
@@ -314,9 +317,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun initCartPage(pageContainer: ViewGroup) {
         val furnitures = cartShop?.furnitures
-        val cartItemList = cartFurniture?.split(',').toString().trim(' ')
+        val cartItemList = cartFurniture.split(',').toString().trim(' ')
 
-        Log.d("d", cartItemList!!.toString())
+        Log.d("d", cartItemList.toString())
 
         if (cartItemList != null) {
             val cartItems = cartSummary?.mapNotNull { (id, count) ->
@@ -340,6 +343,212 @@ class MainActivity : AppCompatActivity() {
 
     private fun initProfilePage() {
 
+
+        val emailTextView: TextView = findViewById(R.id.email)
+        val userEmail = SessionManager.getUserEmail(this)
+        emailTextView.text = userEmail
+
+        val settingsButton: ImageButton = findViewById(R.id.settingsButton)
+        val toPayButton: RelativeLayout = findViewById(R.id.toPayButton)
+        val toShipButton: RelativeLayout = findViewById(R.id.toShipButton)
+        val toReceiveButton: RelativeLayout = findViewById(R.id.toReceiveButton)
+        val toRateButton: RelativeLayout = findViewById(R.id.toRateButton)
+        val accountInfoButton: RelativeLayout = findViewById(R.id.accountInfoButton)
+        val paymentMethodsButton: RelativeLayout = findViewById(R.id.paymentMethodsButton)
+        val deliveryAddressButton: RelativeLayout = findViewById(R.id.deliveryAddressButton)
+
+
+
+        // Navigation Logic
+        val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
+
+        settingsButton.setOnClickListener {
+            activePage = (R.layout.activity_settings)
+            pageContainer.removeAllViews()
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_settings, null) as RelativeLayout)
+            initBackButton()
+            initSettingsPage()
+        }
+
+        toPayButton.setOnClickListener {
+            activePage = (R.layout.activity_to_pay)
+            pageContainer.removeAllViews()
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_pay, null) as RelativeLayout)
+            initBackButton()
+//            initSettingsPage()
+        }
+
+        toShipButton.setOnClickListener {
+            activePage = (R.layout.activity_to_ship)
+            pageContainer.removeAllViews()
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_ship, null) as RelativeLayout)
+            initBackButton()
+//            initSettingsPage()
+        }
+
+        toReceiveButton.setOnClickListener {
+            activePage = (R.layout.activity_to_receive)
+            pageContainer.removeAllViews()
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_receive, null) as RelativeLayout)
+            initBackButton()
+//            initSettingsPage()
+        }
+
+        toRateButton.setOnClickListener {
+            activePage = (R.layout.activity_to_rate)
+            pageContainer.removeAllViews()
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_rate, null) as RelativeLayout)
+            initBackButton()
+//            initSettingsPage()
+        }
+
+        accountInfoButton.setOnClickListener {
+            activePage = (R.layout.activity_edit_account)
+            pageContainer.removeAllViews()
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_account, null) as RelativeLayout)
+            initBackButton()
+            initProfileEditPage()
+        }
+
+        paymentMethodsButton.setOnClickListener {
+            activePage = (R.layout.activity_payment_methods)
+            pageContainer.removeAllViews()
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_payment_methods, null) as RelativeLayout)
+            initBackButton()
+//            initSettingsPage()
+        }
+
+        deliveryAddressButton.setOnClickListener {
+//            activePage = (R.layout.activity_)
+//            pageContainer.removeAllViews()
+//            pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_account, null) as RelativeLayout)
+//            initSettingsPage()
+        }
+
+    }
+
+    fun initSettingsPage(){
+        val logoutButton: RelativeLayout = findViewById(R.id.logout_button)
+
+        logoutButton.setOnClickListener {
+            AuthUtility.signOut(this)
+            val intent = Intent(this, LoginRegistrationActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+    }
+
+    fun initBackButton(){
+        val backButton: ImageButton = findViewById(R.id.backButton)
+        backButton.setOnClickListener {
+            val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
+            pageContainer.removeAllViews()
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_profile, null) as RelativeLayout)
+            initProfilePage()
+        }
+    }
+
+    fun initProfileBackButton(){
+        val backButton: ImageButton = findViewById(R.id.backButton)
+        backButton.setOnClickListener {
+            val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
+            pageContainer.removeAllViews()
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_account, null) as RelativeLayout)
+            initProfileEditPage()
+        }
+    }
+
+    fun initProfileEditPage(){
+        val changeNameButton: RelativeLayout = findViewById(R.id.changeNameButton)
+        val changeBioButton: RelativeLayout = findViewById(R.id.changeBioButton)
+        val changeGenderButton: RelativeLayout = findViewById(R.id.changeGenderButton)
+        val changeBdayButton: RelativeLayout = findViewById(R.id.changeBdayButton)
+        val changePhoneButton: RelativeLayout = findViewById(R.id.changePhoneButton)
+        val changeEmailButton: RelativeLayout = findViewById(R.id.changeEmailButton)
+        val saveButton: ImageButton = findViewById(R.id.applyChangesBtn)
+
+        val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
+
+        changeNameButton.setOnClickListener {
+            activePage = (R.layout.activity_edit_name)
+            pageContainer.removeAllViews()
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_name, null) as RelativeLayout)
+            initProfileBackButton()
+        }
+
+        changeBioButton.setOnClickListener {
+            activePage = (R.layout.activity_edit_bio)
+            pageContainer.removeAllViews()
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_bio, null) as RelativeLayout)
+            initProfileBackButton()
+        }
+
+        changeGenderButton.setOnClickListener {
+            // Inflate the custom layout/view
+            val dialogView = layoutInflater.inflate(R.layout.activity_edit_gender_dialog, null)
+
+            // Build the dialog
+            val dialog = AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setPositiveButton("Confirm") { dialogInterface, which ->
+                    val radioGroup = dialogView.findViewById<RadioGroup>(R.id.genderRadioGroup)
+                    val selectedGenderId = radioGroup.checkedRadioButtonId
+                    val selectedGender = when (selectedGenderId) {
+                        R.id.maleButton -> "Male"
+                        R.id.femaleButton -> "Female"
+                        R.id.otherButton -> "Other"
+                        else -> "Unknown"
+                    }
+                }
+                .setNegativeButton("Cancel") { dialogInterface, which ->
+                    dialogInterface.dismiss()
+                }
+                .create()
+
+            // Show the dialog
+            dialog.show()
+        }
+
+        changeBdayButton.setOnClickListener {
+            // Inflate the custom layout/view
+            val dialogView = layoutInflater.inflate(R.layout.activity_edit_birthday_dialog, null)
+
+            // Build the dialog
+            val dialog = AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setPositiveButton("Confirm") { dialogInterface, which ->
+
+                }
+                .setNegativeButton("Cancel") { dialogInterface, which ->
+                    dialogInterface.dismiss()
+                }
+                .create()
+
+            // Show the dialog
+            dialog.show()
+        }
+
+        changePhoneButton.setOnClickListener {
+            activePage = (R.layout.activity_edit_phone)
+            pageContainer.removeAllViews()
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_phone, null) as RelativeLayout)
+            initProfileBackButton()
+        }
+
+        changeEmailButton.setOnClickListener {
+            activePage = (R.layout.activity_edit_email)
+            pageContainer.removeAllViews()
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_email, null) as RelativeLayout)
+            initBackButton()
+            initProfileBackButton()
+        }
+
+        saveButton.setOnClickListener {
+            activePage = (R.layout.activity_profile)
+            pageContainer.removeAllViews()
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_profile, null) as RelativeLayout)
+            initProfilePage()
+        }
     }
 
     fun countFurnitureOccurrences(furnitureArray: Array<String>): HashMap<String, Int> {
