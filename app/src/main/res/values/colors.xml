@@ -5,6 +5,7 @@
     <color name="white_transparent">#E6FFFFFF</color>
     <color name="primary_darker">#2f4d43</color>
     <color name="primary_lighter">#4c8760</color>
+    <color name="primary_lighter2">#758774</color>
     <color name="primary">#386057</color>
     <color name="info">#cfd8df</color>
     <color name="light_gray">#c8c8c8</color>

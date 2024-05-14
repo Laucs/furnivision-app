@@ -69,4 +69,8 @@
     <string name="total">Total</string>
     <string name="dollar">$</string>
     <string name="check_out">check out</string>
+    <string name="orders_title_page">Orders</string>
+    <string name="sun_gold">Sun Gold</string>
+
+    <string name="sample_text_8_words">Lorem ipsum dolor sit amet, consectetur.</string>
 </resources>
