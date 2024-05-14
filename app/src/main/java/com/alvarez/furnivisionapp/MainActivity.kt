@@ -361,35 +361,63 @@ class MainActivity : AppCompatActivity() {
             activePage = (R.layout.activity_settings)
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_settings, null) as RelativeLayout)
+            initBackButton()
             initSettingsPage()
         }
 
         toPayButton.setOnClickListener {
-            // Add your functionality for the "To Pay" button here
+            activePage = (R.layout.activity_to_pay)
+            pageContainer.removeAllViews()
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_pay, null) as RelativeLayout)
+            initBackButton()
+//            initSettingsPage()
         }
 
         toShipButton.setOnClickListener {
-            // Add your functionality for the "To Ship" button here
+            activePage = (R.layout.activity_to_ship)
+            pageContainer.removeAllViews()
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_ship, null) as RelativeLayout)
+            initBackButton()
+//            initSettingsPage()
         }
 
         toReceiveButton.setOnClickListener {
-            // Add your functionality for the "To Receive" button here
+            activePage = (R.layout.activity_to_receive)
+            pageContainer.removeAllViews()
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_receive, null) as RelativeLayout)
+            initBackButton()
+//            initSettingsPage()
         }
 
         toRateButton.setOnClickListener {
-            // Add your functionality for the "To Rate" button here
+            activePage = (R.layout.activity_to_rate)
+            pageContainer.removeAllViews()
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_rate, null) as RelativeLayout)
+            initBackButton()
+//            initSettingsPage()
         }
 
         accountInfoButton.setOnClickListener {
-            // Add your functionality for the "Account Info" button here
+            activePage = (R.layout.activity_edit_account)
+            pageContainer.removeAllViews()
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_account, null) as RelativeLayout)
+            initBackButton()
+//            initSettingsPage()
         }
 
         paymentMethodsButton.setOnClickListener {
-            // Add your functionality for the "Payment Methods" button here
+            activePage = (R.layout.activity_payment_methods)
+            pageContainer.removeAllViews()
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_payment_methods, null) as RelativeLayout)
+            initBackButton()
+//            initSettingsPage()
         }
 
         deliveryAddressButton.setOnClickListener {
-            // Add your functionality for the "Delivery Address" button here
+//            activePage = (R.layout.activity_)
+//            pageContainer.removeAllViews()
+//            pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_account, null) as RelativeLayout)
+//            initSettingsPage()
         }
     }
 
@@ -400,6 +428,15 @@ class MainActivity : AppCompatActivity() {
             AuthUtility.signOut(this)
             val intent = Intent(this, LoginRegistrationActivity::class.java)
             startActivity(intent)
+        }
+    }
+
+    fun initBackButton(){
+        val backButton: ImageButton = findViewById(R.id.backButton)
+        backButton.setOnClickListener {
+            val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
+            pageContainer.removeAllViews()
+            pageContainer.addView(activePage?.let { it1 -> layoutInflater.inflate(it1, null) } as RelativeLayout)
         }
     }
 

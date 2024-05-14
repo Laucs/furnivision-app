@@ -244,6 +244,7 @@ class LoginRegistrationActivity : AppCompatActivity() {
 
     fun startMainActivity() {
         startActivity(Intent(this, MainActivity::class.java))
+        finish()
     }
 
     companion object {
