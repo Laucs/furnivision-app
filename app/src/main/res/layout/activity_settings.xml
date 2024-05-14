@@ -22,131 +22,88 @@
             android:contentDescription="Back" />
 
         <TextView
-            android:id="@+id/nameTitle"
+            android:id="@+id/settingsTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginStart="20dp"
             android:layout_toEndOf="@id/backButton"
             android:fontFamily="@font/spartan_medium"
-            android:text="Edit Profile"
+            android:text="Settings "
             android:textColor="@color/black"
             android:textSize="20sp" />
-
-        <ImageButton
-            android:id="@+id/applyChangesBtn"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_centerVertical="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="15dp"
-            android:background="@drawable/check_icon" />
-
     </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/editPicture"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:background="#396057"
-        android:layout_below="@id/accountHeader">
-
-        <ImageButton
-            android:id="@+id/profilePic"
-            android:layout_width="90dp"
-            android:layout_height="90dp"
-            android:layout_centerInParent="true"
-            android:layout_marginStart="15dp"
-            android:background="@drawable/round_shape"
-            android:src="@drawable/profile_pic_ed"
-            android:scaleType="centerCrop"
-            android:contentDescription="Profile Picture"
-            android:clipToOutline="true"
-            android:outlineProvider="background" />
-
-    </RelativeLayout>
+    <TextView
+        android:id="@+id/myAccountLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="My Account"
+        android:textColor="#737373"
+        android:textSize="18sp"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/glacial_indifference_regular"
+        android:textStyle="bold"
+        android:layout_marginStart="15dp"
+        android:layout_below="@+id/accountHeader"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/editPicture"
+        android:layout_below="@id/myAccountLabel"
         android:orientation="vertical"
         android:layout_marginTop="10dp"
         android:background="#F4F4F4">
 
         <RelativeLayout
-            android:id="@+id/nameRow1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:background="@color/white"
-            android:paddingTop="15dp"
-            android:paddingBottom="15dp">
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp">
 
             <TextView
-                android:id="@+id/nameLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Name"
-                android:layout_centerVertical="true"
-                android:textSize="18sp"
+                android:layout_marginStart="15dp"
                 android:fontFamily="@font/montserrat"
+                android:text="Username"
                 android:textColor="@color/black"
-                android:layout_marginStart="15dp"/>
+                android:textSize="18sp" />
+
             <TextView
                 android:id="@+id/nameTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Set now"
-                android:layout_toStartOf="@id/nameEditBtn"
+                android:text="Username"
+                android:layout_alignParentEnd="true"
                 android:textSize="18sp"
                 android:fontFamily="@font/montserrat"
                 android:textColor="@color/black"
                 android:layout_marginEnd="15dp"/>
-
-            <ImageButton
-                android:id="@+id/nameEditBtn"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="15dp"
-                android:background="@drawable/right_next_icon" />
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/bioRow2"
+            android:id="@+id/accountNSecurityButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:background="@color/white"
-            android:layout_marginTop="2dp"
+            android:paddingBottom="15dp"
             android:paddingTop="15dp"
-            android:paddingBottom="15dp">
+            android:layout_marginTop="1dp">
 
             <TextView
-                android:id="@+id/bioLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Bio"
-                android:layout_centerVertical="true"
-                android:textSize="18sp"
+                android:layout_marginStart="15dp"
                 android:fontFamily="@font/montserrat"
+                android:text="Change Password"
                 android:textColor="@color/black"
-                android:layout_marginStart="15dp"/>
-            <TextView
-                android:id="@+id/bioTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Set now"
-                android:layout_toStartOf="@id/bioEditBtn"
-                android:textSize="18sp"
-                android:fontFamily="@font/montserrat"
-                android:textColor="@color/black"
-                android:layout_marginEnd="15dp"/>
+                android:textSize="18sp" />
 
-            <ImageButton
-                android:id="@+id/bioEditBtn"
+            <ImageView
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_centerVertical="true"
@@ -155,8 +112,21 @@
                 android:background="@drawable/right_next_icon" />
         </RelativeLayout>
 
+        <TextView
+            android:id="@+id/supportLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Support"
+            android:textColor="#737373"
+            android:textSize="18sp"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/glacial_indifference_regular"
+            android:textStyle="bold"
+            android:layout_marginStart="15dp"
+            android:layout_below="@+id/accountHeader"/>
+
         <RelativeLayout
-            android:id="@+id/genderRow3"
+            android:id="@+id/communityButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -166,28 +136,16 @@
             android:paddingBottom="15dp">
 
             <TextView
-                android:id="@+id/genderLabel"
+                android:id="@+id/communityLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Gender"
+                android:text="Community Rules"
                 android:layout_centerVertical="true"
                 android:textSize="18sp"
                 android:fontFamily="@font/montserrat"
                 android:textColor="@color/black"
                 android:layout_marginStart="15dp"/>
-            <TextView
-                android:id="@+id/genderTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Set now"
-                android:layout_toStartOf="@id/genderEditBtn"
-                android:textSize="18sp"
-                android:fontFamily="@font/montserrat"
-                android:textColor="@color/black"
-                android:layout_marginEnd="15dp"/>
-
-            <ImageButton
-                android:id="@+id/genderEditBtn"
+            <ImageView
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_centerVertical="true"
@@ -197,7 +155,7 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/birthdayRow4"
+            android:id="@+id/rateUsButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -210,25 +168,14 @@
                 android:id="@+id/bdayLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Birthday"
+                android:text="Happy with FurniVision? Rate us!"
                 android:layout_centerVertical="true"
                 android:textSize="18sp"
                 android:fontFamily="@font/montserrat"
                 android:textColor="@color/black"
                 android:layout_marginStart="15dp"/>
-            <TextView
-                android:id="@+id/bdayTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Set now"
-                android:layout_toStartOf="@id/bdayEditBtn"
-                android:textSize="18sp"
-                android:fontFamily="@font/montserrat"
-                android:textColor="@color/black"
-                android:layout_marginEnd="15dp"/>
 
-            <ImageButton
-                android:id="@+id/bdayEditBtn"
+            <ImageView
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_centerVertical="true"
@@ -238,12 +185,12 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/phoneRow5"
+            android:id="@+id/aboutButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:background="@color/white"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="1dp"
             android:paddingTop="15dp"
             android:paddingBottom="15dp">
 
@@ -251,25 +198,13 @@
                 android:id="@+id/phoneLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Gender"
+                android:text="About"
                 android:layout_centerVertical="true"
                 android:textSize="18sp"
                 android:fontFamily="@font/montserrat"
                 android:textColor="@color/black"
                 android:layout_marginStart="15dp"/>
-            <TextView
-                android:id="@+id/phoneTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Set now"
-                android:layout_toStartOf="@id/phoneEditBtn"
-                android:textSize="18sp"
-                android:fontFamily="@font/montserrat"
-                android:textColor="@color/black"
-                android:layout_marginEnd="15dp"/>
-
-            <ImageButton
-                android:id="@+id/phoneEditBtn"
+            <ImageView
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_centerVertical="true"
@@ -279,46 +214,36 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/emailRow6"
+            android:id="@+id/logout_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginTop="20dp"
             android:background="@color/white"
-            android:layout_marginTop="2dp"
-            android:paddingTop="15dp"
-            android:paddingBottom="15dp">
+            android:orientation="horizontal"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp">
+
+            <ImageView
+                android:id="@+id/logoutIcon"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="15dp"
+                android:background="@drawable/logout_icon" />
 
             <TextView
-                android:id="@+id/emailLabel"
+                android:id="@+id/logoutLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Birthday"
                 android:layout_centerVertical="true"
-                android:textSize="18sp"
+                android:layout_marginStart="15dp"
+                android:layout_toEndOf="@id/logoutIcon"
                 android:fontFamily="@font/montserrat"
+                android:text="Logout"
                 android:textColor="@color/black"
-                android:layout_marginStart="15dp"/>
-            <TextView
-                android:id="@+id/emailTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Set now"
-                android:layout_toStartOf="@id/emailEditBtn"
-                android:textSize="18sp"
-                android:fontFamily="@font/montserrat"
-                android:textColor="@color/black"
-                android:layout_marginEnd="15dp"/>
-
-            <ImageButton
-                android:id="@+id/emailEditBtn"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="15dp"
-                android:background="@drawable/right_next_icon" />
+                android:textSize="18sp" />
         </RelativeLayout>
-
 
 
     </LinearLayout>

@@ -15,7 +15,9 @@
         <RelativeLayout
             android:id="@+id/profileDiv"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="5dp">
             <ImageButton
                 android:id="@+id/profilePic"
                 android:layout_width="80dp"
@@ -62,14 +64,27 @@
                 android:layout_marginStart="20dp"/>
         </RelativeLayout>
 
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="15dp">
+
+            <ImageButton
+                android:id="@+id/settingsButton"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/settings_icon"
+                android:layout_toStartOf="@id/cartButton"
+                android:layout_marginEnd="15dp"/>
+
             <ImageButton
                 android:id="@+id/cartButton"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="15dp"
-                android:layout_alignParentEnd="true"
-                android:background="@drawable/cart_icon_white" />
+                android:background="@drawable/cart_icon_white"
+                android:layout_alignParentEnd="true"/>
+        </RelativeLayout>
 
 
     </RelativeLayout>
@@ -214,6 +229,7 @@
             </RelativeLayout>
 
         </LinearLayout>
+
         <RelativeLayout
             android:id="@+id/accountInfoButton"
             android:layout_width="match_parent"
@@ -359,37 +375,6 @@
                 android:background="@drawable/right_next_icon" />
         </RelativeLayout>
 
-        <RelativeLayout
-            android:id="@+id/logout_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="@color/white"
-            android:paddingTop="10dp"
-            android:layout_marginTop="20dp"
-            android:paddingBottom="10dp">
-
-            <ImageView
-                android:id="@+id/logoutIcon"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_centerVertical="true"
-                android:layout_alignParentStart="true"
-                android:layout_marginStart="15dp"
-                android:background="@drawable/logout_icon" />
-
-            <TextView
-                android:id="@+id/logoutLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Logout"
-                android:layout_centerVertical="true"
-                android:textSize="18sp"
-                android:fontFamily="@font/montserrat"
-                android:textColor="@color/black"
-                android:layout_marginStart="15dp"
-                android:layout_toEndOf="@id/logoutIcon"/>
-        </RelativeLayout>
 
     </LinearLayout>
 
