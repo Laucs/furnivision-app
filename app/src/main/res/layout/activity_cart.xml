@@ -7,68 +7,81 @@
     android:layout_height="match_parent"
     android:background="#f4f4f4">
 
-    <RelativeLayout
-        android:id="@+id/header"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        >
+   <ScrollView
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       >
+       <RelativeLayout
+           android:layout_width="match_parent"
+           android:layout_height="match_parent"
+           android:scrollbars="vertical"
+           >
+           <RelativeLayout
+               android:id="@+id/header"
+               android:layout_width="match_parent"
+               android:layout_height="200dp"
+               >
 
-        <ImageView
-            android:layout_width="500dp"
-            android:layout_height="300dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/bg_blob2"
-            android:scaleX="-1.7"
-            android:scaleY="2"
-            android:layout_marginTop="-260dp"
-            android:layout_marginRight="-150dp"/>
-        <ImageView
-            android:id="@+id/app_logo"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="35dp"
-            android:src="@drawable/furni_logo"
-            android:layout_centerHorizontal="true"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/app_logo"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp"
-            android:fontFamily="@font/montserrat"
-            android:textSize="25sp"
-            android:text="@string/cart"
-            android:textColor="@color/white"
-            android:textStyle="bold"
-            android:textAllCaps="true"
-            android:letterSpacing="0.2"
-            />
-        <ImageView
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:src="@drawable/menu_icon"
-            android:scaleType="fitXY"
-            android:layout_margin="20dp"
-            />
+               <ImageView
+                   android:layout_width="500dp"
+                   android:layout_height="300dp"
+                   android:scaleType="fitXY"
+                   android:src="@drawable/bg_blob2"
+                   android:scaleX="-1.7"
+                   android:scaleY="2"
+                   android:layout_marginTop="-260dp"
+                   android:layout_marginRight="-150dp"/>
+               <ImageView
+                   android:id="@+id/app_logo"
+                   android:layout_width="50dp"
+                   android:layout_height="50dp"
+                   android:layout_marginTop="35dp"
+                   android:src="@drawable/furni_logo"
+                   android:layout_centerHorizontal="true"/>
+               <TextView
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_below="@id/app_logo"
+                   android:layout_centerHorizontal="true"
+                   android:layout_marginTop="15dp"
+                   android:fontFamily="@font/montserrat"
+                   android:textSize="25sp"
+                   android:text="@string/cart"
+                   android:textColor="@color/white"
+                   android:textStyle="bold"
+                   android:textAllCaps="true"
+                   android:letterSpacing="0.2"
+                   />
+               <ImageView
+                   android:layout_width="35dp"
+                   android:layout_height="35dp"
+                   android:src="@drawable/menu_icon"
+                   android:scaleType="fitXY"
+                   android:layout_margin="20dp"
+                   />
 
-    </RelativeLayout>
+           </RelativeLayout>
+
+           <androidx.recyclerview.widget.RecyclerView
+               android:id="@+id/cart_recycler_view"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:layout_below="@id/header"
+               android:scrollbars="none"
+               android:background="#f4f4f4"
+               android:paddingHorizontal="40dp"
+               />
 
 
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/cart_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/header"
-        android:paddingHorizontal="40dp"/>
+       </RelativeLayout>
+   </ScrollView>
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginVertical="120dp"
         app:cardBackgroundColor="@color/white"
-        android:elevation="10dp"
+        android:elevation="15dp"
         >
         <RelativeLayout
             android:layout_width="match_parent"
@@ -114,6 +127,7 @@
                 />
 
             <Button
+                android:id="@+id/checkout_button"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
                 android:layout_alignParentEnd="true"
@@ -129,5 +143,4 @@
 
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
-
 </RelativeLayout>

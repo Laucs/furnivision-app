@@ -339,6 +339,20 @@ class MainActivity : AppCompatActivity() {
                 layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
             }
         }
+
+        val checkoutBtn: Button = findViewById(R.id.checkout_button)
+
+        checkoutBtn.setOnClickListener {
+            activePage = (R.layout.activity_orders)
+            pageContainer.removeAllViews()
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_orders, null) as RelativeLayout)
+        }
+
+
+    }
+
+    private fun initOrderPage () {
+
     }
 
     private fun initProfilePage() {
