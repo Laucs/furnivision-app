@@ -57,7 +57,7 @@
             android:layout_below="@id/header"
             android:layout_marginHorizontal="40dp"
             android:layout_marginTop="45dp"
-            android:background="@color/white"
+            app:cardBackgroundColor="@color/white"
             app:cardCornerRadius="15dp">
 
             <include
