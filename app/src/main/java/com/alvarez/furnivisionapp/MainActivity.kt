@@ -318,9 +318,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun initCartPage(pageContainer: ViewGroup) {
         val furnitures = cartShop?.furnitures
-        val cartItemList = cartFurniture?.split(',').toString().trim(' ')
+        val cartItemList = cartFurniture.split(',').toString().trim(' ')
 
-        Log.d("d", cartItemList!!.toString())
+        Log.d("d", cartItemList.toString())
 
         if (cartItemList != null) {
             val cartItems = cartSummary?.mapNotNull { (id, count) ->
@@ -354,7 +354,6 @@ class MainActivity : AppCompatActivity() {
         val paymentMethodsButton: RelativeLayout = findViewById(R.id.paymentMethodsButton)
         val deliveryAddressButton: RelativeLayout = findViewById(R.id.deliveryAddressButton)
 
-
         // Navigation Logic
         val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
 
@@ -362,6 +361,7 @@ class MainActivity : AppCompatActivity() {
             activePage = (R.layout.activity_settings)
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_settings, null) as RelativeLayout)
+            initSettingsPage()
         }
 
         toPayButton.setOnClickListener {
@@ -391,8 +391,16 @@ class MainActivity : AppCompatActivity() {
         deliveryAddressButton.setOnClickListener {
             // Add your functionality for the "Delivery Address" button here
         }
+    }
 
+    fun initSettingsPage(){
+        val logoutButton: RelativeLayout = findViewById(R.id.logout_button)
 
+        logoutButton.setOnClickListener {
+            AuthUtility.signOut(this)
+            val intent = Intent(this, LoginRegistrationActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     fun countFurnitureOccurrences(furnitureArray: Array<String>): HashMap<String, Int> {
