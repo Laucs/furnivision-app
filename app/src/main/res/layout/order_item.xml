@@ -26,7 +26,7 @@
                 <ImageView
                     android:layout_width="45dp"
                     android:layout_height="45dp"
-                    android:src="@drawable/SunGoldLogo"
+                    android:src="@drawable/sun_gold_logo"
                     />
 
             </androidx.cardview.widget.CardView>
