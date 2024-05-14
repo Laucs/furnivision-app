@@ -27,42 +27,48 @@
         android:layout_below="@id/editGender"
         android:layout_marginTop="20dp">
 
-        <Button
-            android:id="@+id/maleButton"
+        <RadioGroup
+            android:id="@+id/genderRadioGroup"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Male"
-            android:background="@color/white"
-            android:gravity="start|center_vertical"
-            android:textAllCaps="false"
-            android:textSize="20sp"
-            />
+            android:layout_height="wrap_content">
 
-        <Button
-            android:id="@+id/femaleButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Female"
-            android:background="@color/white"
-            android:gravity="start|center_vertical"
-            android:textAllCaps="false"
-            android:textSize="20sp"
-            android:layout_centerVertical="true"
-            android:layout_marginTop="8dp"
-            android:layout_below="@id/maleButton" />
+            <RadioButton
+                android:id="@+id/maleButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Male"
+                android:background="@color/white"
+                android:gravity="start|center_vertical"
+                android:textAllCaps="false"
+                android:textSize="20sp" />
 
-        <Button
-            android:id="@+id/otherButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Other"
-            android:background="@color/white"
-            android:gravity="start|center_vertical"
-            android:textAllCaps="false"
-            android:textSize="20sp"
-            android:layout_centerVertical="true"
-            android:layout_marginTop="8dp"
-            android:layout_below="@id/femaleButton"/>
+            <RadioButton
+                android:id="@+id/femaleButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Female"
+                android:background="@color/white"
+                android:gravity="start|center_vertical"
+                android:textAllCaps="false"
+                android:textSize="20sp"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="8dp"
+                android:layout_below="@id/maleButton" />
+
+            <RadioButton
+                android:id="@+id/otherButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Other"
+                android:background="@color/white"
+                android:gravity="start|center_vertical"
+                android:textAllCaps="false"
+                android:textSize="20sp"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="8dp"
+                android:layout_below="@id/femaleButton"/>
+
+        </RadioGroup>
 
     </RelativeLayout>
 
