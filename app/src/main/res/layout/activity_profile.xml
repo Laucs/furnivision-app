@@ -88,11 +88,13 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/accountHeader"
         android:orientation="vertical"
-        android:layout_marginTop="10dp"
         android:background="#F4F4F4">
 
-
-
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:paddingTop="20dp">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -103,8 +105,10 @@
                 android:textColor="#737373"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"/>
+                android:paddingBottom="15dp"/>
+
+        </LinearLayout>
+
 
 
         <LinearLayout
@@ -112,8 +116,10 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:background="@color/white"
-            android:layout_marginTop="5dp"
-            android:padding="2dp"
+            android:paddingTop="2dp"
+            android:paddingBottom="10dp"
+            android:paddingStart="2dp"
+            android:paddingEnd="2dp"
             android:layout_gravity="center">
 
             <RelativeLayout
@@ -124,9 +130,10 @@
 
                 <ImageView
                     android:id="@+id/toPayIcon"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:layout_centerHorizontal="true"
+                    android:layout_marginTop="4dp"
                     android:background="@drawable/topay_icon" />
                 <TextView
                     android:layout_width="wrap_content"
@@ -150,8 +157,8 @@
                 <ImageView
                     android:id="@+id/toShipIcon"
                     android:layout_marginTop="8dp"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
                     android:layout_centerHorizontal="true"
                     android:background="@drawable/toship_icon" />
                 <TextView
@@ -184,7 +191,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/toReceiveIcon"
                     android:text="To Receive"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="4dp"
                     android:layout_centerHorizontal="true"
                     android:textSize="13sp"
                     android:fontFamily="@font/montserrat"/>
@@ -200,9 +207,9 @@
 
                 <ImageView
                     android:id="@+id/toRateIcon"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginTop="5dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="2dp"
                     android:layout_centerHorizontal="true"
                     android:background="@drawable/torate_icon" />
                 <TextView
@@ -212,7 +219,7 @@
                     android:text="To Rate"
                     android:layout_centerHorizontal="true"
                     android:textSize="13sp"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="12dp"
                     android:fontFamily="@font/montserrat"/>
 
             </RelativeLayout>
@@ -231,8 +238,8 @@
 
             <ImageView
                 android:id="@+id/accountInfoIcon"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_centerVertical="true"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="15dp"
@@ -296,8 +303,8 @@
 
             <ImageView
                 android:id="@+id/cardIcon"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_centerVertical="true"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="15dp"
@@ -336,8 +343,8 @@
 
             <ImageView
                 android:id="@+id/addressIcon"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_centerVertical="true"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="15dp"
