@@ -128,7 +128,7 @@
             android:textColor="@color/black"
             android:textSize="8sp"
             android:text="@string/sample_text_8_words"
-            tools:ignore="SmallSp" />
+            />
 
 
         <TextView

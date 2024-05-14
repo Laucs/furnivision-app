@@ -74,16 +74,24 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/google_logo"
+                android:scaleType="fitXY"
+                android:src="@drawable/ads_background"
                 />
         </androidx.cardview.widget.CardView>
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:text="@string/shop_through_you_favorite_stores"
             android:layout_centerHorizontal="true"
-            android:fontFamily="@font/montserrat"/>
+            android:layout_margin="25dp"
+            android:elevation="20dp"
+            android:fontFamily="@font/quicksand"
+            android:textAlignment="center"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:letterSpacing="0.3"
+            android:textColor="@color/white"
+            android:text="@string/shop_through_you_favorite_stores"
+            />
     </RelativeLayout>
 
     <LinearLayout
