@@ -346,14 +346,14 @@ class MainActivity : AppCompatActivity() {
 
         val settingsButton: ImageButton = findViewById(R.id.settingsButton)
         val cartButton: ImageButton = findViewById(R.id.cartButton)
-        val toPayButton: Button = findViewById(R.id.toPayButton)
-        val toShipButton: Button = findViewById(R.id.toShipButton)
-        val toReceiveButton: Button = findViewById(R.id.toReceiveButton)
-        val toRateButton: Button = findViewById(R.id.toRateButton)
+        val toPayButton: RelativeLayout = findViewById(R.id.toPayButton)
+        val toShipButton: RelativeLayout = findViewById(R.id.toShipButton)
+        val toReceiveButton: RelativeLayout = findViewById(R.id.toReceiveButton)
+        val toRateButton: RelativeLayout = findViewById(R.id.toRateButton)
         val accountInfoButton: RelativeLayout = findViewById(R.id.accountInfoButton)
         val paymentMethodsButton: RelativeLayout = findViewById(R.id.paymentMethodsButton)
         val deliveryAddressButton: RelativeLayout = findViewById(R.id.deliveryAddressButton)
-        val logoutButton: RelativeLayout = findViewById(R.id.logout_button)
+
 
         // Navigation Logic
         val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
@@ -392,16 +392,7 @@ class MainActivity : AppCompatActivity() {
             // Add your functionality for the "Delivery Address" button here
         }
 
-        logoutButton.setOnClickListener {
-            AuthUtility.signOut(this)
-            val intent = Intent(this, LoginRegistrationActivity::class.java)
-            startActivity(intent)
-        }
-        logoutButton.setOnClickListener {
-            AuthUtility.signOut(this)
-            val intent = Intent(this, LoginRegistrationActivity::class.java)
-            startActivity(intent)
-        }
+
     }
 
     fun countFurnitureOccurrences(furnitureArray: Array<String>): HashMap<String, Int> {
