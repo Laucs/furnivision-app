@@ -37,7 +37,7 @@
     <string name="already_have_an_account">Already have an Account?</string>
     <string name="welcome">Welcome</string>
     <string name="search">Search</string>
-    <string name="welcome_dashboard">Welcome,</string>
+    <string name="welcome_dashboard">Best Furniture For Your House</string>
     <string name="sofa_button">sofa button</string>
     <string name="bed_button">bed button</string>
     <string name="table_button">table button</string>
@@ -73,4 +73,24 @@
     <string name="sun_gold">Sun Gold</string>
 
     <string name="sample_text_8_words">Lorem ipsum dolor sit amet, consectetur.</string>
+    <string name="content_desc_bg">background</string>
+    <string name="content_desc_ship_add">shipping address</string>
+    <string name="ship_method">ship_method</string>
+    <string name="content_desc_pm">payment method</string>
+    <string name="content_desc_pd">payment details</string>
+    <string name="shipping_address">Shipping Address</string>
+    <string name="sample_address">Omega St., Apas, Cebu City</string>
+    <string name="pick_up_option">Pick-up Option</string>
+    <string name="shipping_method">Shipping Method</string>
+    <string name="payment_method">Payment Method</string>
+    <string name="select_a_method">Select a Method</string>
+    <string name="merchandise_subtotal">Merchandise Subtotal</string>
+    <string name="sample_merch_subtotal_value">₱ 20,000</string>
+    <string name="product_protection_subtotal">Product Protection Subtotal</string>
+    <string name="prod_protect_subtotal_value">1,500</string>
+    <string name="shipping_subtotal">Shipping Subtotal</string>
+    <string name="sample_shipping_subtotal_value">1,500</string>
+    <string name="total_payment">Total Payment</string>
+    <string name="sample_total_payment_value">₱ 23,000</string>
+    <string name="place_order">Place Order</string>
 </resources>
