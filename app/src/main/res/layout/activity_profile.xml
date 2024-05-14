@@ -40,7 +40,7 @@
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:layout_toEndOf="@id/profilePic"
-                android:layout_marginStart="20dp"/>
+                android:layout_marginStart="10dp"/>
 
             <TextView
                 android:id="@+id/email"
@@ -53,7 +53,7 @@
                 android:textStyle="bold"
                 android:layout_below="@id/name"
                 android:layout_toEndOf="@id/profilePic"
-                android:layout_marginStart="20dp"/>
+                android:layout_marginStart="10dp"/>
         </RelativeLayout>
 
         <RelativeLayout
@@ -91,12 +91,7 @@
         android:layout_marginTop="10dp"
         android:background="#F4F4F4">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp">
+
 
             <TextView
                 android:layout_width="match_parent"
@@ -107,8 +102,10 @@
                 android:text="My Purchases"
                 android:textColor="#737373"
                 android:textSize="18sp"
-                android:textStyle="bold" />
-        </LinearLayout>
+                android:textStyle="bold"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"/>
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -138,7 +135,7 @@
                     android:layout_marginTop="10dp"
                     android:text="To Pay"
                     android:layout_centerHorizontal="true"
-                    android:textSize="14sp"
+                    android:textSize="13sp"
                     android:fontFamily="@font/montserrat"/>
 
             </RelativeLayout>
@@ -164,7 +161,7 @@
                     android:text="To Ship"
                     android:layout_marginTop="12dp"
                     android:layout_centerHorizontal="true"
-                    android:textSize="14sp"
+                    android:textSize="13sp"
                     android:fontFamily="@font/montserrat"/>
 
             </RelativeLayout>
@@ -189,7 +186,7 @@
                     android:text="To Receive"
                     android:layout_marginTop="10dp"
                     android:layout_centerHorizontal="true"
-                    android:textSize="14sp"
+                    android:textSize="13sp"
                     android:fontFamily="@font/montserrat"/>
 
             </RelativeLayout>
@@ -205,7 +202,7 @@
                     android:id="@+id/toRateIcon"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_marginTop="2dp"
+                    android:layout_marginTop="5dp"
                     android:layout_centerHorizontal="true"
                     android:background="@drawable/torate_icon" />
                 <TextView
@@ -214,8 +211,8 @@
                     android:layout_below="@id/toRateIcon"
                     android:text="To Rate"
                     android:layout_centerHorizontal="true"
-                    android:textSize="14sp"
-                    android:layout_marginTop="8dp"
+                    android:textSize="13sp"
+                    android:layout_marginTop="5dp"
                     android:fontFamily="@font/montserrat"/>
 
             </RelativeLayout>
@@ -312,7 +309,7 @@
                 android:layout_height="wrap_content"
                 android:text="Payment Methods"
                 android:layout_centerVertical="true"
-                android:textSize="18sp"
+                android:textSize="15sp"
                 android:fontFamily="@font/montserrat"
                 android:textColor="@color/black"
                 android:layout_marginStart="15dp"
@@ -352,7 +349,7 @@
                 android:layout_height="wrap_content"
                 android:text="Delivery Address"
                 android:layout_centerVertical="true"
-                android:textSize="18sp"
+                android:textSize="15sp"
                 android:fontFamily="@font/montserrat"
                 android:textColor="@color/black"
                 android:layout_marginStart="15dp"
