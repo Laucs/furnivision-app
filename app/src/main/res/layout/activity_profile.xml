@@ -1,17 +1,378 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primary_darker">
+    android:background="#F4F4F4">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/accountHeader"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:textColor="@color/white"
-        android:text="Profile Page"
-        android:textSize="50sp"/>
+        android:background="#396057"
+        android:padding="20dp">
+
+        <RelativeLayout
+            android:id="@+id/profileDiv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="5dp">
+            <ImageButton
+                android:id="@+id/profilePic"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_alignParentStart="true"
+                android:background="@drawable/round_shape"
+                android:src="@drawable/profile_pic_ed"
+                android:scaleType="centerCrop"
+                android:contentDescription="Profile Picture"
+                android:clipToOutline="true"
+                android:outlineProvider="background" />
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/montserrat"
+                android:text="Yancy Luceno"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_toEndOf="@id/profilePic"
+                android:layout_marginStart="10dp"/>
+
+            <TextView
+                android:id="@+id/email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="sample@gmail.com"
+                android:textColor="#e6e6e6"
+                android:textSize="15sp"
+                android:fontFamily="@font/montserrat_light"
+                android:textStyle="bold"
+                android:layout_below="@id/name"
+                android:layout_toEndOf="@id/profilePic"
+                android:layout_marginStart="10dp"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="10dp">
+
+            <ImageButton
+                android:id="@+id/settingsButton"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/settings_icon"
+                android:layout_toStartOf="@id/cartButton"
+                android:layout_marginEnd="10dp"/>
+
+            <ImageButton
+                android:id="@+id/cartButton"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/cart_icon_white"
+                android:layout_alignParentEnd="true"/>
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:id="@+id/currentMethod"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/accountHeader"
+        android:orientation="vertical"
+        android:background="#F4F4F4">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:paddingTop="20dp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_toEndOf="@id/cashImage"
+                android:fontFamily="@font/glacial_indifference_regular"
+                android:text="My Purchases"
+                android:textColor="#737373"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:paddingBottom="15dp"/>
+
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/white"
+            android:paddingTop="2dp"
+            android:paddingBottom="10dp"
+            android:paddingStart="2dp"
+            android:paddingEnd="2dp"
+            android:layout_gravity="center">
+
+            <RelativeLayout
+                android:id="@+id/toPayButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:id="@+id/toPayIcon"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="4dp"
+                    android:background="@drawable/topay_icon" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/toPayIcon"
+                    android:layout_marginTop="10dp"
+                    android:text="To Pay"
+                    android:layout_centerHorizontal="true"
+                    android:textSize="13sp"
+                    android:fontFamily="@font/montserrat"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/toShipButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="15dp">
+
+                <ImageView
+                    android:id="@+id/toShipIcon"
+                    android:layout_marginTop="8dp"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/toship_icon" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/toShipIcon"
+                    android:text="To Ship"
+                    android:layout_marginTop="12dp"
+                    android:layout_centerHorizontal="true"
+                    android:textSize="13sp"
+                    android:fontFamily="@font/montserrat"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/toReceiveButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="15dp">
+
+                <ImageView
+                    android:id="@+id/toReceiveIcon"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/toreceive_icon" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/toReceiveIcon"
+                    android:text="To Receive"
+                    android:layout_marginTop="4dp"
+                    android:layout_centerHorizontal="true"
+                    android:textSize="13sp"
+                    android:fontFamily="@font/montserrat"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/toRateButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="15dp">
+
+                <ImageView
+                    android:id="@+id/toRateIcon"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/torate_icon" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/toRateIcon"
+                    android:text="To Rate"
+                    android:layout_centerHorizontal="true"
+                    android:textSize="13sp"
+                    android:layout_marginTop="12dp"
+                    android:fontFamily="@font/montserrat"/>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/accountInfoButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/white"
+            android:paddingTop="10dp"
+            android:layout_marginTop="20dp"
+            android:paddingBottom="10dp">
+
+            <ImageView
+                android:id="@+id/accountInfoIcon"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="15dp"
+                android:background="@drawable/info_icon" />
+
+            <TextView
+                android:id="@+id/nameLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Account Information"
+                android:layout_centerVertical="true"
+                android:textSize="15sp"
+                android:fontFamily="@font/montserrat"
+                android:textColor="@color/black"
+                android:layout_marginStart="15dp"
+                android:layout_toEndOf="@id/accountInfoIcon"/>
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="15dp"
+                android:background="@drawable/right_next_icon" />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:id="@+id/otherOptions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/currentMethod"
+        android:orientation="vertical"
+        android:layout_marginTop="5dp"
+        android:background="#F4F4F4">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Other Informations"
+            android:textColor="#737373"
+            android:textSize="18sp"
+            android:paddingTop="10dp"
+            android:fontFamily="@font/glacial_indifference_regular"
+            android:textStyle="bold"
+            android:layout_marginStart="20dp"
+            android:layout_toEndOf="@id/cashImage"/>
+
+        <RelativeLayout
+            android:id="@+id/paymentMethodsButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/white"
+            android:paddingTop="10dp"
+            android:layout_marginTop="10dp"
+            android:paddingBottom="10dp">
+
+            <ImageView
+                android:id="@+id/cardIcon"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="15dp"
+                android:background="@drawable/card_icon" />
+
+            <TextView
+                android:id="@+id/paymentMethodsLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Payment Methods"
+                android:layout_centerVertical="true"
+                android:textSize="15sp"
+                android:fontFamily="@font/montserrat"
+                android:textColor="@color/black"
+                android:layout_marginStart="15dp"
+                android:layout_toEndOf="@id/cardIcon"/>
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="15dp"
+                android:background="@drawable/right_next_icon" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/deliveryAddressButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/white"
+            android:paddingTop="10dp"
+            android:layout_marginTop="10dp"
+            android:paddingBottom="10dp">
+
+            <ImageView
+                android:id="@+id/addressIcon"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="15dp"
+                android:background="@drawable/address_icon" />
+
+            <TextView
+                android:id="@+id/addressLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Delivery Address"
+                android:layout_centerVertical="true"
+                android:textSize="15sp"
+                android:fontFamily="@font/montserrat"
+                android:textColor="@color/black"
+                android:layout_marginStart="15dp"
+                android:layout_toEndOf="@id/addressIcon"/>
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="15dp"
+                android:background="@drawable/right_next_icon" />
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+
 </RelativeLayout>

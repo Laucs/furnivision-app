@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFF">
+
+    <RelativeLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="#396057">
+
+        <ImageButton
+            android:id="@+id/backButton"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="15dp"
+            android:background="@drawable/white_back_button"
+            android:contentDescription="Back" />
+
+        <TextView
+            android:id="@+id/editPhoneTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="40dp"
+            android:layout_toEndOf="@id/backButton"
+            android:background="#396057"
+            android:fontFamily="@font/spartan_medium"
+            android:text="Change Phone Number"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/header"
+        android:orientation="vertical"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:background="#fff">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:padding="5dp"
+            android:layout_marginTop="5dp">
+
+            <ImageView
+                android:id="@+id/phoneIcon"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/phone_icon"
+                android:contentDescription="Back"
+                android:layout_marginStart="20dp"/>
+
+            <EditText
+                android:id="@+id/editNameET"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:layout_toEndOf="@id/phoneIcon"
+                android:padding="20dp"
+                android:layout_marginTop="5dp"
+                android:hint="Phone Number"
+                android:inputType="number"/>
+            <TextView
+                android:id="@+id/line"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="#d9d9d9"
+                android:layout_below="@id/editNameET" />
+
+        </RelativeLayout>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+            android:background="@color/primary_darker"
+            android:fontFamily="@font/spartan_medium"
+            android:padding="15dp"
+            android:text="Change"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textAllCaps="false"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

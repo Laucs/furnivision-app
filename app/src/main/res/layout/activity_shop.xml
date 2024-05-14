@@ -5,7 +5,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light_gray">
+    android:background="@color/light_gray"
+    android:scrollbars="vertical"
+    >
 
     <ImageView
         android:layout_width="800dp"
@@ -22,8 +24,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingVertical="30dp"
-        >
+        android:paddingVertical="30dp">
+        
         <ImageView
             android:layout_width="60dp"
             android:layout_height="60dp"
@@ -52,7 +54,7 @@
             android:drawableStart="@drawable/baseline_search_24"
             android:paddingHorizontal="15dp"
             android:paddingVertical="10dp"
-            android:hint="Search store"
+            android:hint="@string/search_store"
             android:fontFamily="@font/glacial_indifference_regular"
             />
     </LinearLayout>
@@ -79,7 +81,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="15dp"
-            android:text="Shop through you favorite stores."
+            android:text="@string/shop_through_you_favorite_stores"
             android:layout_centerHorizontal="true"
             android:fontFamily="@font/montserrat"/>
     </RelativeLayout>
@@ -87,8 +89,8 @@
     <LinearLayout
         android:id="@+id/content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="30dp"
+        android:layout_height="match_parent"
+        android:paddingHorizontal="30dp"
         android:layout_below="@id/sub_header"
         android:orientation="vertical">
         <TextView
@@ -96,7 +98,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="6dp"
-            android:text="Select Shops"
+            android:text="@string/select_shops"
             android:textSize="18sp"
             android:textStyle="bold"/>
         <androidx.recyclerview.widget.RecyclerView

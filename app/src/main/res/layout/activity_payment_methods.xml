@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F4F4F4">
+
+    <RelativeLayout
+        android:id="@+id/accountHeader"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="#396057">
+
+        <ImageButton
+            android:id="@+id/backButton"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="15dp"
+            android:background="@drawable/white_back_button"
+            android:contentDescription="Back" />
+
+        <TextView
+            android:id="@+id/paymentMethodsTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="20dp"
+            android:layout_toEndOf="@id/backButton"
+            android:background="#396057"
+            android:fontFamily="@font/spartan_medium"
+            android:text="Payment Methods"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/currentMethod"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/accountHeader"
+        android:orientation="vertical"
+        android:layout_marginTop="10dp"
+        android:background="#F4F4F4">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Current Method"
+            android:textColor="#737373"
+            android:textSize="18sp"
+            android:paddingTop="10dp"
+            android:fontFamily="@font/glacial_indifference_regular"
+            android:textStyle="bold"
+            android:layout_marginStart="20dp"
+            android:layout_toEndOf="@id/cashImage"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:padding="20dp"
+            android:layout_marginTop="5dp">
+
+            <ImageView
+                android:id="@+id/cashImage"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentStart="true"
+                android:src="@drawable/cash_icon"
+                android:contentDescription="Back"
+                android:layout_marginStart="20dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CASH PAYMENT"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/montserrat"
+                android:textColor="#737373"
+                android:layout_toEndOf="@id/cashImage"
+                android:layout_marginStart="20dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Default Method"
+                android:textColor="#737373"
+                android:textSize="15sp"
+                android:layout_marginTop="20dp"
+                android:paddingTop="10dp"
+                android:fontFamily="@font/montserrat_light"
+                android:textStyle="bold"
+                android:layout_marginStart="20dp"
+                android:layout_toEndOf="@id/cashImage"/>
+
+            <CheckBox
+                android:id="@+id/checkbox1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:textColor="@color/primary_darker"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_marginTop="20dp"
+                android:layout_alignParentEnd="true"
+                android:paddingTop="10dp"
+                android:layout_marginEnd="20dp"/>
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/otherOptions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/currentMethod"
+        android:orientation="vertical"
+        android:layout_marginTop="5dp"
+        android:background="#F4F4F4">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Other Options"
+            android:textColor="#737373"
+            android:textSize="18sp"
+            android:paddingTop="10dp"
+            android:fontFamily="@font/glacial_indifference_regular"
+            android:textStyle="bold"
+            android:layout_marginStart="20dp"
+            android:layout_toEndOf="@id/cashImage"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:padding="20dp"
+            android:layout_marginTop="10dp">
+
+            <ImageView
+                android:id="@+id/imgMethod1"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentStart="true"
+                android:src="@drawable/mastercard_icon"
+                android:contentDescription="Back"
+                android:layout_marginStart="20dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="**** *******5967"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/montserrat"
+                android:textColor="#737373"
+                android:layout_toEndOf="@id/imgMethod1"
+                android:layout_marginStart="20dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Express 09/25"
+                android:textColor="#737373"
+                android:textSize="15sp"
+                android:layout_marginTop="20dp"
+                android:paddingTop="10dp"
+                android:fontFamily="@font/montserrat_light"
+                android:textStyle="bold"
+                android:layout_marginStart="20dp"
+                android:layout_toEndOf="@id/imgMethod1"/>
+
+            <CheckBox
+                android:id="@+id/Checkbox2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:textColor="@color/primary_darker"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_marginTop="20dp"
+                android:layout_alignParentEnd="true"
+                android:paddingTop="10dp"
+                android:layout_marginEnd="20dp"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:padding="20dp"
+            android:layout_marginTop="10dp">
+
+            <ImageView
+                android:id="@+id/imgMethod2"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentStart="true"
+                android:src="@drawable/visa_icon"
+                android:contentDescription="Back"
+                android:layout_marginStart="20dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="**** *******5967"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/montserrat"
+                android:textColor="#737373"
+                android:layout_toEndOf="@id/imgMethod2"
+                android:layout_marginStart="20dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Express 09/25"
+                android:textColor="#737373"
+                android:textSize="15sp"
+                android:layout_marginTop="20dp"
+                android:paddingTop="10dp"
+                android:fontFamily="@font/montserrat_light"
+                android:textStyle="bold"
+                android:layout_marginStart="20dp"
+                android:layout_toEndOf="@id/imgMethod2"/>
+
+            <CheckBox
+                android:id="@+id/Checkbox3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:textColor="@color/primary_darker"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_marginTop="20dp"
+                android:layout_alignParentEnd="true"
+                android:paddingTop="10dp"
+                android:layout_marginEnd="20dp"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:padding="20dp"
+            android:layout_marginTop="10dp">
+
+            <ImageView
+                android:id="@+id/imgMethod3"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentStart="true"
+                android:src="@drawable/paypal_icon"
+                android:contentDescription="Back"
+                android:layout_marginStart="20dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="sample@gmail.com"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/montserrat"
+                android:textColor="#737373"
+                android:layout_toEndOf="@id/imgMethod3"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"/>
+
+
+
+            <CheckBox
+                android:id="@+id/Checkbox4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:textColor="@color/primary_darker"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_marginTop="20dp"
+                android:layout_alignParentEnd="true"
+                android:paddingTop="10dp"
+                android:layout_marginEnd="20dp"/>
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/otherOptions"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="30dp"
+        android:background="@color/primary_darker"
+        android:fontFamily="@font/spartan_medium"
+        android:padding="15dp"
+        android:text="Add Payment Method"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        android:textAllCaps="false"/>
+
+</RelativeLayout>

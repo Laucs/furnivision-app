@@ -17,4 +17,6 @@
     <color name="furni_green_dark2">#1C2920</color>
     <color name="furni_green_dark2_transparent">#A31C2920</color>
     <color name="transparent">#00000000</color>
+    <color name="blue">#459DE4</color>
+    <color name="red">#ff0000</color>
 </resources>

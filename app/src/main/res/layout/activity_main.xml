@@ -17,6 +17,7 @@
             android:layout_height="0dp"
             android:layout_width="match_parent"
             layout="@layout/activity_dashboard"
+            android:layout_marginBottom="30dp"
             android:layout_weight="1"/>
 
         <LinearLayout
@@ -25,7 +26,8 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:background="@color/white"
-            android:padding="6sp"
+            android:elevation="5dp"
+            android:padding="3sp"
             android:gravity="center">
 
             <LinearLayout
@@ -33,12 +35,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginHorizontal="17dp"
-                android:gravity="center">
+                android:gravity="center"
+                android:layout_weight="1">
 
                 <ImageView
                     android:id="@+id/imgHome"
-                    android:layout_width="40sp"
+                    android:layout_width="match_parent"
                     android:layout_height="40sp"
                     android:src="@drawable/home_logo_fill"
                     android:contentDescription="@string/home_image_desc" />
@@ -60,12 +62,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginHorizontal="17dp"
-                android:gravity="center">
+                android:gravity="center"
+                android:layout_weight="1">
 
                 <ImageView
                     android:id="@+id/imgShop"
-                    android:layout_width="40sp"
+                    android:layout_width="match_parent"
                     android:layout_height="40sp"
                     android:src="@drawable/shop_bag_hollow"
                     android:contentDescription="@string/shop_image_desc" />
@@ -87,11 +89,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginHorizontal="17dp"
-                android:gravity="center">
+                android:gravity="center"
+                android:layout_weight="1">
 
                 <ImageView
-                    android:layout_width="40sp"
+                    android:layout_width="match_parent"
                     android:layout_height="40sp"
                     android:src="@drawable/try_ar_logo"
                     android:contentDescription="@string/ar_image_desc" />
@@ -112,11 +114,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginHorizontal="17dp"
-                android:gravity="center">
+                android:gravity="center"
+                android:layout_weight="1">
 
                 <ImageView
-                    android:layout_width="40sp"
+                    android:layout_width="match_parent"
                     android:layout_height="40sp"
                     android:src="@drawable/cart_logo"
                     android:contentDescription="@string/cart_image_desc" />
@@ -139,11 +141,11 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:paddingTop="6dp"
-                android:layout_marginHorizontal="17dp"
-                android:gravity="center">
+                android:gravity="center"
+                android:layout_weight="1">
 
                 <ImageView
-                    android:layout_width="40sp"
+                    android:layout_width="match_parent"
                     android:layout_height="40sp"
                     android:scaleType="fitCenter"
                     android:src="@drawable/profile_logo_outline"
