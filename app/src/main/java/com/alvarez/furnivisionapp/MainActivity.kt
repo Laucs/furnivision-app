@@ -436,8 +436,9 @@ class MainActivity : AppCompatActivity() {
         backButton.setOnClickListener {
             val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
             pageContainer.removeAllViews()
-            pageContainer.addView(activePage?.let { it1 -> layoutInflater.inflate(it1, null) } as RelativeLayout)
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_profile, null) as RelativeLayout)
         }
+        initProfilePage()
     }
 
     fun countFurnitureOccurrences(furnitureArray: Array<String>): HashMap<String, Int> {
