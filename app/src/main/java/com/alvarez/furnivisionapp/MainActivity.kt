@@ -27,6 +27,7 @@ import com.alvarez.furnivisionapp.utils.CameraFunctions
 import com.alvarez.furnivisionapp.utils.CartListAdapter
 import com.alvarez.furnivisionapp.utils.HomePageFunctions
 import com.alvarez.furnivisionapp.utils.ShopListAdapter
+import com.alvarez.furnivisionapp.data.SessionManager
 import com.google.firebase.auth.FirebaseAuth
 import kotlin.math.log
 
@@ -344,6 +345,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun initProfilePage() {
 
+
+        val emailTextView: TextView = findViewById(R.id.email)
+        val userEmail = SessionManager.getUserEmail(this)
+        emailTextView.text = userEmail
+
         val settingsButton: ImageButton = findViewById(R.id.settingsButton)
         val cartButton: ImageButton = findViewById(R.id.cartButton)
         val toPayButton: RelativeLayout = findViewById(R.id.toPayButton)
@@ -353,6 +359,8 @@ class MainActivity : AppCompatActivity() {
         val accountInfoButton: RelativeLayout = findViewById(R.id.accountInfoButton)
         val paymentMethodsButton: RelativeLayout = findViewById(R.id.paymentMethodsButton)
         val deliveryAddressButton: RelativeLayout = findViewById(R.id.deliveryAddressButton)
+
+
 
         // Navigation Logic
         val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
