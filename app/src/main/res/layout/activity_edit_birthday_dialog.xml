@@ -33,36 +33,6 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_below="@id/datePicker">
-
-            <Button
-                android:id="@+id/cancelBtn"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Cancel"
-                android:background="@drawable/gray_button_border"
-                android:textAllCaps="false"
-                android:textSize="20sp"
-                android:layout_marginEnd="8dp" />
-
-            <Button
-                android:id="@+id/deleteBtn"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textColor="@color/primary_darker"
-                android:background="@drawable/gray_button_border"
-                android:textAllCaps="false"
-                android:textSize="20sp"
-                android:text="Submit" />
-
-        </LinearLayout>
-
     </RelativeLayout>
 
 </RelativeLayout>

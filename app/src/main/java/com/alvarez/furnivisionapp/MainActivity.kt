@@ -13,8 +13,10 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.RadioGroup
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -187,10 +189,6 @@ class MainActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
         }
 
-
-
-
-
     }
 
     @SuppressLint("SetTextI18n", "DefaultLocale", "CommitPrefEdits")
@@ -351,7 +349,6 @@ class MainActivity : AppCompatActivity() {
         emailTextView.text = userEmail
 
         val settingsButton: ImageButton = findViewById(R.id.settingsButton)
-        val cartButton: ImageButton = findViewById(R.id.cartButton)
         val toPayButton: RelativeLayout = findViewById(R.id.toPayButton)
         val toShipButton: RelativeLayout = findViewById(R.id.toShipButton)
         val toReceiveButton: RelativeLayout = findViewById(R.id.toReceiveButton)
@@ -410,7 +407,7 @@ class MainActivity : AppCompatActivity() {
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_account, null) as RelativeLayout)
             initBackButton()
-//            initSettingsPage()
+            initProfileEditPage()
         }
 
         paymentMethodsButton.setOnClickListener {
@@ -427,6 +424,7 @@ class MainActivity : AppCompatActivity() {
 //            pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_account, null) as RelativeLayout)
 //            initSettingsPage()
         }
+
     }
 
     fun initSettingsPage(){
@@ -436,6 +434,7 @@ class MainActivity : AppCompatActivity() {
             AuthUtility.signOut(this)
             val intent = Intent(this, LoginRegistrationActivity::class.java)
             startActivity(intent)
+            finish()
         }
     }
 
@@ -444,7 +443,111 @@ class MainActivity : AppCompatActivity() {
         backButton.setOnClickListener {
             val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
             pageContainer.removeAllViews()
-            pageContainer.addView(activePage?.let { it1 -> layoutInflater.inflate(it1, null) } as RelativeLayout)
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_profile, null) as RelativeLayout)
+            initProfilePage()
+        }
+    }
+
+    fun initProfileBackButton(){
+        val backButton: ImageButton = findViewById(R.id.backButton)
+        backButton.setOnClickListener {
+            val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
+            pageContainer.removeAllViews()
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_account, null) as RelativeLayout)
+            initProfileEditPage()
+        }
+    }
+
+    fun initProfileEditPage(){
+        val changeNameButton: RelativeLayout = findViewById(R.id.changeNameButton)
+        val changeBioButton: RelativeLayout = findViewById(R.id.changeBioButton)
+        val changeGenderButton: RelativeLayout = findViewById(R.id.changeGenderButton)
+        val changeBdayButton: RelativeLayout = findViewById(R.id.changeBdayButton)
+        val changePhoneButton: RelativeLayout = findViewById(R.id.changePhoneButton)
+        val changeEmailButton: RelativeLayout = findViewById(R.id.changeEmailButton)
+        val saveButton: ImageButton = findViewById(R.id.applyChangesBtn)
+
+        val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
+
+        changeNameButton.setOnClickListener {
+            activePage = (R.layout.activity_edit_name)
+            pageContainer.removeAllViews()
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_name, null) as RelativeLayout)
+            initProfileBackButton()
+        }
+
+        changeBioButton.setOnClickListener {
+            activePage = (R.layout.activity_edit_bio)
+            pageContainer.removeAllViews()
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_bio, null) as RelativeLayout)
+            initProfileBackButton()
+        }
+
+        changeGenderButton.setOnClickListener {
+            // Inflate the custom layout/view
+            val dialogView = layoutInflater.inflate(R.layout.activity_edit_gender_dialog, null)
+
+            // Build the dialog
+            val dialog = AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setPositiveButton("Confirm") { dialogInterface, which ->
+                    val radioGroup = dialogView.findViewById<RadioGroup>(R.id.genderRadioGroup)
+                    val selectedGenderId = radioGroup.checkedRadioButtonId
+                    val selectedGender = when (selectedGenderId) {
+                        R.id.maleButton -> "Male"
+                        R.id.femaleButton -> "Female"
+                        R.id.otherButton -> "Other"
+                        else -> "Unknown"
+                    }
+                }
+                .setNegativeButton("Cancel") { dialogInterface, which ->
+                    dialogInterface.dismiss()
+                }
+                .create()
+
+            // Show the dialog
+            dialog.show()
+        }
+
+        changeBdayButton.setOnClickListener {
+            // Inflate the custom layout/view
+            val dialogView = layoutInflater.inflate(R.layout.activity_edit_birthday_dialog, null)
+
+            // Build the dialog
+            val dialog = AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setPositiveButton("Confirm") { dialogInterface, which ->
+
+                }
+                .setNegativeButton("Cancel") { dialogInterface, which ->
+                    dialogInterface.dismiss()
+                }
+                .create()
+
+            // Show the dialog
+            dialog.show()
+        }
+
+        changePhoneButton.setOnClickListener {
+            activePage = (R.layout.activity_edit_phone)
+            pageContainer.removeAllViews()
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_phone, null) as RelativeLayout)
+            initProfileBackButton()
+        }
+
+        changeEmailButton.setOnClickListener {
+            activePage = (R.layout.activity_edit_email)
+            pageContainer.removeAllViews()
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_email, null) as RelativeLayout)
+            initBackButton()
+            initProfileBackButton()
+        }
+
+        saveButton.setOnClickListener {
+            activePage = (R.layout.activity_profile)
+            pageContainer.removeAllViews()
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_profile, null) as RelativeLayout)
+            initProfilePage()
         }
     }
 
