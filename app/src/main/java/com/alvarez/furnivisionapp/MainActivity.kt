@@ -437,8 +437,8 @@ class MainActivity : AppCompatActivity() {
             val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_profile, null) as RelativeLayout)
+            initProfilePage()
         }
-        initProfilePage()
     }
 
     fun countFurnitureOccurrences(furnitureArray: Array<String>): HashMap<String, Int> {
