@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.hardware.camera2.CameraManager
 import android.icu.text.DecimalFormat
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.TextureView
@@ -428,7 +429,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         deliveryAddressButton.setOnClickListener {
-            activePage = (R.layout.activity_payment_methods)
+            activePage = (R.layout.activity_delivery_address)
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_delivery_address, null) as RelativeLayout)
             initBackButton()
@@ -438,12 +439,42 @@ class MainActivity : AppCompatActivity() {
 
     fun initSettingsPage(){
         val logoutButton: RelativeLayout = findViewById(R.id.logout_button)
+        val aboutButton: RelativeLayout = findViewById(R.id.aboutButton)
+        val rateUsButton: RelativeLayout = findViewById(R.id.rateUsButton)
+
+        initBackButton()
+        // Navigation Logic
+        val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
 
         logoutButton.setOnClickListener {
             AuthUtility.signOut(this)
             val intent = Intent(this, LoginRegistrationActivity::class.java)
             startActivity(intent)
             finish()
+        }
+        aboutButton.setOnClickListener {
+            activePage = (R.layout.activity_about)
+            pageContainer.removeAllViews()
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_about, null) as RelativeLayout)
+            initAboutPage()
+
+        }
+        rateUsButton.setOnClickListener {
+            try {
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://search?q=")))
+            } catch (e: android.content.ActivityNotFoundException) {
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store")))
+            }
+        }
+    }
+
+    fun initAboutPage(){
+        val backButton: ImageButton = findViewById(R.id.backButton)
+        backButton.setOnClickListener {
+            val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
+            pageContainer.removeAllViews()
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_settings, null) as RelativeLayout)
+            initSettingsPage()
         }
     }
 
