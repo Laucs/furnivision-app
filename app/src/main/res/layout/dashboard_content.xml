@@ -30,8 +30,10 @@
                 android:id="@+id/blue_sofa100"
                 android:layout_width="180dp"
                 android:layout_height="180dp"
+                android:layout_margin="10dp"
                 app:contentPadding="10dp"
                 app:cardCornerRadius="10sp"
+                app:cardElevation="5dp"
                 android:layout_marginEnd="15dp">
 
                 <RelativeLayout
@@ -119,8 +121,10 @@
                 android:id="@+id/yellow_sofa100"
                 android:layout_width="180dp"
                 android:layout_height="180dp"
+                android:layout_margin="10dp"
                 app:contentPadding="10dp"
                 app:cardCornerRadius="10sp"
+                app:cardElevation="5dp"
                 android:layout_marginEnd="15dp">
 
                 <RelativeLayout
@@ -208,8 +212,10 @@
                 android:id="@+id/yellow_sofa101"
                 android:layout_width="180dp"
                 android:layout_height="180dp"
+                android:layout_margin="10dp"
                 app:contentPadding="10dp"
                 app:cardCornerRadius="10sp"
+                app:cardElevation="5dp"
                 android:layout_marginEnd="15dp">
 
                 <RelativeLayout
@@ -334,7 +340,9 @@
                 android:id="@+id/white_chair100"
                 android:layout_width="180dp"
                 android:layout_height="130dp"
+                android:layout_margin="10dp"
                 app:contentPadding="10dp"
+                android:elevation="10dp"
                 app:cardCornerRadius="10sp"
                 android:layout_marginEnd="15dp">
 
@@ -425,7 +433,9 @@
                 android:id="@+id/lgray_chair100"
                 android:layout_width="180dp"
                 android:layout_height="130dp"
+                android:layout_margin="10dp"
                 app:contentPadding="10dp"
+                android:elevation="10dp"
                 app:cardCornerRadius="10sp"
                 android:layout_marginEnd="15dp">
 
@@ -515,7 +525,9 @@
                 android:id="@+id/lgray_chair101"
                 android:layout_width="180dp"
                 android:layout_height="130dp"
+                android:layout_margin="10dp"
                 app:contentPadding="10dp"
+                android:elevation="10dp"
                 app:cardCornerRadius="10sp"
                 android:layout_marginEnd="15dp">
 

@@ -59,8 +59,8 @@
     <string name="back_button">back button</string>
     <string name="add_button">add button</string>
     <string name="furniture_selected">furniture selected</string>
-    <string name="stock">Stocks:</string>
-    <string name="colors">Colors:</string>
+    <string name="stock">Available in Stocks:</string>
+    <string name="colors">Available Colors:</string>
     <string name="dimensions">Dimensions:</string>
     <string name="price">Price:</string>
     <string name="description">Description:</string>
@@ -95,7 +95,7 @@
     <string name="place_order">Place Order</string>
     <string name="search_store">Search store</string>
     <string name="select_shops">Select Shops</string>
-    <string name="shop_through_you_favorite_stores">Shop through you favorite stores.</string>
+    <string name="slogan">Shop through your favorite stores</string>
     <string name="next">next</string>
     <string name="furniture_image">Furniture Image</string>
     <string name="default_web_client_id">AIzaSyDWCkprg2H2rXRlVhNe4fwSu1k-3mxaWa0</string>
