@@ -247,7 +247,6 @@ class MainActivity : AppCompatActivity() {
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_pay, null) as RelativeLayout)
             initBackButton()
-//            initSettingsPage()
         }
 
         toShipButton.setOnClickListener {
@@ -255,7 +254,6 @@ class MainActivity : AppCompatActivity() {
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_ship, null) as RelativeLayout)
             initBackButton()
-//            initSettingsPage()
         }
 
         toReceiveButton.setOnClickListener {
@@ -263,7 +261,6 @@ class MainActivity : AppCompatActivity() {
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_receive, null) as RelativeLayout)
             initBackButton()
-//            initSettingsPage()
         }
 
         toRateButton.setOnClickListener {
@@ -271,7 +268,6 @@ class MainActivity : AppCompatActivity() {
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_rate, null) as RelativeLayout)
             initBackButton()
-//            initSettingsPage()
         }
 
         accountInfoButton.setOnClickListener {
@@ -287,14 +283,13 @@ class MainActivity : AppCompatActivity() {
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_payment_methods, null) as RelativeLayout)
             initBackButton()
-//            initSettingsPage()
         }
 
         deliveryAddressButton.setOnClickListener {
-//            activePage = (R.layout.activity_)
-//            pageContainer.removeAllViews()
-//            pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_account, null) as RelativeLayout)
-//            initSettingsPage()
+            activePage = (R.layout.activity_payment_methods)
+            pageContainer.removeAllViews()
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_delivery_address, null) as RelativeLayout)
+            initBackButton()
         }
 
     }
