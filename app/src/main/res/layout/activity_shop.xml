@@ -6,117 +6,126 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F4F4F4"
-    android:scrollbars="vertical"
     >
 
-    <ImageView
-        android:layout_width="800dp"
-        android:layout_height="400dp"
-        android:layout_marginTop="-230dp"
-        android:scaleType="fitXY"
-        android:scaleX="7"
-        android:scaleY="-1.4"
-        android:src="@drawable/bg_blob"
-        android:contentDescription="@string/design_desc"/>
-
-    <LinearLayout
-        android:id="@+id/header"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingVertical="30dp">
-        
-        <ImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:src="@drawable/furni_logo"
-            android:layout_gravity="center_horizontal"
-            />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="7dp"
-            android:text="@string/app_name"
-            android:textColor="@color/white"
-            android:textSize="25sp"
-            android:fontFamily="@font/glacial_indifference_regular"
-            android:letterSpacing="0.3"
-
-            />
-
-        <EditText
+        android:layout_height="wrap_content">
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/search_style"
-            android:layout_marginHorizontal="50dp"
-            android:layout_marginTop="30dp"
-            android:drawableStart="@drawable/baseline_search_24"
-            android:paddingHorizontal="15dp"
-            android:paddingVertical="10dp"
-            android:hint="@string/search_store"
-            android:fontFamily="@font/glacial_indifference_regular"
-            />
-    </LinearLayout>
-    <RelativeLayout
-        android:id="@+id/sub_header"
-        android:layout_width="match_parent"
-        android:layout_height="130dp"
-        android:layout_marginBottom="20dp"
-        android:background="@drawable/corner_radius"
-        android:paddingHorizontal="18dp"
-        android:layout_below="@id/header">
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:cardCornerRadius="15dp"
             >
             <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="800dp"
+                android:layout_height="400dp"
+                android:layout_marginTop="-230dp"
                 android:scaleType="fitXY"
-                android:src="@drawable/ads_background"
-                />
-        </androidx.cardview.widget.CardView>
-        <TextView
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_margin="25dp"
-            android:elevation="20dp"
-            android:fontFamily="@font/quicksand"
-            android:textAlignment="center"
-            android:textStyle="bold"
-            android:textSize="15sp"
-            android:letterSpacing="0.3"
-            android:textColor="@color/white"
-            android:text="@string/shop_through_you_favorite_stores"
-            />
-    </RelativeLayout>
+                android:scaleX="7"
+                android:scaleY="-1.4"
+                android:src="@drawable/bg_blob"
+                android:contentDescription="@string/design_desc"/>
 
-    <LinearLayout
-        android:id="@+id/content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingHorizontal="30dp"
-        android:layout_below="@id/sub_header"
-        android:orientation="vertical">
-        <TextView
-            android:id="@+id/content_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="6dp"
-            android:text="@string/select_shops"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@color/furni_green"/>
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/shop_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/light_gray"
-            />
+            <LinearLayout
+                android:id="@+id/header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingVertical="30dp">
 
-    </LinearLayout>
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/furni_logo"
+                    android:layout_gravity="center_horizontal"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="7dp"
+                    android:text="@string/app_name"
+                    android:textColor="@color/white"
+                    android:textSize="25sp"
+                    android:fontFamily="@font/glacial_indifference_regular"
+                    android:letterSpacing="0.3"
+
+                    />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/search_style"
+                    android:layout_marginHorizontal="50dp"
+                    android:layout_marginTop="30dp"
+                    android:drawableStart="@drawable/baseline_search_24"
+                    android:paddingHorizontal="15dp"
+                    android:paddingVertical="10dp"
+                    android:hint="@string/search_store"
+                    android:fontFamily="@font/glacial_indifference_regular"
+                    />
+            </LinearLayout>
+            <RelativeLayout
+                android:id="@+id/sub_header"
+                android:layout_width="match_parent"
+                android:layout_height="130dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/corner_radius"
+                android:paddingHorizontal="18dp"
+                android:layout_below="@id/header">
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:cardCornerRadius="15dp"
+                    >
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/ads_background"
+                        />
+                </androidx.cardview.widget.CardView>
+                <TextView
+                    android:layout_width="220dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_margin="25dp"
+                    android:elevation="20dp"
+                    android:fontFamily="@font/quicksand"
+                    android:textAlignment="center"
+                    android:textStyle="bold"
+                    android:textSize="15sp"
+                    android:letterSpacing="0.3"
+                    android:textColor="@color/white"
+                    android:text="@string/slogan"
+                    />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="30dp"
+                android:layout_below="@id/sub_header"
+                android:layout_marginBottom="30dp"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/content_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"
+                    android:text="@string/select_shops"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/furni_green"/>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/shop_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="none"
+                    />
+
+            </LinearLayout>
+        </RelativeLayout>
+    </ScrollView>
 
 </RelativeLayout>
