@@ -60,10 +60,7 @@
                 android:adjustViewBounds="true"
                 android:scaleType="fitXY"
                 android:src="@drawable/furni_logo"
-                android:contentDescription="@string/furnivision_logo_desc">
-
-
-            </ImageView>
+                android:contentDescription="@string/furnivision_logo_desc" />
 
             <TextView
                 android:layout_width="match_parent"

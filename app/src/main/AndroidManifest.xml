@@ -20,6 +20,9 @@
         android:theme="@style/Theme.Design.Light.NoActionBar"
         tools:targetApi="31">
         <activity
+            android:name=".TEST"
+            android:exported="false" />
+        <activity
             android:name=".LoginRegistrationActivity"
             android:exported="true">
             <intent-filter>
@@ -30,9 +33,11 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"></activity>
 
-        </activity>
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>
