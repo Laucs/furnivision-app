@@ -61,6 +61,7 @@
                     android:paddingHorizontal="15dp"
                     android:paddingVertical="10dp"
                     android:hint="@string/search_store"
+                    android:inputType="text"
                     android:fontFamily="@font/glacial_indifference_regular"
                     />
             </LinearLayout>

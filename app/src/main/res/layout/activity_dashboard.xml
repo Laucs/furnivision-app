@@ -81,6 +81,7 @@
                     android:drawableStart="@drawable/baseline_search_24"
                     android:hint="Search furniture"
                     android:fontFamily="@font/quicksand"
+                    android:inputType="text"
                     />
 
 
