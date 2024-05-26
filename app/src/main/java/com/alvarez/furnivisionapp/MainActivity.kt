@@ -802,6 +802,9 @@ class MainActivity : AppCompatActivity() {
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_phone, null) as RelativeLayout)
             initProfileBackButton()
+            initEditPhonePage()
+
+
         }
 
         changeEmailButton.setOnClickListener {
@@ -1092,11 +1095,15 @@ class MainActivity : AppCompatActivity() {
                         for (document in querySnapshot.documents) {
                             document.reference.update(userData as Map<String, Any>)
                                 .addOnSuccessListener {
-                                    Toast.makeText(this, "Name updated successfully.", Toast.LENGTH_SHORT).show()
-                                    val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
-                                    pageContainer.removeAllViews()
-                                    pageContainer.addView(layoutInflater.inflate(R.layout.activity_profile, null) as RelativeLayout)
-                                    initProfilePage()
+                                    if (newName != document.getString("name")) {
+                                        Toast.makeText(this, "Name updated successfully.", Toast.LENGTH_SHORT).show()
+                                        val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
+                                        pageContainer.removeAllViews()
+                                        pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_account, null) as RelativeLayout)
+                                        initProfileEditPage()
+                                    } else {
+                                        Toast.makeText(this, "No new changes to the name.", Toast.LENGTH_SHORT).show()
+                                    }
                                 }
                                 .addOnFailureListener { e ->
                                     Toast.makeText(this, "Failed to update name: ${e.message}", Toast.LENGTH_SHORT).show()
@@ -1121,44 +1128,118 @@ class MainActivity : AppCompatActivity() {
             editEmailET.text = email
 
             changeEmailButton.setOnClickListener {
-                val newEmail = editEmailET.text.toString() // Get the updated email from the TextView
-                val firestore = FirebaseFirestore.getInstance()
+                val newEmail = editEmailET.text.toString().trim() // Get the updated email from the TextView and remove leading/trailing whitespaces
 
-                val userData = hashMapOf(
-                    "email" to newEmail
-                )
+                if (isEmailValid(newEmail)) {
+                    if (newEmail != email) {
+                        val firestore = FirebaseFirestore.getInstance()
 
-                firestore.collection("users")
-                    .whereEqualTo("email", email)
-                    .get()
-                    .addOnSuccessListener { querySnapshot ->
-                        for (document in querySnapshot.documents) {
-                            document.reference.update(userData as Map<String, Any>)
-                                .addOnSuccessListener {
-                                    Toast.makeText(this, "Email updated successfully.", Toast.LENGTH_SHORT).show()
-                                    // Update the email in the session manager
-                                    SessionManager.setUserEmail(this, newEmail)
-                                    val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
-                                    pageContainer.removeAllViews()
-                                    pageContainer.addView(layoutInflater.inflate(R.layout.activity_profile, null) as RelativeLayout)
-                                    initProfilePage()
+                        val userData = hashMapOf(
+                            "email" to newEmail
+                        )
+
+                        firestore.collection("users")
+                            .whereEqualTo("email", email)
+                            .get()
+                            .addOnSuccessListener { querySnapshot ->
+                                for (document in querySnapshot.documents) {
+                                    document.reference.update(userData as Map<String, Any>)
+                                        .addOnSuccessListener {
+                                            Toast.makeText(this, "Email updated successfully.", Toast.LENGTH_SHORT).show()
+                                            // Update the email in the session manager
+                                            SessionManager.setUserEmail(this, newEmail)
+                                            val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
+                                            pageContainer.removeAllViews()
+                                            pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_account, null) as RelativeLayout)
+                                            initProfileEditPage()
+                                        }
+                                        .addOnFailureListener { e ->
+                                            Toast.makeText(this, "Failed to update email: ${e.message}", Toast.LENGTH_SHORT).show()
+                                        }
                                 }
-                                .addOnFailureListener { e ->
-                                    Toast.makeText(this, "Failed to update email: ${e.message}", Toast.LENGTH_SHORT).show()
-                                }
-                        }
+                            }
+                            .addOnFailureListener { e ->
+                                Toast.makeText(this, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
+                            }
+                    } else {
+                        Toast.makeText(this, "No new changes to the email.", Toast.LENGTH_SHORT).show()
                     }
-                    .addOnFailureListener { e ->
-                        Toast.makeText(this, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
-                    }
+                } else {
+                    Toast.makeText(this, "Invalid email format. Please enter a valid email.", Toast.LENGTH_SHORT).show()
+                }
             }
         } else {
             Log.e("GetUser", "Invalid email: $email")
         }
     }
 
+    private fun isEmailValid(email: String): Boolean {
+        val pattern = Regex("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")
+        return pattern.matches(email)
+    }
 
+    fun initEditPhonePage() {
+        val email = SessionManager.getUserEmail(this)
+        val editPhoneET: EditText = findViewById(R.id.editPhoneET)
+        val changePhoneButton: Button = findViewById(R.id.changePhoneButton)
 
+        if (email != null) {
+            val firestore = FirebaseFirestore.getInstance()
+
+            firestore.collection("users")
+                .whereEqualTo("email", email)
+                .get()
+                .addOnSuccessListener { querySnapshot ->
+                    if (!querySnapshot.isEmpty) {
+                        val document = querySnapshot.documents.first()
+                        val phoneNum = document.getString("phoneNumber")
+                        if (phoneNum != null) {
+                            editPhoneET.setText(phoneNum)
+                        }
+
+                        changePhoneButton.setOnClickListener {
+                            val newPhoneNumber = editPhoneET.text.toString().trim() // Get the updated phone number from the EditText
+                            val isValidPhoneNumber = validatePhoneNumber(newPhoneNumber)
+
+                            if (isValidPhoneNumber) {
+                                if (newPhoneNumber != phoneNum) {
+                                    val userData = hashMapOf(
+                                        "phoneNumber" to newPhoneNumber
+                                    )
+
+                                    document.reference.update(userData as Map<String, Any>)
+                                        .addOnSuccessListener {
+                                            Toast.makeText(this, "Phone number updated successfully.", Toast.LENGTH_SHORT).show()
+                                            val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
+                                            pageContainer.removeAllViews()
+                                            pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_account, null) as RelativeLayout)
+                                            initProfileEditPage()
+                                        }
+                                        .addOnFailureListener { e ->
+                                            Toast.makeText(this, "Failed to update phone number: ${e.message}", Toast.LENGTH_SHORT).show()
+                                        }
+                                } else {
+                                    Toast.makeText(this, "No new changes to the phone number.", Toast.LENGTH_SHORT).show()
+                                }
+                            } else {
+                                Toast.makeText(this, "Invalid phone number format. Please enter a valid phone number.", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    } else {
+                        Log.e("GetUser", "No document found for email: $email")
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Log.e("GetUser", "Error getting phone number: ${e.message}", e)
+                }
+        } else {
+            Log.e("GetUser", "Invalid email: $email")
+        }
+    }
+    private fun validatePhoneNumber(phoneNumber: String): Boolean {
+        val phonePattern = Regex("[0-9]{10}") // Assumes a 10-digit phone number format
+        return phonePattern.matches(phoneNumber)
+    }
     fun countFurnitureOccurrences(furnitureArray: Array<String>): HashMap<String, Int> {
         val furnitureCountMap = HashMap<String, Int>()
 
