@@ -329,6 +329,7 @@ class MainActivity : AppCompatActivity() {
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_delivery_address, null) as RelativeLayout)
             initBackButton()
         }
+        refreshProfile()
     }
 
     fun initToPayPage() {
@@ -664,6 +665,24 @@ class MainActivity : AppCompatActivity() {
 
         val profilePic = findViewById<ImageButton>(R.id.profilePic)
 
+        val firestore = FirebaseFirestore.getInstance()
+        firestore.collection("users")
+            .whereEqualTo("email", email)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                if (!querySnapshot.isEmpty) {
+                    val document = querySnapshot.documents.first()
+                    val image = document.getString("image")
+                    if (image != null) {
+                        Glide.with(this)
+                            .load(image)
+                            .into(profilePic)
+                    }
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.w("TAG", "Error getting user name", e)
+            }
         profilePic.setOnClickListener {
             val email = SessionManager.getUserEmail(this)
 
@@ -676,6 +695,31 @@ class MainActivity : AppCompatActivity() {
 
 
     }
+
+    fun refreshProfile(){
+        val profilePic = findViewById<ImageButton>(R.id.profilePic)
+        val email = SessionManager.getUserEmail(this)
+        val firestore = FirebaseFirestore.getInstance()
+
+        firestore.collection("users")
+            .whereEqualTo("email", email)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                if (!querySnapshot.isEmpty) {
+                    val document = querySnapshot.documents.first()
+                    val image = document.getString("image")
+                    if (image != null) {
+                        Glide.with(this)
+                            .load(image)
+                            .into(profilePic)
+                    }
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.w("TAG", "Error getting user name", e)
+            }
+    }
+
 
     fun showImageSelectionDialog(userEmail: String) {
         val images = arrayOf(
@@ -792,6 +836,7 @@ class MainActivity : AppCompatActivity() {
                         .update(selectedImageData)
                         .addOnSuccessListener {
                             Toast.makeText(this, "Image saved successfully.", Toast.LENGTH_SHORT).show()
+                            refreshProfile()
                         }
                         .addOnFailureListener { e ->
                             Toast.makeText(this, "Failed to save image: ${e.message}", Toast.LENGTH_SHORT).show()
