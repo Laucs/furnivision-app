@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
         // Navigation Buttons
         val homeButton: LinearLayout = findViewById(R.id.home_menu)
         val shopButton: LinearLayout = findViewById(R.id.shop_menu)
-        val cameraButton: LinearLayout = findViewById(R.id.ar_menu)
+        val cameraButton: LinearLayout = findViewById(R.id.try_ar_menu)
         val cartButton: LinearLayout = findViewById(R.id.cart_menu)
         val profileButton: LinearLayout = findViewById(R.id.profile_menu)
 
@@ -428,7 +428,6 @@ class MainActivity : AppCompatActivity() {
         val changeEmailButton: RelativeLayout = findViewById(R.id.changeEmailButton)
         val saveButton: ImageButton = findViewById(R.id.applyChangesBtn)
         val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
-
         val nameTV: TextView = findViewById(R.id.nameTV)
         val emailTV: TextView = findViewById(R.id.emailTV)
         val email = SessionManager.getUserEmail(this)
