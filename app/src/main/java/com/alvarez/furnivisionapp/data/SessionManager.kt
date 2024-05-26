@@ -22,4 +22,9 @@ object SessionManager {
         sharedPreferences.edit().clear().apply()
     }
 
+    fun setUserEmail(context: Context, email: String) {
+        val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        sharedPreferences.edit().putString(KEY_EMAIL, email).apply()
+    }
+
 }

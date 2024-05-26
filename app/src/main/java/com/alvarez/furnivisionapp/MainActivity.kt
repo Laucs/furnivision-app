@@ -48,6 +48,7 @@ import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.bumptech.glide.Glide
+import com.google.firebase.firestore.SetOptions
 
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -722,6 +723,9 @@ class MainActivity : AppCompatActivity() {
         val saveButton: ImageButton = findViewById(R.id.applyChangesBtn)
         val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
         val nameTV: TextView = findViewById(R.id.nameTV)
+        val bdayTV: TextView = findViewById(R.id.bdayTV)
+        val genderTV: TextView = findViewById(R.id.genderTV)
+        val phoneTV: TextView = findViewById(R.id.phoneTV)
         val emailTV: TextView = findViewById(R.id.emailTV)
         val email = SessionManager.getUserEmail(this)
 
@@ -764,6 +768,36 @@ class MainActivity : AppCompatActivity() {
                         R.id.otherButton -> "Other"
                         else -> "Unknown"
                     }
+
+                    val firestore = FirebaseFirestore.getInstance()
+
+                    val userData = hashMapOf(
+                        "gender" to selectedGender
+                    )
+
+                    val email = SessionManager.getUserEmail(this)
+                    if (email != null) {
+                        firestore.collection("users")
+                            .whereEqualTo("email", email)
+                            .get()
+                            .addOnSuccessListener { querySnapshot ->
+                                for (document in querySnapshot.documents) {
+                                    document.reference.update(userData as Map<String, Any>)
+                                        .addOnSuccessListener {
+                                            Toast.makeText(this, "Gender updated successfully.", Toast.LENGTH_SHORT).show()
+                                            genderTV.text = selectedGender // Display the selected gender in the genderTV TextView
+                                        }
+                                        .addOnFailureListener { e ->
+                                            Toast.makeText(this, "Failed to update gender: ${e.message}", Toast.LENGTH_SHORT).show()
+                                        }
+                                }
+                            }
+                            .addOnFailureListener { e ->
+                                Toast.makeText(this, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
+                            }
+                    } else {
+                        Log.e("GetUser", "Invalid email: $email")
+                    }
                 }
                 .setNegativeButton("Cancel") { dialogInterface, which ->
                     dialogInterface.dismiss()
@@ -778,14 +812,79 @@ class MainActivity : AppCompatActivity() {
             // Inflate the custom layout/view
             val dialogView = layoutInflater.inflate(R.layout.activity_edit_birthday_dialog, null)
 
+            // Declare the datePicker variable
+            val datePicker = dialogView.findViewById<DatePicker>(R.id.datePicker)
+
+            // Retrieve the saved birthday from the database
+            val firestore = FirebaseFirestore.getInstance()
+            val email = SessionManager.getUserEmail(this)
+            if (email != null) {
+                firestore.collection("users")
+                    .whereEqualTo("email", email)
+                    .get()
+                    .addOnSuccessListener { querySnapshot ->
+                        if (!querySnapshot.isEmpty) {
+                            val document = querySnapshot.documents.first()
+                            val savedBirthday = document.getString("birthday")
+                            if (savedBirthday != null) {
+                                val savedBirthdayParts = savedBirthday.split("/")
+                                if (savedBirthdayParts.size == 3) {
+                                    val savedMonth = savedBirthdayParts[0].toInt()
+                                    val savedDay = savedBirthdayParts[1].toInt()
+                                    val savedYear = savedBirthdayParts[2].toInt()
+
+                                    // Set the initial date on the DatePicker
+                                    datePicker.updateDate(savedYear, savedMonth - 1, savedDay)
+                                }
+                            }
+                        }
+                    }
+                    .addOnFailureListener { e ->
+                        Log.e("GetUser", "Error retrieving birthday: ${e.message}", e)
+                    }
+            } else {
+                Log.e("GetUser", "Invalid email: $email")
+            }
+
             // Build the dialog
             val dialog = AlertDialog.Builder(this)
                 .setView(dialogView)
                 .setPositiveButton("Confirm") { dialogInterface, which ->
-                    val datePicker = dialogView.findViewById<DatePicker>(R.id.datePicker)
-                    val year = datePicker.year
-                    val month = datePicker.month
+                    val month = datePicker.month + 1 // DatePicker months are zero-based, so we add 1 to get the correct month
                     val day = datePicker.dayOfMonth
+                    val year = datePicker.year % 100 // Get the last two digits of the year
+
+                    val birthday = String.format("%02d/%02d/%02d", month, day, year) // Format the birthday as "mm/dd/yy"
+
+                    val firestore = FirebaseFirestore.getInstance()
+
+                    val userData = hashMapOf(
+                        "birthday" to birthday
+                    )
+
+                    val email = SessionManager.getUserEmail(this)
+                    if (email != null) {
+                        firestore.collection("users")
+                            .whereEqualTo("email", email)
+                            .get()
+                            .addOnSuccessListener { querySnapshot ->
+                                for (document in querySnapshot.documents) {
+                                    document.reference.update(userData as Map<String, Any>)
+                                        .addOnSuccessListener {
+                                            Toast.makeText(this, "Birthday updated successfully.", Toast.LENGTH_SHORT).show()
+                                            bdayTV.text = birthday // Display the birthday in the bdayTV TextView
+                                        }
+                                        .addOnFailureListener { e ->
+                                            Toast.makeText(this, "Failed to update birthday: ${e.message}", Toast.LENGTH_SHORT).show()
+                                        }
+                                }
+                            }
+                            .addOnFailureListener { e ->
+                                Toast.makeText(this, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
+                            }
+                    } else {
+                        Log.e("GetUser", "Invalid email: $email")
+                    }
                 }
                 .setNegativeButton("Cancel") { dialogInterface, which ->
                     dialogInterface.dismiss()
@@ -801,6 +900,9 @@ class MainActivity : AppCompatActivity() {
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_phone, null) as RelativeLayout)
             initProfileBackButton()
+            initEditPhonePage()
+
+
         }
 
         changeEmailButton.setOnClickListener {
@@ -834,7 +936,29 @@ class MainActivity : AppCompatActivity() {
                             .load(image)
                             .into(profilePic)
                     }
+                    val phoneNum = document.getString("phoneNumber")
+                    if (phoneNum != null) {
+                        phoneTV.text = "0$phoneNum" // Display the phone number in the phoneTV TextView
+                    }
+                    val gender = document.getString("gender")
+                    if (gender != null) {
+                        genderTV.text = gender // Display the saved gender in the genderTV TextView
+                    }
+                    val birthday = document.getString("birthday")
+                    if (birthday != null) {
+                        val birthdayParts = birthday.split("/")
+                        if (birthdayParts.size == 3) {
+                            val month = birthdayParts[0].toInt()
+                            val day = birthdayParts[1].toInt()
+                            val year = birthdayParts[2].toInt()
+                            val formattedBirthday = String.format("%02d/%02d/%02d", month, day, year) // Format the saved birthday as "mm/dd/yy"
+                            bdayTV.text = formattedBirthday // Display the saved birthday in the bdayTV TextView
+                        }
+                    }
                 }
+            }
+            .addOnFailureListener { e ->
+                Log.e("GetUser", "Error getting user details: ${e.message}", e)
             }
             .addOnFailureListener { e ->
                 Log.w("TAG", "Error getting user name", e)
@@ -1061,42 +1185,181 @@ class MainActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    fun initEditNamePage(){
+    fun initEditNamePage() {
         val email = SessionManager.getUserEmail(this)
-        val editNameET: TextView = findViewById(R.id.editNameET)
+        val editNameET: EditText = findViewById(R.id.editNameET)
+        val applyChangesBtn: ImageButton = findViewById(R.id.applyChangesBtn)
+
         if (email != null) {
             AuthUtility.getUserName(email,
                 onSuccess = { name ->
-                    editNameET.text = name
+                    editNameET.setText(name) // Set the user's current name in the EditText
                 },
                 onFailure = {
                     Log.e("GetUser", "Failed to retrieve user name")
                 }
             )
+
+            applyChangesBtn.setOnClickListener {
+                val newName = editNameET.text.toString() // Get the updated name from the EditText
+                val firestore = FirebaseFirestore.getInstance()
+
+                val userData = hashMapOf(
+                    "name" to newName
+                )
+
+                firestore.collection("users")
+                    .whereEqualTo("email", email)
+                    .get()
+                    .addOnSuccessListener { querySnapshot ->
+                        for (document in querySnapshot.documents) {
+                            document.reference.update(userData as Map<String, Any>)
+                                .addOnSuccessListener {
+                                    if (newName != document.getString("name")) {
+                                        Toast.makeText(this, "Name updated successfully.", Toast.LENGTH_SHORT).show()
+                                        val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
+                                        pageContainer.removeAllViews()
+                                        pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_account, null) as RelativeLayout)
+                                        initProfileEditPage()
+                                    } else {
+                                        Toast.makeText(this, "No new changes to the name.", Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                                .addOnFailureListener { e ->
+                                    Toast.makeText(this, "Failed to update name: ${e.message}", Toast.LENGTH_SHORT).show()
+                                }
+                        }
+                    }
+                    .addOnFailureListener { e ->
+                        Toast.makeText(this, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
+                    }
+            }
         } else {
             Log.e("GetUser", "Invalid email: $email")
         }
     }
 
-    fun initEditEmailPage(){
+    fun initEditEmailPage() {
         val email = SessionManager.getUserEmail(this)
         val editEmailET: TextView = findViewById(R.id.editEmailET)
+        val changeEmailButton: Button = findViewById(R.id.changeEmailButton)
+
         if (email != null) {
-            AuthUtility.getUserName(email,
-                onSuccess = { name ->
-                    editEmailET.text = email
-                },
-                onFailure = {
-                    Log.e("GetUser", "Failed to retrieve user name")
+            editEmailET.text = email
+
+            changeEmailButton.setOnClickListener {
+                val newEmail = editEmailET.text.toString().trim() // Get the updated email from the TextView and remove leading/trailing whitespaces
+
+                if (isEmailValid(newEmail)) {
+                    if (newEmail != email) {
+                        val firestore = FirebaseFirestore.getInstance()
+
+                        val userData = hashMapOf(
+                            "email" to newEmail
+                        )
+
+                        firestore.collection("users")
+                            .whereEqualTo("email", email)
+                            .get()
+                            .addOnSuccessListener { querySnapshot ->
+                                for (document in querySnapshot.documents) {
+                                    document.reference.update(userData as Map<String, Any>)
+                                        .addOnSuccessListener {
+                                            Toast.makeText(this, "Email updated successfully.", Toast.LENGTH_SHORT).show()
+                                            // Update the email in the session manager
+                                            SessionManager.setUserEmail(this, newEmail)
+                                            val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
+                                            pageContainer.removeAllViews()
+                                            pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_account, null) as RelativeLayout)
+                                            initProfileEditPage()
+                                        }
+                                        .addOnFailureListener { e ->
+                                            Toast.makeText(this, "Failed to update email: ${e.message}", Toast.LENGTH_SHORT).show()
+                                        }
+                                }
+                            }
+                            .addOnFailureListener { e ->
+                                Toast.makeText(this, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
+                            }
+                    } else {
+                        Toast.makeText(this, "No new changes to the email.", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Toast.makeText(this, "Invalid email format. Please enter a valid email.", Toast.LENGTH_SHORT).show()
                 }
-            )
+            }
         } else {
             Log.e("GetUser", "Invalid email: $email")
         }
     }
 
+    private fun isEmailValid(email: String): Boolean {
+        val pattern = Regex("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")
+        return pattern.matches(email)
+    }
 
+    fun initEditPhonePage() {
+        val email = SessionManager.getUserEmail(this)
+        val editPhoneET: EditText = findViewById(R.id.editPhoneET)
+        val changePhoneButton: Button = findViewById(R.id.changePhoneButton)
 
+        if (email != null) {
+            val firestore = FirebaseFirestore.getInstance()
+
+            firestore.collection("users")
+                .whereEqualTo("email", email)
+                .get()
+                .addOnSuccessListener { querySnapshot ->
+                    if (!querySnapshot.isEmpty) {
+                        val document = querySnapshot.documents.first()
+                        val phoneNum = document.getString("phoneNumber")
+                        if (phoneNum != null) {
+                            editPhoneET.setText(phoneNum)
+                        }
+
+                        changePhoneButton.setOnClickListener {
+                            val newPhoneNumber = editPhoneET.text.toString().trim() // Get the updated phone number from the EditText
+                            val isValidPhoneNumber = validatePhoneNumber(newPhoneNumber)
+
+                            if (isValidPhoneNumber) {
+                                if (newPhoneNumber != phoneNum) {
+                                    val userData = hashMapOf(
+                                        "phoneNumber" to newPhoneNumber
+                                    )
+
+                                    document.reference.update(userData as Map<String, Any>)
+                                        .addOnSuccessListener {
+                                            Toast.makeText(this, "Phone number updated successfully.", Toast.LENGTH_SHORT).show()
+                                            val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
+                                            pageContainer.removeAllViews()
+                                            pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_account, null) as RelativeLayout)
+                                            initProfileEditPage()
+                                        }
+                                        .addOnFailureListener { e ->
+                                            Toast.makeText(this, "Failed to update phone number: ${e.message}", Toast.LENGTH_SHORT).show()
+                                        }
+                                } else {
+                                    Toast.makeText(this, "No new changes to the phone number.", Toast.LENGTH_SHORT).show()
+                                }
+                            } else {
+                                Toast.makeText(this, "Invalid phone number format. Please enter a valid phone number.", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    } else {
+                        Log.e("GetUser", "No document found for email: $email")
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Log.e("GetUser", "Error getting phone number: ${e.message}", e)
+                }
+        } else {
+            Log.e("GetUser", "Invalid email: $email")
+        }
+    }
+    private fun validatePhoneNumber(phoneNumber: String): Boolean {
+        val phonePattern = Regex("[0-9]{10}") // Assumes a 10-digit phone number format
+        return phonePattern.matches(phoneNumber)
+    }
     fun countFurnitureOccurrences(furnitureArray: Array<String>): HashMap<String, Int> {
         val furnitureCountMap = HashMap<String, Int>()
 
