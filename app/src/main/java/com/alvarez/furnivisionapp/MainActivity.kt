@@ -13,6 +13,7 @@ import android.view.TextureView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.ImageButton
@@ -662,18 +663,33 @@ class MainActivity : AppCompatActivity() {
 
     fun showImageSelectionDialog() {
         val images = arrayOf(R.drawable.profile_pic1, R.drawable.profile_pic2, R.drawable.profile_pic3) // Replace with your available images
-        var selectedImageIndex = 0
 
         class ProfileImageAdapter(private val images: Array<Int>, private val onItemClick: (position: Int) -> Unit) :
             RecyclerView.Adapter<ProfileImageAdapter.ViewHolder>() {
 
+            var selectedPosition: Int? = null
+
             inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
                 private val imageView: ImageView = itemView.findViewById(R.id.profileImage)
+                private val checkBox: CheckBox = itemView.findViewById(R.id.checkbox1)
 
                 fun bind(image: Int) {
                     imageView.setImageResource(image)
-                    val isSelected = adapterPosition == selectedImageIndex
+                    val position = adapterPosition
+                    val isSelected = position == selectedPosition
                     itemView.isActivated = isSelected
+                    checkBox.isChecked = isSelected
+
+                    itemView.setOnClickListener {
+                        if (isSelected) {
+                            checkBox.isChecked = false
+                            selectedPosition = null
+                        } else {
+                            selectedPosition = position
+                            onItemClick(position)
+                            notifyDataSetChanged()
+                        }
+                    }
                 }
             }
 
@@ -685,11 +701,6 @@ class MainActivity : AppCompatActivity() {
             override fun onBindViewHolder(holder: ViewHolder, position: Int) {
                 val image = images[position]
                 holder.bind(image)
-
-                holder.itemView.setOnClickListener {
-                    onItemClick(position)
-                    notifyDataSetChanged()
-                }
             }
 
             override fun getItemCount(): Int {
@@ -700,7 +711,7 @@ class MainActivity : AppCompatActivity() {
         val dialogView = layoutInflater.inflate(R.layout.profile_selection_dialog, null)
         val recyclerView = dialogView.findViewById<RecyclerView>(R.id.profileImageRecyclerView)
         val adapter = ProfileImageAdapter(images) { position ->
-            selectedImageIndex = position
+            // Handle the onItemClick event here if needed
         }
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
@@ -709,13 +720,11 @@ class MainActivity : AppCompatActivity() {
             .setTitle("Select Profile Picture")
             .setView(dialogView)
             .setPositiveButton("Save") { dialogInterface, which ->
-                val selectedImage = images[selectedImageIndex]
+                val selectedImage = images[adapter.selectedPosition ?: return@setPositiveButton]
                 val profilePic = findViewById<ImageButton>(R.id.profilePic)
                 profilePic.setImageResource(selectedImage)
             }
-            .setNegativeButton("Cancel") { dialogInterface, which ->
-                // Do nothing, dialog will be dismissed automatically
-            }
+            .setNegativeButton("Cancel", null)
             .create()
 
         dialog.show()

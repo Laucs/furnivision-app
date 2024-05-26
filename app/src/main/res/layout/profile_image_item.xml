@@ -21,6 +21,7 @@
         android:textSize="25sp"
         android:textStyle="bold"
         android:layout_marginTop="10dp"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        android:enabled="false"/>
 
 </LinearLayout>
