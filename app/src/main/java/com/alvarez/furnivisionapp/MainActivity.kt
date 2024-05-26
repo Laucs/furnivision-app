@@ -1,19 +1,21 @@
 package com.alvarez.furnivisionapp
-
+import android.graphics.BitmapFactory
 import android.annotation.SuppressLint
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.hardware.camera2.CameraManager
 import android.icu.text.DecimalFormat
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.TextureView
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.ImageButton
@@ -23,6 +25,7 @@ import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.RelativeLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageButton
@@ -44,6 +47,9 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import com.bumptech.glide.Glide
+
+import java.io.ByteArrayOutputStream
 import java.io.File
 
 class MainActivity : AppCompatActivity() {
@@ -479,6 +485,7 @@ class MainActivity : AppCompatActivity() {
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_delivery_address, null) as RelativeLayout)
             initBackButton()
         }
+        refreshProfile()
     }
 
     fun initToPayPage() {
@@ -599,8 +606,9 @@ class MainActivity : AppCompatActivity() {
         val aboutButton: RelativeLayout = findViewById(R.id.aboutButton)
         val rateUsButton: RelativeLayout = findViewById(R.id.rateUsButton)
         val changePassButton: RelativeLayout = findViewById(R.id.changePasswordButton)
-        val email = SessionManager.getUserEmail(this)
         val nameTV: TextView = findViewById(R.id.nameTV)
+        val email = SessionManager.getUserEmail(this)
+
 
         if (email != null) {
             AuthUtility.getUserName(email,
@@ -810,13 +818,200 @@ class MainActivity : AppCompatActivity() {
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_profile, null) as RelativeLayout)
             initProfilePage()
         }
+
+        val profilePic = findViewById<ImageButton>(R.id.profilePic)
+
+        val firestore = FirebaseFirestore.getInstance()
+        firestore.collection("users")
+            .whereEqualTo("email", email)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                if (!querySnapshot.isEmpty) {
+                    val document = querySnapshot.documents.first()
+                    val image = document.getString("image")
+                    if (image != null) {
+                        Glide.with(this)
+                            .load(image)
+                            .into(profilePic)
+                    }
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.w("TAG", "Error getting user name", e)
+            }
+        profilePic.setOnClickListener {
+            val email = SessionManager.getUserEmail(this)
+
+            if (email != null) {
+                showImageSelectionDialog(email)
+            } else {
+                Log.e("GetUser", "Invalid email: $email")
+            }
+        }
+
+
     }
+
+    fun refreshProfile(){
+        val profilePic = findViewById<ImageButton>(R.id.profilePic)
+        val email = SessionManager.getUserEmail(this)
+        val firestore = FirebaseFirestore.getInstance()
+
+        firestore.collection("users")
+            .whereEqualTo("email", email)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                if (!querySnapshot.isEmpty) {
+                    val document = querySnapshot.documents.first()
+                    val image = document.getString("image")
+                    if (image != null) {
+                        Glide.with(this)
+                            .load(image)
+                            .into(profilePic)
+                    }
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.w("TAG", "Error getting user name", e)
+            }
+    }
+
+
+    fun showImageSelectionDialog(userEmail: String) {
+        val images = arrayOf(
+            R.drawable.profile_pic1,
+            R.drawable.profile_pic2,
+            R.drawable.profile_pic3
+        )
+
+        val firestore = FirebaseFirestore.getInstance()
+
+        class ProfileImageAdapter(private val images: Array<Int>, private val onItemClick: (position: Int) -> Unit) :
+            RecyclerView.Adapter<ProfileImageAdapter.ViewHolder>() {
+
+            var selectedPosition: Int? = null
+
+            inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+                private val imageView: ImageView = itemView.findViewById(R.id.profileImage)
+                private val checkBox: CheckBox = itemView.findViewById(R.id.checkbox1)
+
+                fun bind(image: Int) {
+                    imageView.setImageResource(image)
+                    val position = adapterPosition
+                    val isSelected = position == selectedPosition
+                    itemView.isActivated = isSelected
+                    checkBox.isChecked = isSelected
+
+                    itemView.setOnClickListener {
+                        if (isSelected) {
+                            checkBox.isChecked = false
+                            selectedPosition = null
+                        } else {
+                            selectedPosition = position
+                            onItemClick(position)
+                            notifyDataSetChanged()
+                        }
+                    }
+                }
+            }
+
+            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+                val view = LayoutInflater.from(parent.context).inflate(R.layout.profile_image_item, parent, false)
+                return ViewHolder(view)
+            }
+
+            override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+                val image = images[position]
+                holder.bind(image)
+            }
+
+            override fun getItemCount(): Int {
+                return images.size
+            }
+        }
+
+        val dialogView = layoutInflater.inflate(R.layout.profile_selection_dialog, null)
+        val recyclerView = dialogView.findViewById<RecyclerView>(R.id.profileImageRecyclerView)
+        val adapter = ProfileImageAdapter(images) { position ->
+            // Handle the onItemClick event here if needed
+        }
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+
+        val dialog = AlertDialog.Builder(this)
+            .setTitle("Select Profile Picture")
+            .setView(dialogView)
+            .setPositiveButton("Save") { dialogInterface, which ->
+                val selectedImageDrawable = images[adapter.selectedPosition ?: return@setPositiveButton]
+                val selectedBitmap = BitmapFactory.decodeResource(resources, selectedImageDrawable)
+
+                // Convert Bitmap to byte array
+                val baos = ByteArrayOutputStream()
+                selectedBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos)
+                val imageData = baos.toByteArray()
+
+                // Upload image data to Firestore
+                val storageRef = Firebase.storage.reference.child("profile_images/${userEmail}.png")
+                val uploadTask = storageRef.putBytes(imageData)
+
+                uploadTask.addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        storageRef.downloadUrl.addOnSuccessListener { uri ->
+                            // Save the image URL to Firestore
+                            val imageUrl = uri.toString()
+                            saveSelectedImage(userEmail, imageUrl, firestore)
+                        }.addOnFailureListener { e ->
+                            Toast.makeText(this, "Failed to get download URL: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        Toast.makeText(this, "Failed to upload image: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .create()
+
+        dialog.show()
+    }
+
+    // Function to save selected image URL to Firestore
+    private fun saveSelectedImage(userEmail: String, imageUrl: String, firestore: FirebaseFirestore) {
+        val selectedImageData = mapOf(
+            "image" to imageUrl
+        )
+
+        firestore.collection("users")
+            .whereEqualTo("email", userEmail)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                if (!querySnapshot.isEmpty) {
+                    val documentSnapshot = querySnapshot.documents[0]
+                    val documentId = documentSnapshot.id
+                    firestore.collection("users")
+                        .document(documentId)
+                        .update(selectedImageData)
+                        .addOnSuccessListener {
+                            Toast.makeText(this, "Image saved successfully.", Toast.LENGTH_SHORT).show()
+                            refreshProfile()
+                        }
+                        .addOnFailureListener { e ->
+                            Toast.makeText(this, "Failed to save image: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                } else {
+                    Toast.makeText(this, "User with email $userEmail not found.", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Error retrieving user document: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
 
     fun initPaymentMethodsPage() {
         val paypalLayout = findViewById<RelativeLayout>(R.id.paypalLayout)
 
         paypalLayout.setOnLongClickListener {
-            showEditDialog()
+            paypalEditDialog()
             true
         }
 
@@ -829,7 +1024,7 @@ class MainActivity : AppCompatActivity() {
         emailTextView.text = savedEmail
     }
 
-    fun showEditDialog() {
+    fun paypalEditDialog() {
         val dialogView = layoutInflater.inflate(R.layout.edit_paypal_dialog, null)
         val dialog = AlertDialog.Builder(this)
             .setView(dialogView)
@@ -858,6 +1053,7 @@ class MainActivity : AppCompatActivity() {
 
         dialog.show()
     }
+
     fun initEditNamePage(){
         val email = SessionManager.getUserEmail(this)
         val editNameET: TextView = findViewById(R.id.editNameET)
