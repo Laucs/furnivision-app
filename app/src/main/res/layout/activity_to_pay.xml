@@ -44,7 +44,8 @@
         android:gravity="center">
 
         <Button
-            android:layout_width="0dp"
+            android:id="@+id/toPayButton"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="To Pay"
@@ -57,7 +58,7 @@
 
         <Button
             android:id="@+id/toShipButton"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="To Ship"
@@ -69,7 +70,7 @@
 
         <Button
             android:id="@+id/toReceiveButton"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="To Receive"
@@ -81,7 +82,7 @@
 
         <Button
             android:id="@+id/toRateButton"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="To Rate"
@@ -96,20 +97,21 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/header">
+        android:layout_below="@id/header"
+        android:layout_marginTop="1dp">
 
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/ordersIcon"
             android:layout_centerHorizontal="true"
             android:layout_marginStart="40dp"
+            android:layout_marginTop="10dp"
             android:fontFamily="@font/spartan_medium"
             android:text="No Orders Yet"
-            android:layout_marginTop="10dp"
-            android:layout_below="@id/ordersIcon"
-            android:textStyle="bold"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/ordersIcon"
@@ -117,8 +119,8 @@
             android:layout_height="200dp"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="150dp"
-            android:src="@drawable/no_orders_icon"
-            android:contentDescription="Back" />
+            android:contentDescription="Back"
+            android:src="@drawable/no_orders_icon" />
 
 
     </RelativeLayout>
