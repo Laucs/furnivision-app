@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/order_furniture_section"
     android:layout_width="match_parent"
-    android:layout_height="85dp"
+    android:layout_height="wrap_content"
     android:layout_below="@id/order_header"
     android:layout_marginTop="10dp"
     android:layout_marginHorizontal="15dp"
@@ -38,6 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:layout_toEndOf="@id/order_furniture_logo"
+        android:layout_toStartOf="@id/order_furniture_price"
         android:fontFamily="@font/spartan_extrabold"
         android:textColor="@color/black"
         android:textAllCaps="true"
@@ -75,9 +76,8 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@id/order_furniture_desc"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="25dp"
         android:orientation="horizontal"
         >
         <ImageButton
