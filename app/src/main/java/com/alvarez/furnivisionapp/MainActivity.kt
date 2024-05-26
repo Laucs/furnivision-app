@@ -5,15 +5,19 @@ import android.annotation.SuppressLint
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.hardware.camera2.CameraManager
 import android.icu.text.DecimalFormat
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.TextureView
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.ImageButton
@@ -38,12 +42,14 @@ import com.alvarez.furnivisionapp.utils.HomePageFunctions
 import com.alvarez.furnivisionapp.utils.ShopListAdapter
 import com.alvarez.furnivisionapp.data.SessionManager
 import com.alvarez.furnivisionapp.data.ShopCart
+import com.bumptech.glide.Glide
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.util.Date
 
@@ -297,7 +303,7 @@ class MainActivity : AppCompatActivity() {
 
         if (shopCart != null) {
             // Shop exists in the list, check for the furniture item
-            val cartItem = shopCart.items?.find { it.furniture.id == selectedFurniture.id }
+            val cartItem = shopCart.items.find { it.furniture.id == selectedFurniture.id }
             if (cartItem != null) {
                 // Furniture exists in the list, increment the quantity
                 cartItem.quantity += 1
@@ -306,7 +312,7 @@ class MainActivity : AppCompatActivity() {
                 if (shopCart.items == null) {
                     shopCart.items = mutableListOf(CartItem(selectedFurniture, 1))
                 } else {
-                    shopCart.items?.add(CartItem(selectedFurniture, 1))
+                    shopCart.items.add(CartItem(selectedFurniture, 1))
                 }
             }
         } else {
@@ -320,7 +326,6 @@ class MainActivity : AppCompatActivity() {
     private fun initCameraPage() {
         val cameraLayout: RelativeLayout = findViewById(R.id.cameraLayout)
         val galleryLayout: RelativeLayout  = findViewById(R.id.galleryLayout)
-        val videoLayout: RelativeLayout  = findViewById(R.id.videoLayout)
         val galleryImageView: ImageView = findViewById(R.id.galleryImageView)
 
         val galleryBtn: Button = findViewById(R.id.galleryButton)
@@ -328,29 +333,22 @@ class MainActivity : AppCompatActivity() {
         val cameraBtn: Button = findViewById(R.id.backButton)
         val cameraBtn2: Button = findViewById(R.id.vidCameraButton)
         val captureButton: Button = findViewById(R.id.captureButton)
-        val videoBtn: Button = findViewById(R.id.videoButton)
         val galleryPrevBtn: Button = findViewById(R.id.prevButton)
         val galleryNextBtn: Button = findViewById(R.id.nextButton)
-        val vidTextureView: TextureView = findViewById(R.id.videoTextureView)
-        val vidRecordButton: Button = findViewById(R.id.videoRecButton)
         val textureView: TextureView = findViewById(R.id.textureView)
         val cameraManager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
 
         cameraFunctions = CameraFunctions(
             cameraLayout,
             galleryLayout,
-            videoLayout,
             galleryImageView,
             galleryBtn,
             galleryBtn2,
             cameraBtn,
             cameraBtn2,
             captureButton,
-            videoBtn,
             galleryPrevBtn,
             galleryNextBtn,
-            vidTextureView,
-            vidRecordButton,
             filesDir,
             textureView,
             cameraManager,
@@ -404,8 +402,8 @@ class MainActivity : AppCompatActivity() {
         val orderTotalPaymentTextView: TextView = findViewById(R.id.total_payment_value)
         val totalValueTextView: TextView = findViewById(R.id.total_value)
 
-        val productProtectSubtotal = 1500
-        val shipSubtotal = 2500
+        val productProtectSubtotal = 0
+        val shipSubtotal = 0
         var merchSubTotal = cartList?.let { calculateTotalPrice(it) }
         var totalPayment = productProtectSubtotal + shipSubtotal + merchSubTotal!!
 
