@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/order_furniture_section"
+    android:layout_width="match_parent"
+    android:layout_height="85dp"
+    android:layout_below="@id/order_header"
+    android:layout_marginTop="10dp"
+    android:layout_marginHorizontal="15dp"
+    >
+    <androidx.cardview.widget.CardView
+        android:id="@+id/order_furniture_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="15dp"
+        app:contentPadding="2dp"
+        app:cardBackgroundColor="@color/primary_darker"
+        app:cardCornerRadius="12dp"
+        >
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="11dp"
+            >
+            <ImageView
+                android:id="@+id/order_furniture_img"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:scaleType="fitXY"
+                />
+
+        </androidx.cardview.widget.CardView>
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/order_furniture_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_toEndOf="@id/order_furniture_logo"
+        android:fontFamily="@font/spartan_extrabold"
+        android:textColor="@color/black"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        android:textSize="14sp"
+        android:text="Lorem Ipsum"
+        />
+    <TextView
+        android:id="@+id/order_furniture_desc"
+        android:layout_width="170dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_below="@id/order_furniture_title"
+        android:layout_toEndOf="@id/order_furniture_logo"
+        android:fontFamily="@font/montserrat_light"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        android:text="@string/sample_text_8_words"
+        />
+
+
+    <TextView
+        android:id="@+id/order_furniture_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_alignParentEnd="true"
+        android:fontFamily="@font/spartan_extrabold"
+        android:textColor="@color/black"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        android:textSize="12sp"
+        />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="25dp"
+        android:orientation="horizontal"
+        >
+        <ImageButton
+            android:id="@+id/deduct_item_button"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:background="@color/transparent"
+            android:contentDescription="@string/deduct"
+            android:scaleType="fitXY"
+            android:src="@drawable/deduct_icon"
+            />
+
+        <TextView
+            android:id="@+id/order_furniture_quantity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginHorizontal="25dp"
+            android:fontFamily="@font/montserrat"
+            android:textStyle="bold"
+            android:textSize="15dp"
+            android:text="1"
+            />
+
+        <ImageButton
+            android:id="@+id/add_item_button"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:background="@color/transparent"
+            android:contentDescription="add"
+            android:scaleType="fitXY"
+            android:src="@drawable/add_furniture_icon"
+            />
+
+    </LinearLayout>
+</RelativeLayout>
