@@ -24,26 +24,29 @@
             android:id="@+id/menu_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:background="@color/white"
             android:elevation="5dp"
-            android:padding="3sp"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingTop="10sp"
+            android:paddingBottom="10sp"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp">
 
             <LinearLayout
                 android:id="@+id/home_menu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:layout_weight="1"
                 android:gravity="center"
-                android:layout_weight="1">
+                android:orientation="vertical">
 
                 <ImageView
                     android:id="@+id/imgHome"
                     android:layout_width="match_parent"
-                    android:layout_height="40sp"
-                    android:src="@drawable/home_logo_fill"
-                    android:contentDescription="@string/home_image_desc" />
+                    android:layout_height="30sp"
+                    android:contentDescription="@string/home_image_desc"
+                    android:src="@drawable/home_logo_fill" />
 
                 <TextView
                     android:id="@+id/titleHome"
@@ -52,8 +55,8 @@
                     android:layout_gravity="center_horizontal"
                     android:fontFamily="@font/quicksand"
                     android:text="@string/home"
-                    android:textSize="12sp"
-                    android:textColor="@color/primary_darker" />
+                    android:textColor="@color/primary_darker"
+                    android:textSize="12sp" />
 
             </LinearLayout>
 
@@ -61,16 +64,16 @@
                 android:id="@+id/shop_menu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:layout_weight="1"
                 android:gravity="center"
-                android:layout_weight="1">
+                android:orientation="vertical">
 
                 <ImageView
                     android:id="@+id/imgShop"
                     android:layout_width="match_parent"
-                    android:layout_height="40sp"
-                    android:src="@drawable/shop_bag_hollow"
-                    android:contentDescription="@string/shop_image_desc" />
+                    android:layout_height="30sp"
+                    android:contentDescription="@string/shop_image_desc"
+                    android:src="@drawable/shop_logo" />
 
                 <TextView
                     android:id="@+id/titleShop"
@@ -79,8 +82,8 @@
                     android:layout_gravity="center_horizontal"
                     android:fontFamily="@font/quicksand"
                     android:text="@string/shop"
-                    android:textSize="12sp"
-                    android:textColor="@color/primary_darker" />
+                    android:textColor="@color/primary_darker"
+                    android:textSize="12sp" />
 
             </LinearLayout>
 
@@ -88,24 +91,24 @@
                 android:id="@+id/try_ar_menu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:layout_weight="1"
                 android:gravity="center"
-                android:layout_weight="1">
+                android:orientation="vertical">
 
                 <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="40sp"
+                    android:layout_height="30sp"
                     android:contentDescription="@string/ar_image_desc"
-                    android:src="@drawable/try_ar_logo" />
+                    android:src="@drawable/ar_logo" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:fontFamily="@font/quicksand"
-                    android:text="@string/ar_camera"
-                    android:textSize="12sp"
-                    android:textColor="@color/primary_darker" />
+                    android:text="AR Camera"
+                    android:textColor="@color/primary_darker"
+                    android:textSize="12sp" />
 
             </LinearLayout>
 
@@ -113,15 +116,15 @@
                 android:id="@+id/cart_menu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:layout_weight="1"
                 android:gravity="center"
-                android:layout_weight="1">
+                android:orientation="vertical">
 
                 <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="40sp"
-                    android:src="@drawable/cart_logo"
-                    android:contentDescription="@string/cart_image_desc" />
+                    android:layout_height="30sp"
+                    android:contentDescription="@string/cart_image_desc"
+                    android:src="@drawable/cart_logo" />
 
 
                 <TextView
@@ -130,8 +133,8 @@
                     android:layout_gravity="center_horizontal"
                     android:fontFamily="@font/quicksand"
                     android:text="@string/cart"
-                    android:textSize="12sp"
-                    android:textColor="@color/primary_darker" />
+                    android:textColor="@color/primary_darker"
+                    android:textSize="12sp" />
 
             </LinearLayout>
 
@@ -139,17 +142,16 @@
                 android:id="@+id/profile_menu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingTop="6dp"
+                android:layout_weight="1"
                 android:gravity="center"
-                android:layout_weight="1">
+                android:orientation="vertical">
 
                 <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="40sp"
+                    android:layout_height="30sp"
+                    android:contentDescription="@string/profile_image_desc"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/profile_logo_outline"
-                    android:contentDescription="@string/profile_image_desc" />
+                    android:src="@drawable/profile_logo" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -157,8 +159,8 @@
                     android:layout_gravity="center_horizontal"
                     android:fontFamily="@font/quicksand"
                     android:text="@string/profile"
-                    android:textSize="12sp"
-                    android:textColor="@color/primary_darker" />
+                    android:textColor="@color/primary_darker"
+                    android:textSize="12sp" />
 
             </LinearLayout>
 

@@ -15,9 +15,11 @@ import android.view.TextureView
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.DatePicker
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -468,6 +470,7 @@ class MainActivity : AppCompatActivity() {
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_payment_methods, null) as RelativeLayout)
             initBackButton()
+            initPaymentMethodsPage()
         }
 
         deliveryAddressButton.setOnClickListener {
@@ -704,7 +707,6 @@ class MainActivity : AppCompatActivity() {
 
     fun initProfileEditPage(){
         val changeNameButton: RelativeLayout = findViewById(R.id.changeNameButton)
-        val changeBioButton: RelativeLayout = findViewById(R.id.changeBioButton)
         val changeGenderButton: RelativeLayout = findViewById(R.id.changeGenderButton)
         val changeBdayButton: RelativeLayout = findViewById(R.id.changeBdayButton)
         val changePhoneButton: RelativeLayout = findViewById(R.id.changePhoneButton)
@@ -734,14 +736,9 @@ class MainActivity : AppCompatActivity() {
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_name, null) as RelativeLayout)
             initProfileBackButton()
+            initEditNamePage()
         }
 
-        changeBioButton.setOnClickListener {
-            activePage = (R.layout.activity_edit_bio)
-            pageContainer.removeAllViews()
-            pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_bio, null) as RelativeLayout)
-            initProfileBackButton()
-        }
 
         changeGenderButton.setOnClickListener {
             // Inflate the custom layout/view
@@ -804,6 +801,7 @@ class MainActivity : AppCompatActivity() {
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_email, null) as RelativeLayout)
             initBackButton()
             initProfileBackButton()
+            initEditEmailPage()
         }
 
         saveButton.setOnClickListener {
@@ -814,15 +812,87 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun initPaymentMethodsPage() {
+        val paypalLayout = findViewById<RelativeLayout>(R.id.paypalLayout)
+
+        paypalLayout.setOnLongClickListener {
+            showEditDialog()
+            true
+        }
+
+        // Retrieve the saved email from SharedPreferences
+        val sharedPreferences = getSharedPreferences("paypal", Context.MODE_PRIVATE)
+        val savedEmail = sharedPreferences.getString("paypalEmail", "Set Now")
+
+        // Set the saved email in the emailPaypalTextView
+        val emailTextView = findViewById<TextView>(R.id.emailPaypalTextView)
+        emailTextView.text = savedEmail
+    }
+
+    fun showEditDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.edit_paypal_dialog, null)
+        val dialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .setPositiveButton("Save") { dialogInterface, which ->
+                val newEmail = dialogView.findViewById<EditText>(R.id.editPaypalEmail).text.toString()
+                val emailTextView = findViewById<TextView>(R.id.emailPaypalTextView)
+                emailTextView.text = newEmail
+
+                val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+                val editor = sharedPreferences.edit()
+                editor.putString("paypalEmail", newEmail)
+                editor.apply()
+            }
+            .setNegativeButton("Cancel") { dialogInterface, which ->
+                dialogInterface.dismiss()
+            }
+            .create()
+
+        // Retrieve the saved email from SharedPreferences
+        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val savedEmail = sharedPreferences.getString("paypalEmail", "")
+
+        // Set the saved email in the emailPaypalTextView
+        val emailEditText = dialogView.findViewById<EditText>(R.id.editPaypalEmail)
+        emailEditText.setText(savedEmail)
+
+        dialog.show()
+    }
     fun initEditNamePage(){
-
+        val email = SessionManager.getUserEmail(this)
+        val editNameET: TextView = findViewById(R.id.editNameET)
+        if (email != null) {
+            AuthUtility.getUserName(email,
+                onSuccess = { name ->
+                    editNameET.text = name
+                },
+                onFailure = {
+                    Log.e("GetUser", "Failed to retrieve user name")
+                }
+            )
+        } else {
+            Log.e("GetUser", "Invalid email: $email")
+        }
     }
-    fun initEditBioPage(){
 
-    }
     fun initEditEmailPage(){
-
+        val email = SessionManager.getUserEmail(this)
+        val editEmailET: TextView = findViewById(R.id.editEmailET)
+        if (email != null) {
+            AuthUtility.getUserName(email,
+                onSuccess = { name ->
+                    editEmailET.text = email
+                },
+                onFailure = {
+                    Log.e("GetUser", "Failed to retrieve user name")
+                }
+            )
+        } else {
+            Log.e("GetUser", "Invalid email: $email")
+        }
     }
+
+
 
     fun countFurnitureOccurrences(furnitureArray: Array<String>): HashMap<String, Int> {
         val furnitureCountMap = HashMap<String, Int>()
