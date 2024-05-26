@@ -723,6 +723,9 @@ class MainActivity : AppCompatActivity() {
         val saveButton: ImageButton = findViewById(R.id.applyChangesBtn)
         val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
         val nameTV: TextView = findViewById(R.id.nameTV)
+        val bdayTV: TextView = findViewById(R.id.bdayTV)
+        val genderTV: TextView = findViewById(R.id.genderTV)
+        val phoneTV: TextView = findViewById(R.id.phoneTV)
         val emailTV: TextView = findViewById(R.id.emailTV)
         val email = SessionManager.getUserEmail(this)
 
@@ -765,6 +768,36 @@ class MainActivity : AppCompatActivity() {
                         R.id.otherButton -> "Other"
                         else -> "Unknown"
                     }
+
+                    val firestore = FirebaseFirestore.getInstance()
+
+                    val userData = hashMapOf(
+                        "gender" to selectedGender
+                    )
+
+                    val email = SessionManager.getUserEmail(this)
+                    if (email != null) {
+                        firestore.collection("users")
+                            .whereEqualTo("email", email)
+                            .get()
+                            .addOnSuccessListener { querySnapshot ->
+                                for (document in querySnapshot.documents) {
+                                    document.reference.update(userData as Map<String, Any>)
+                                        .addOnSuccessListener {
+                                            Toast.makeText(this, "Gender updated successfully.", Toast.LENGTH_SHORT).show()
+                                            genderTV.text = selectedGender // Display the selected gender in the genderTV TextView
+                                        }
+                                        .addOnFailureListener { e ->
+                                            Toast.makeText(this, "Failed to update gender: ${e.message}", Toast.LENGTH_SHORT).show()
+                                        }
+                                }
+                            }
+                            .addOnFailureListener { e ->
+                                Toast.makeText(this, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
+                            }
+                    } else {
+                        Log.e("GetUser", "Invalid email: $email")
+                    }
                 }
                 .setNegativeButton("Cancel") { dialogInterface, which ->
                     dialogInterface.dismiss()
@@ -779,14 +812,79 @@ class MainActivity : AppCompatActivity() {
             // Inflate the custom layout/view
             val dialogView = layoutInflater.inflate(R.layout.activity_edit_birthday_dialog, null)
 
+            // Declare the datePicker variable
+            val datePicker = dialogView.findViewById<DatePicker>(R.id.datePicker)
+
+            // Retrieve the saved birthday from the database
+            val firestore = FirebaseFirestore.getInstance()
+            val email = SessionManager.getUserEmail(this)
+            if (email != null) {
+                firestore.collection("users")
+                    .whereEqualTo("email", email)
+                    .get()
+                    .addOnSuccessListener { querySnapshot ->
+                        if (!querySnapshot.isEmpty) {
+                            val document = querySnapshot.documents.first()
+                            val savedBirthday = document.getString("birthday")
+                            if (savedBirthday != null) {
+                                val savedBirthdayParts = savedBirthday.split("/")
+                                if (savedBirthdayParts.size == 3) {
+                                    val savedMonth = savedBirthdayParts[0].toInt()
+                                    val savedDay = savedBirthdayParts[1].toInt()
+                                    val savedYear = savedBirthdayParts[2].toInt()
+
+                                    // Set the initial date on the DatePicker
+                                    datePicker.updateDate(savedYear, savedMonth - 1, savedDay)
+                                }
+                            }
+                        }
+                    }
+                    .addOnFailureListener { e ->
+                        Log.e("GetUser", "Error retrieving birthday: ${e.message}", e)
+                    }
+            } else {
+                Log.e("GetUser", "Invalid email: $email")
+            }
+
             // Build the dialog
             val dialog = AlertDialog.Builder(this)
                 .setView(dialogView)
                 .setPositiveButton("Confirm") { dialogInterface, which ->
-                    val datePicker = dialogView.findViewById<DatePicker>(R.id.datePicker)
-                    val year = datePicker.year
-                    val month = datePicker.month
+                    val month = datePicker.month + 1 // DatePicker months are zero-based, so we add 1 to get the correct month
                     val day = datePicker.dayOfMonth
+                    val year = datePicker.year % 100 // Get the last two digits of the year
+
+                    val birthday = String.format("%02d/%02d/%02d", month, day, year) // Format the birthday as "mm/dd/yy"
+
+                    val firestore = FirebaseFirestore.getInstance()
+
+                    val userData = hashMapOf(
+                        "birthday" to birthday
+                    )
+
+                    val email = SessionManager.getUserEmail(this)
+                    if (email != null) {
+                        firestore.collection("users")
+                            .whereEqualTo("email", email)
+                            .get()
+                            .addOnSuccessListener { querySnapshot ->
+                                for (document in querySnapshot.documents) {
+                                    document.reference.update(userData as Map<String, Any>)
+                                        .addOnSuccessListener {
+                                            Toast.makeText(this, "Birthday updated successfully.", Toast.LENGTH_SHORT).show()
+                                            bdayTV.text = birthday // Display the birthday in the bdayTV TextView
+                                        }
+                                        .addOnFailureListener { e ->
+                                            Toast.makeText(this, "Failed to update birthday: ${e.message}", Toast.LENGTH_SHORT).show()
+                                        }
+                                }
+                            }
+                            .addOnFailureListener { e ->
+                                Toast.makeText(this, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
+                            }
+                    } else {
+                        Log.e("GetUser", "Invalid email: $email")
+                    }
                 }
                 .setNegativeButton("Cancel") { dialogInterface, which ->
                     dialogInterface.dismiss()
@@ -837,6 +935,10 @@ class MainActivity : AppCompatActivity() {
                         Glide.with(this)
                             .load(image)
                             .into(profilePic)
+                    }
+                    val phoneNum = document.getString("phoneNumber")
+                    if (phoneNum != null) {
+                        phoneTV.text = "0$phoneNum" // Display the phone number in the phoneTV TextView
                     }
                 }
             }
