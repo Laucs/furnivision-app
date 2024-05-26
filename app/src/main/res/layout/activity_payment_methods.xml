@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F4F4F4">
 
+    <!-- Header -->
     <RelativeLayout
         android:id="@+id/accountHeader"
         android:layout_width="match_parent"
@@ -36,8 +36,9 @@
 
     </RelativeLayout>
 
-    <LinearLayout
-        android:id="@+id/currentMethod"
+    <!-- Payment Options -->
+    <RadioGroup
+        android:id="@+id/paymentOptionsRadioGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/accountHeader"
@@ -48,7 +49,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Current Method"
+            android:text="Current Payment Option"
             android:textColor="#737373"
             android:textSize="18sp"
             android:paddingTop="10dp"
@@ -56,6 +57,7 @@
             android:textStyle="bold"
             android:layout_marginStart="20dp"
             android:layout_toEndOf="@id/cashImage"/>
+
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -70,7 +72,7 @@
                 android:layout_height="50dp"
                 android:layout_alignParentStart="true"
                 android:src="@drawable/cash_icon"
-                android:contentDescription="Back"
+                android:contentDescription="Cash"
                 android:layout_marginStart="20dp"/>
 
             <TextView
@@ -97,35 +99,21 @@
                 android:layout_marginStart="20dp"
                 android:layout_toEndOf="@id/cashImage"/>
 
-            <CheckBox
-                android:id="@+id/checkbox1"
+            <RadioButton
+                android:id="@+id/radioCash"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:textColor="@color/primary_darker"
-                android:textSize="15sp"
-                android:textStyle="bold"
                 android:layout_marginTop="20dp"
                 android:layout_alignParentEnd="true"
                 android:paddingTop="10dp"
                 android:layout_marginEnd="20dp"/>
         </RelativeLayout>
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/otherOptions"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/currentMethod"
-        android:orientation="vertical"
-        android:layout_marginTop="5dp"
-        android:background="#F4F4F4">
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Other Options"
+            android:text="Other Payment Options"
             android:textColor="#737373"
             android:textSize="18sp"
             android:paddingTop="10dp"
@@ -147,7 +135,7 @@
                 android:layout_height="50dp"
                 android:layout_alignParentStart="true"
                 android:src="@drawable/mastercard_icon"
-                android:contentDescription="Back"
+                android:contentDescription="Mastercard"
                 android:layout_marginStart="20dp"/>
 
             <TextView
@@ -174,14 +162,10 @@
                 android:layout_marginStart="20dp"
                 android:layout_toEndOf="@id/imgMethod1"/>
 
-            <CheckBox
-                android:id="@+id/Checkbox2"
+            <RadioButton
+                android:id="@+id/radioMethod1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
-                android:textColor="@color/primary_darker"
-                android:textSize="15sp"
-                android:textStyle="bold"
                 android:layout_marginTop="20dp"
                 android:layout_alignParentEnd="true"
                 android:paddingTop="10dp"
@@ -201,7 +185,7 @@
                 android:layout_height="50dp"
                 android:layout_alignParentStart="true"
                 android:src="@drawable/visa_icon"
-                android:contentDescription="Back"
+                android:contentDescription="Visa"
                 android:layout_marginStart="20dp"/>
 
             <TextView
@@ -228,14 +212,10 @@
                 android:layout_marginStart="20dp"
                 android:layout_toEndOf="@id/imgMethod2"/>
 
-            <CheckBox
-                android:id="@+id/Checkbox3"
+            <RadioButton
+                android:id="@+id/radioMethod2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
-                android:textColor="@color/primary_darker"
-                android:textSize="15sp"
-                android:textStyle="bold"
                 android:layout_marginTop="20dp"
                 android:layout_alignParentEnd="true"
                 android:paddingTop="10dp"
@@ -255,7 +235,7 @@
                 android:layout_height="50dp"
                 android:layout_alignParentStart="true"
                 android:src="@drawable/paypal_icon"
-                android:contentDescription="Back"
+                android:contentDescription="PayPal"
                 android:layout_marginStart="20dp"/>
 
             <TextView
@@ -270,36 +250,15 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="10dp"/>
 
-
-
-            <CheckBox
-                android:id="@+id/Checkbox4"
+            <RadioButton
+                android:id="@+id/radioMethod3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
-                android:textColor="@color/primary_darker"
-                android:textSize="15sp"
-                android:textStyle="bold"
                 android:layout_marginTop="20dp"
                 android:layout_alignParentEnd="true"
                 android:paddingTop="10dp"
                 android:layout_marginEnd="20dp"/>
         </RelativeLayout>
 
-    </LinearLayout>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/otherOptions"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="30dp"
-        android:background="@color/primary_darker"
-        android:fontFamily="@font/spartan_medium"
-        android:padding="15dp"
-        android:text="Add Payment Method"
-        android:textColor="@color/white"
-        android:textSize="15sp"
-        android:textAllCaps="false"/>
-
+    </RadioGroup>
 </RelativeLayout>

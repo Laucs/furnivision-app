@@ -543,7 +543,6 @@ class MainActivity : AppCompatActivity() {
 
     fun initProfileEditPage(){
         val changeNameButton: RelativeLayout = findViewById(R.id.changeNameButton)
-        val changeBioButton: RelativeLayout = findViewById(R.id.changeBioButton)
         val changeGenderButton: RelativeLayout = findViewById(R.id.changeGenderButton)
         val changeBdayButton: RelativeLayout = findViewById(R.id.changeBdayButton)
         val changePhoneButton: RelativeLayout = findViewById(R.id.changePhoneButton)
@@ -573,14 +572,9 @@ class MainActivity : AppCompatActivity() {
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_name, null) as RelativeLayout)
             initProfileBackButton()
+            initEditNamePage()
         }
 
-        changeBioButton.setOnClickListener {
-            activePage = (R.layout.activity_edit_bio)
-            pageContainer.removeAllViews()
-            pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_bio, null) as RelativeLayout)
-            initProfileBackButton()
-        }
 
         changeGenderButton.setOnClickListener {
             // Inflate the custom layout/view
@@ -643,6 +637,7 @@ class MainActivity : AppCompatActivity() {
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_email, null) as RelativeLayout)
             initBackButton()
             initProfileBackButton()
+            initEditEmailPage()
         }
 
         saveButton.setOnClickListener {
@@ -653,15 +648,44 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun initPaymentMethodsPage(){
+
+    }
     fun initEditNamePage(){
-
+        val email = SessionManager.getUserEmail(this)
+        val editNameET: TextView = findViewById(R.id.editNameET)
+        if (email != null) {
+            AuthUtility.getUserName(email,
+                onSuccess = { name ->
+                    editNameET.text = name
+                },
+                onFailure = {
+                    Log.e("GetUser", "Failed to retrieve user name")
+                }
+            )
+        } else {
+            Log.e("GetUser", "Invalid email: $email")
+        }
     }
-    fun initEditBioPage(){
 
-    }
     fun initEditEmailPage(){
-
+        val email = SessionManager.getUserEmail(this)
+        val editEmailET: TextView = findViewById(R.id.editEmailET)
+        if (email != null) {
+            AuthUtility.getUserName(email,
+                onSuccess = { name ->
+                    editEmailET.text = email
+                },
+                onFailure = {
+                    Log.e("GetUser", "Failed to retrieve user name")
+                }
+            )
+        } else {
+            Log.e("GetUser", "Invalid email: $email")
+        }
     }
+
+
 
     fun countFurnitureOccurrences(furnitureArray: Array<String>): HashMap<String, Int> {
         val furnitureCountMap = HashMap<String, Int>()

@@ -117,47 +117,7 @@
                     android:background="@drawable/right_next_icon" />
             </RelativeLayout>
 
-            <RelativeLayout
-                android:id="@+id/changeBioButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:background="@color/white"
-                android:layout_marginTop="2dp"
-                android:paddingTop="15dp"
-                android:paddingBottom="15dp">
 
-                <TextView
-                    android:id="@+id/bioLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Bio"
-                    android:layout_centerVertical="true"
-                    android:textSize="15sp"
-                    android:fontFamily="@font/montserrat"
-                    android:textColor="@color/black"
-                    android:layout_marginStart="15dp"/>
-
-                <TextView
-                    android:id="@+id/bioTV"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Set now"
-                    android:layout_toStartOf="@id/bioEditBtn"
-                    android:textSize="15sp"
-                    android:fontFamily="@font/montserrat"
-                    android:textColor="@color/black"
-                    android:layout_marginEnd="15dp"/>
-
-                <ImageButton
-                    android:id="@+id/bioEditBtn"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_centerVertical="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="15dp"
-                    android:background="@drawable/right_next_icon" />
-            </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/changeGenderButton"
