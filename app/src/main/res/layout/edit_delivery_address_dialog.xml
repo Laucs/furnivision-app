@@ -1,0 +1,84 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <EditText
+        android:id="@+id/nameDeliveryET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter name"
+        android:textSize="15sp"
+        android:textColor="#595959"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="20dp"
+        android:inputType="text"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="20dp">
+        <TextView
+            android:id="@+id/PH63"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="(+63)"
+            android:textColor="#737373"
+            android:textSize="15sp" />
+        <EditText
+            android:id="@+id/phoneDeliveryET"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter phone number"
+            android:textColor="#737373"
+            android:textSize="15sp"
+            android:layout_marginStart="10dp" />
+    </LinearLayout>
+    <EditText
+        android:id="@+id/regionET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter region"
+        android:textSize="15sp"
+        android:textColor="#595959"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="20dp"/>
+    <EditText
+        android:id="@+id/barangayET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter barangay"
+        android:textSize="15sp"
+        android:textColor="#595959"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="20dp"/>
+    <EditText
+        android:id="@+id/streetNameET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter street name"
+        android:textSize="15sp"
+        android:textColor="#595959"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="20dp"/>
+
+    <EditText
+        android:id="@+id/postalCodeET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:hint="Enter postal code"
+        android:textColor="#595959"
+        android:textSize="15sp" />
+
+</LinearLayout>

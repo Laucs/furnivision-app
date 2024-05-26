@@ -69,12 +69,13 @@
                 android:id="@+id/nameDeliveryTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Yancy Luceno"
+                android:text="Set Name"
                 android:textSize="15sp"
                 android:textStyle="bold"
                 android:fontFamily="@font/montserrat"
                 android:textColor="#595959"
-                android:layout_marginStart="20dp"/>
+                android:layout_marginStart="20dp"
+                android:enabled="false"/>
 
            <LinearLayout
                android:layout_width="wrap_content"
@@ -95,28 +96,30 @@
                    android:id="@+id/phoneDeliveryTV"
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
-                   android:text="(63)9993824616)"
+                   android:text="Set Number"
                    android:textColor="#737373"
                    android:textSize="15sp"
                    android:fontFamily="@font/montserrat_light"
                    android:textStyle="bold"
-                   android:layout_marginStart="10dp" />
+                   android:layout_marginStart="10dp"
+                   android:enabled="false"/>
 
            </LinearLayout>
             <TextView
                 android:id="@+id/regionTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Visayas"
+                android:text="Set Region"
                 android:textSize="15sp"
                 android:fontFamily="@font/montserrat"
                 android:textColor="#595959"
-                android:layout_marginStart="20dp"/>
+                android:layout_marginStart="20dp"
+                android:enabled="false"/>
             <TextView
                 android:id="@+id/barangayTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Apas"
+                android:hint="Set Barangay"
                 android:textSize="15sp"
                 android:fontFamily="@font/montserrat"
                 android:textColor="#595959"
@@ -125,20 +128,22 @@
                 android:id="@+id/streetNameTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="7th Street, Sto.Nino, Apas"
+                android:text="Set Street"
                 android:textSize="15sp"
                 android:fontFamily="@font/montserrat"
                 android:textColor="#595959"
-                android:layout_marginStart="20dp"/>
+                android:layout_marginStart="20dp"
+                android:enabled="false"/>
             <TextView
                 android:id="@+id/postalCodeTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="6000"
+                android:text="Set Postal Code"
                 android:textSize="15sp"
                 android:fontFamily="@font/montserrat"
                 android:textColor="#595959"
-                android:layout_marginStart="20dp"/>
+                android:layout_marginStart="20dp"
+                android:enabled="false"/>
 
         </LinearLayout>
 
@@ -148,6 +153,7 @@
             android:layout_marginTop="30dp"
             android:padding="20dp">
             <Button
+                android:id="@+id/editDeliveryAddresButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -156,7 +162,7 @@
                 android:padding="15dp"
                 android:text="Edit"
                 android:textColor="@color/white"
-                android:textSize="15sp"
+                android:textSize="20sp"
                 android:textAllCaps="false"/>
         </LinearLayout>
     </LinearLayout>
