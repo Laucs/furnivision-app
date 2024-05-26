@@ -2,7 +2,6 @@ package com.alvarez.furnivisionapp.utils
 
 import android.annotation.SuppressLint
 import android.graphics.BitmapFactory
-import android.icu.text.DecimalFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,11 +10,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.alvarez.furnivisionapp.R
-import com.alvarez.furnivisionapp.data.CartItem
+import com.alvarez.furnivisionapp.data.ShopCart
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import java.text.DecimalFormat
 
-class CartItemListAdapter(private var items: MutableList<CartItem>, private val onItemChanged: (Int, Int) -> Unit) : RecyclerView.Adapter<CartItemListAdapter.InnerViewHolder>() {
+class CartItemListAdapter(private val shopCart: ShopCart, private val onItemChanged: (Int, Int) -> Unit) : RecyclerView.Adapter<CartItemListAdapter.InnerViewHolder>() {
 
     companion object {
         const val ONE_MEGABYTE: Long = 1024 * 1024
@@ -23,22 +23,13 @@ class CartItemListAdapter(private var items: MutableList<CartItem>, private val 
     }
 
     inner class InnerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val itemImageView: ImageView
-        val itemTitleView: TextView
-        val itemDescTextView: TextView
-        val itemPriceTextView: TextView
-        val itemQuantityTextView: TextView
-        val itemAddButton: ImageButton
-        val itemDeductButton: ImageButton
-        init {
-            itemImageView = itemView.findViewById(R.id.order_furniture_img)
-            itemTitleView = itemView.findViewById(R.id.order_furniture_title)
-            itemDescTextView = itemView.findViewById(R.id.order_furniture_desc)
-            itemPriceTextView = itemView.findViewById(R.id.order_furniture_price)
-            itemQuantityTextView = itemView.findViewById(R.id.order_furniture_quantity)
-            itemAddButton = itemView.findViewById(R.id.add_item_button)
-            itemDeductButton = itemView.findViewById(R.id.deduct_item_button)
-        }
+        val itemImageView: ImageView = itemView.findViewById(R.id.order_furniture_img)
+        val itemTitleView: TextView = itemView.findViewById(R.id.order_furniture_title)
+        val itemDescTextView: TextView = itemView.findViewById(R.id.order_furniture_desc)
+        val itemPriceTextView: TextView = itemView.findViewById(R.id.order_furniture_price)
+        val itemQuantityTextView: TextView = itemView.findViewById(R.id.order_furniture_quantity)
+        val itemAddButton: ImageButton = itemView.findViewById(R.id.add_item_button)
+        val itemDeductButton: ImageButton = itemView.findViewById(R.id.deduct_item_button)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InnerViewHolder {
@@ -48,59 +39,66 @@ class CartItemListAdapter(private var items: MutableList<CartItem>, private val 
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: InnerViewHolder, position: Int) {
-        val totalPrice = items[position].furniture.price?.times(items[position].quantity)
-        val storageReference = items[position].furniture.img.let { it?.let { it1 ->
-            Firebase.storage.getReferenceFromUrl(
-                it1
-            )
-        } }
+        val item = shopCart.items?.get(position)
+        val totalPrice = item?.furniture?.price?.times(item.quantity)
 
-        storageReference?.getBytes(ONE_MEGABYTE)?.addOnSuccessListener { bytes ->
-            val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-            holder.itemImageView.setImageBitmap(bitmap)
+        // Load image from Firebase Storage
+        if (item != null) {
+            item.furniture.img?.let { imageUrl ->
+                val storageReference = Firebase.storage.getReferenceFromUrl(imageUrl)
+                storageReference.getBytes(ONE_MEGABYTE).addOnSuccessListener { bytes ->
+                    val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+                    holder.itemImageView.setImageBitmap(bitmap)
+                }
+            }
         }
 
-        holder.itemTitleView.text = items[position].furniture.name
-        holder.itemDescTextView.text = items[position].furniture.description
-        holder.itemPriceTextView.text = "₱ " + PRICE_FORMAT.format(totalPrice)
+        // Bind data to views
+        if (item != null) {
+            holder.itemTitleView.text = item.furniture.name
+        }
+        if (item != null) {
+            holder.itemDescTextView.text = item.furniture.description
+        }
+        holder.itemPriceTextView.text = "₱ ${PRICE_FORMAT.format(totalPrice)}"
+        if (item != null) {
+            holder.itemQuantityTextView.text = item.quantity.toString()
+        }
 
+        // Add button click listener
         holder.itemAddButton.setOnClickListener {
-            val count = holder.itemQuantityTextView.text.toString().toInt() + 1
-            items[position].quantity = count
-            holder.itemQuantityTextView.text = count.toString()
-            holder.itemPriceTextView.text = PRICE_FORMAT.format(items[position].furniture.price?.times(count))
-            notifyItemChanged(position)
-            updateItemQuantity(position, count)
+            if (item != null) {
+                updateItemQuantity(position, item.quantity + 1)
+            }
         }
 
+        // Deduct button click listener
         holder.itemDeductButton.setOnClickListener {
-            if(items[position].quantity > 1) {
-                val count = holder.itemQuantityTextView.text.toString().toInt() - 1
-                items[position].quantity = count
-                holder.itemQuantityTextView.text = count.toString()
-                holder.itemPriceTextView.text = PRICE_FORMAT.format(items[position].furniture.price?.times(count))
-                notifyItemChanged(position)
-                updateItemQuantity(position, count)
-            } else {
-                items = deleteItemFromDataset(items[position].furniture.id.toString())
-                notifyItemRemoved(position)
-                onItemChanged(position, -1)
+            val newQuantity = item?.quantity?.minus(1)
+            if (newQuantity != null) {
+                if (newQuantity > 0) {
+                    updateItemQuantity(position, newQuantity)
+                } else {
+                    // Remove item from the list if quantity is zero or negative
+                    onItemChanged(newQuantity, position)
+                    notifyItemRemoved(position)
+                }
             }
         }
     }
 
     private fun updateItemQuantity(position: Int, newQuantity: Int) {
-        val item = items[position]
+        // Return if item is null or position is out of bounds
+        val item = shopCart.items.get(position)
+        if (item == null) {
+            return
+        }
         item.quantity = newQuantity
         notifyItemChanged(position)
-        onItemChanged(position, newQuantity) // Notify the outer adapter of the change
+        onItemChanged(newQuantity, position) // Notify the outer adapter of the change
     }
 
-    private fun deleteItemFromDataset(itemId: String): MutableList<CartItem> {
-        return items.filterNot { it.furniture.id == itemId }.toMutableList()
+    override fun getItemCount(): Int {
+        return shopCart.items.size
     }
-
-    override fun getItemCount(): Int = items.size
-
-
 }

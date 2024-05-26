@@ -52,62 +52,21 @@
 
             </LinearLayout>
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/order_1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/order_recycler_view"
                 android:layout_below="@id/header"
-                android:layout_marginHorizontal="40dp"
-                android:layout_marginTop="45dp"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="15dp">
-
-                <include
-                    layout="@layout/order_item"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/order_2"
+                android:layout_marginTop="30dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/order_1"
-                android:layout_marginHorizontal="40dp"
-                android:layout_marginTop="12dp"
-                android:background="@color/white"
-                app:cardCornerRadius="15dp">
-
-                <include
-                    layout="@layout/order_item"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/order_3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/order_2"
-                android:layout_marginHorizontal="40dp"
-                android:layout_marginTop="12dp"
-                android:background="@color/white"
-                app:cardCornerRadius="15dp">
-
-                <include
-                    layout="@layout/order_item"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </androidx.cardview.widget.CardView>
-
-
+                />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/order_ship_add"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/order_3"
-                android:layout_marginHorizontal="40dp"
+                android:layout_below="@id/order_recycler_view"
+                android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="10dp"
                 android:background="@color/white"
@@ -199,7 +158,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/order_ship_add"
-                android:layout_marginHorizontal="40dp"
+                android:layout_marginHorizontal="20dp"
                 android:layout_marginBottom="10dp"
                 android:background="@color/white"
                 app:cardCornerRadius="15dp">
@@ -306,7 +265,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/order_ship_method"
-                android:layout_marginHorizontal="40dp"
+                android:layout_marginHorizontal="20dp"
                 android:layout_marginBottom="110dp"
                 android:background="@color/white"
                 app:cardCornerRadius="15dp">
@@ -508,7 +467,6 @@
                 android:layout_height="wrap_content"
                 android:paddingVertical="20dp"
                 android:paddingHorizontal="20dp"
-
                 android:layout_alignParentEnd="true"
                 android:background="@color/primary_darker"
                 android:fontFamily="@font/assistant_bold"
