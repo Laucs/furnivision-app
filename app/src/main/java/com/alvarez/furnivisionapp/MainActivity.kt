@@ -319,27 +319,15 @@ class MainActivity : AppCompatActivity() {
 
     fun initToPayPage() {
 
-        val toPayButton: Button = findViewById(R.id.toPayButton)
-        toPayButton.setOnClickListener {
-            val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
-            pageContainer.removeAllViews()
-            pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_pay, null) as RelativeLayout)
-            initBackButton()
-            initToReceivePage()
-            initToShipPage()
-            initToRatePage()
-        }
+        initBackButton()
 
         val toShipButton: Button = findViewById(R.id.toShipButton)
         toShipButton.setOnClickListener {
             val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_ship, null) as RelativeLayout)
-            initToRatePage()
-            initBackButton()
-            initToReceivePage()
             initToShipPage()
-            initToRatePage()
+
         }
 
         val toReceiveButton: Button = findViewById(R.id.toReceiveButton)
@@ -347,11 +335,8 @@ class MainActivity : AppCompatActivity() {
             val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_receive, null) as RelativeLayout)
-            initToRatePage()
-            initBackButton()
             initToReceivePage()
-            initToShipPage()
-            initToRatePage()
+
         }
 
         val toRateButton: Button = findViewById(R.id.toRateButton)
@@ -359,36 +344,18 @@ class MainActivity : AppCompatActivity() {
             val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_rate, null) as RelativeLayout)
-            initToRatePage()
-            initBackButton()
-            initToReceivePage()
-            initToShipPage()
             initToRatePage()
         }
     }
 
     fun initToShipPage() {
+        initBackButton()
         val toPayButton: Button = findViewById(R.id.toPayButton)
         toPayButton.setOnClickListener {
             val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_pay, null) as RelativeLayout)
-            initBackButton()
-            initToReceivePage()
-            initToShipPage()
-            initToRatePage()
-        }
-
-        val toShipButton: Button = findViewById(R.id.toShipButton)
-        toShipButton.setOnClickListener {
-            val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
-            pageContainer.removeAllViews()
-            pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_ship, null) as RelativeLayout)
-            initToRatePage()
-            initBackButton()
-            initToReceivePage()
-            initToShipPage()
-            initToRatePage()
+            initToPayPage()
         }
 
         val toReceiveButton: Button = findViewById(R.id.toReceiveButton)
@@ -396,11 +363,8 @@ class MainActivity : AppCompatActivity() {
             val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_receive, null) as RelativeLayout)
-            initToRatePage()
-            initBackButton()
             initToReceivePage()
-            initToShipPage()
-            initToRatePage()
+
         }
 
         val toRateButton: Button = findViewById(R.id.toRateButton)
@@ -408,24 +372,18 @@ class MainActivity : AppCompatActivity() {
             val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_rate, null) as RelativeLayout)
-            initToRatePage()
-            initBackButton()
-            initToReceivePage()
-            initToShipPage()
             initToRatePage()
         }
     }
 
     fun initToReceivePage() {
+        initBackButton()
         val toPayButton: Button = findViewById(R.id.toPayButton)
         toPayButton.setOnClickListener {
             val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_pay, null) as RelativeLayout)
-            initBackButton()
             initToReceivePage()
-            initToShipPage()
-            initToRatePage()
         }
 
         val toShipButton: Button = findViewById(R.id.toShipButton)
@@ -433,23 +391,7 @@ class MainActivity : AppCompatActivity() {
             val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_ship, null) as RelativeLayout)
-            initToRatePage()
-            initBackButton()
-            initToReceivePage()
             initToShipPage()
-            initToRatePage()
-        }
-
-        val toReceiveButton: Button = findViewById(R.id.toReceiveButton)
-        toReceiveButton.setOnClickListener {
-            val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
-            pageContainer.removeAllViews()
-            pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_receive, null) as RelativeLayout)
-            initToRatePage()
-            initBackButton()
-            initToReceivePage()
-            initToShipPage()
-            initToRatePage()
         }
 
         val toRateButton: Button = findViewById(R.id.toRateButton)
@@ -457,24 +399,18 @@ class MainActivity : AppCompatActivity() {
             val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_rate, null) as RelativeLayout)
-            initToRatePage()
-            initBackButton()
-            initToReceivePage()
-            initToShipPage()
             initToRatePage()
         }
     }
 
     fun initToRatePage() {
+        initBackButton()
         val toPayButton: Button = findViewById(R.id.toPayButton)
         toPayButton.setOnClickListener {
             val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_pay, null) as RelativeLayout)
-            initBackButton()
-            initToReceivePage()
-            initToShipPage()
-            initToRatePage()
+            initToPayPage()
         }
 
         val toShipButton: Button = findViewById(R.id.toShipButton)
@@ -482,11 +418,7 @@ class MainActivity : AppCompatActivity() {
             val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_ship, null) as RelativeLayout)
-            initToRatePage()
-            initBackButton()
-            initToReceivePage()
             initToShipPage()
-            initToRatePage()
         }
 
         val toReceiveButton: Button = findViewById(R.id.toReceiveButton)
@@ -494,23 +426,7 @@ class MainActivity : AppCompatActivity() {
             val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_receive, null) as RelativeLayout)
-            initToRatePage()
-            initBackButton()
             initToReceivePage()
-            initToShipPage()
-            initToRatePage()
-        }
-
-        val toRateButton: Button = findViewById(R.id.toRateButton)
-        toRateButton.setOnClickListener {
-            val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
-            pageContainer.removeAllViews()
-            pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_rate, null) as RelativeLayout)
-            initToRatePage()
-            initBackButton()
-            initToReceivePage()
-            initToShipPage()
-            initToRatePage()
         }
     }
 
