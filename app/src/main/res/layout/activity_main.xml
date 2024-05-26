@@ -85,7 +85,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/ar_menu"
+                android:id="@+id/try_ar_menu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -95,8 +95,8 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="40sp"
-                    android:src="@drawable/try_ar_logo"
-                    android:contentDescription="@string/ar_image_desc" />
+                    android:contentDescription="@string/ar_image_desc"
+                    android:src="@drawable/try_ar_logo" />
 
                 <TextView
                     android:layout_width="wrap_content"
