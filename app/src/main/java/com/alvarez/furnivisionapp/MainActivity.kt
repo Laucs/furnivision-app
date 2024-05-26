@@ -940,7 +940,25 @@ class MainActivity : AppCompatActivity() {
                     if (phoneNum != null) {
                         phoneTV.text = "0$phoneNum" // Display the phone number in the phoneTV TextView
                     }
+                    val gender = document.getString("gender")
+                    if (gender != null) {
+                        genderTV.text = gender // Display the saved gender in the genderTV TextView
+                    }
+                    val birthday = document.getString("birthday")
+                    if (birthday != null) {
+                        val birthdayParts = birthday.split("/")
+                        if (birthdayParts.size == 3) {
+                            val month = birthdayParts[0].toInt()
+                            val day = birthdayParts[1].toInt()
+                            val year = birthdayParts[2].toInt()
+                            val formattedBirthday = String.format("%02d/%02d/%02d", month, day, year) // Format the saved birthday as "mm/dd/yy"
+                            bdayTV.text = formattedBirthday // Display the saved birthday in the bdayTV TextView
+                        }
+                    }
                 }
+            }
+            .addOnFailureListener { e ->
+                Log.e("GetUser", "Error getting user details: ${e.message}", e)
             }
             .addOnFailureListener { e ->
                 Log.w("TAG", "Error getting user name", e)
