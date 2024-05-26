@@ -1,3 +1,5 @@
 package com.alvarez.furnivisionapp.data
 
-data class Order(var userId: String, var furniture: Furniture)
+import java.util.Date
+
+data class Order(var userId: String, var furnitures: MutableList<String>, var date: Date)

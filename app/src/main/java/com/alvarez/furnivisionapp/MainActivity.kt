@@ -1,10 +1,10 @@
 package com.alvarez.furnivisionapp
 
+import com.alvarez.furnivisionapp.utils.CartListAdapter
 import android.annotation.SuppressLint
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.hardware.camera2.CameraManager
 import android.icu.text.DecimalFormat
@@ -19,32 +19,33 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.RelativeLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.alvarez.furnivisionapp.data.AuthUtility
 import com.alvarez.furnivisionapp.data.CartItem
 import com.alvarez.furnivisionapp.data.Furniture
+import com.alvarez.furnivisionapp.data.Order
 import com.alvarez.furnivisionapp.data.Shop
 import com.alvarez.furnivisionapp.utils.CameraFunctions
 import com.alvarez.furnivisionapp.utils.HomePageFunctions
 import com.alvarez.furnivisionapp.utils.ShopListAdapter
 import com.alvarez.furnivisionapp.data.SessionManager
 import com.alvarez.furnivisionapp.data.ShopCart
-import com.alvarez.furnivisionapp.utils.CartListAdapter
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import java.io.File
+import java.util.Date
 
 class MainActivity : AppCompatActivity() {
 
@@ -85,14 +86,14 @@ class MainActivity : AppCompatActivity() {
         val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
         var inflatedPage = layoutInflater.inflate(dashboardPage, null) as RelativeLayout
         pageContainer.addView(inflatedPage)
-        initHomePage(inflatedPage, pageContainer, cartPage)
+        initHomePage(inflatedPage, pageContainer)
 
         homeButton.setOnClickListener {
             activePage = dashboardPage
             pageContainer.removeAllViews()
             inflatedPage = layoutInflater.inflate(dashboardPage, null) as RelativeLayout
             pageContainer.addView(inflatedPage)
-            initHomePage(inflatedPage, pageContainer, cartPage)
+            initHomePage(inflatedPage, pageContainer)
         }
         shopButton.setOnClickListener {
             activePage = shopPage
@@ -124,7 +125,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun initHomePage(page: RelativeLayout, pageContainer: ViewGroup, cartPage: Int) {
+    private fun initHomePage(page: RelativeLayout, pageContainer: ViewGroup) {
         homePageFunctions = HomePageFunctions(page, AppCompatImageButton::class.java, this)
 
 
@@ -180,6 +181,8 @@ class MainActivity : AppCompatActivity() {
                         id = document.id
                     }
                 }
+
+                Log.d("Open Cart", cartList.toString())
 
                 var addToCartBtn: Button = findViewById(R.id.addToCartButton)
                 var nextBtn: ImageButton = findViewById(R.id.nextBtn)
@@ -274,6 +277,8 @@ class MainActivity : AppCompatActivity() {
                                 Log.e("ERRO", "Error getting document", exception)
                             }
                     }
+
+                    Toast.makeText(this, "Furniture is added to Cart", Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -295,14 +300,11 @@ class MainActivity : AppCompatActivity() {
             val cartItem = shopCart.items?.find { it.furniture.id == selectedFurniture.id }
             if (cartItem != null) {
                 // Furniture exists in the list, increment the quantity
-                cartItem.quantity += 1
+                cartItem.quantity = cartItem.quantity.plus(1)
             } else {
                 // Furniture does not exist, add it to the list
-                if (shopCart.items == null) {
-                    shopCart.items = mutableListOf(CartItem(selectedFurniture, 1))
-                } else {
-                    shopCart.items?.add(CartItem(selectedFurniture, 1))
-                }
+                shopCart.items.add(CartItem(selectedFurniture, 1))
+
             }
         } else {
             // Shop does not exist, create a new ShopCart with the furniture item
@@ -310,7 +312,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Log the updated cartList for debugging
-        Log.d(TAG, cartList.toString())
     }
 
     private fun initCameraPage() {
@@ -356,6 +357,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun initCartPage(pageContainer: ViewGroup) {
         val cartListRecyclerView: RecyclerView = findViewById(R.id.cart_recycler_view)
+        val totalPriceTextView: TextView = findViewById(R.id.total_amount_textview)
+        var totalPrice = cartList?.let { calculateTotalPrice(it) }
+
+        totalPriceTextView.text = PRICE_FORMAT.format(totalPrice)
+
+
         val adapter = cartList?.let { CartListAdapter(it) }
 
         cartListRecyclerView.adapter = adapter
@@ -370,12 +377,97 @@ class MainActivity : AppCompatActivity() {
             activePage = (R.layout.activity_orders)
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_orders, null) as RelativeLayout)
+            initOrderPage(pageContainer)
         }
 
 
     }
 
-    private fun initOrderPage () {
+    fun calculateTotalPrice(shoppingCarts: MutableList<ShopCart>): Double {
+        var totalPrice = 0.0
+        for (cart in shoppingCarts) {
+            for (item in cart.items) {
+                totalPrice += (item.furniture.price?.times(item.quantity) ?: 0.0)
+            }
+        }
+        return totalPrice
+    }
+
+    private fun initOrderPage (pageContainer: ViewGroup) {
+        val orderListRecyclerView: RecyclerView = findViewById(R.id.order_recycler_view)
+        val orderProductProtectTextView: TextView = findViewById(R.id.prod_protect_subtotal_value)
+        val ordershipSubtotalTextView: TextView = findViewById(R.id.ship_subtotal_value)
+        val merchSubTotalTextView: TextView = findViewById(R.id.merch_subtotal_value)
+        val orderTotalPaymentTextView: TextView = findViewById(R.id.total_payment_value)
+        val totalValueTextView: TextView = findViewById(R.id.total_value)
+
+        val productProtectSubtotal = 1500
+        val shipSubtotal = 2500
+        var merchSubTotal = cartList?.let { calculateTotalPrice(it) }
+        var totalPayment = productProtectSubtotal + shipSubtotal + merchSubTotal!!
+
+        orderProductProtectTextView.text = productProtectSubtotal.toString()
+        ordershipSubtotalTextView.text = shipSubtotal.toString()
+        merchSubTotalTextView.text = merchSubTotal.toString()
+
+        orderTotalPaymentTextView.text = totalPayment.toString()
+        totalValueTextView.text = totalPayment.toString()
+        val adapter = cartList?.let { CartListAdapter(it) }
+
+        orderListRecyclerView.apply {
+            this.adapter = adapter
+            layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
+        }
+
+        val placeOrderButton: Button = findViewById(R.id.place_order_button)
+        placeOrderButton.setOnClickListener {
+
+            val furnitureIds = mutableListOf<String>()
+            val today = Date()
+            cartList?.forEach { shopCart ->
+                shopCart.items.forEach { cartItem ->
+                    repeat(cartItem.quantity) {
+                        cartItem.furniture.id?.let { it1 -> furnitureIds.add(it1) }
+                    }
+                }
+            }
+
+            var order = hashMapOf (
+                "timestamp" to today,
+                "furnitures" to furnitureIds
+            )
+
+            val email = SessionManager.getUserEmail(this)
+            database.collection("users")
+                .whereEqualTo("email", email)
+                .get()
+                .addOnSuccessListener { result: QuerySnapshot ->
+                    if (!result.isEmpty) {
+                        val document = result.documents.first()
+                        val userId = document.id
+                        order.put("userID", userId)
+                    }
+                }
+                .addOnFailureListener { e: Exception ->
+                    Log.w(TAG, "Error getting phone number", e)
+                }
+
+            database.collection("orders")
+                .add(order)
+                .addOnSuccessListener {
+                    Toast.makeText(this, "Order is successful", Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener{
+                    Toast.makeText(this, "Order isn't successful", Toast.LENGTH_SHORT).show()
+                }
+            cartList = mutableListOf()
+
+            activePage = R.layout.activity_dashboard
+            pageContainer.removeAllViews()
+            val inflatedPage = layoutInflater.inflate(R.layout.activity_dashboard, null) as RelativeLayout
+            pageContainer.addView(inflatedPage)
+            initHomePage(inflatedPage, pageContainer)
+        }
 
     }
 
