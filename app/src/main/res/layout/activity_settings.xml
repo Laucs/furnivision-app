@@ -125,7 +125,34 @@
             android:layout_marginStart="15dp"
             android:layout_below="@+id/accountHeader"/>
 
+        <RelativeLayout
+            android:id="@+id/communityButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/white"
+            android:layout_marginTop="20dp"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp">
 
+            <TextView
+                android:id="@+id/communityLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Community Rules"
+                android:layout_centerVertical="true"
+                android:textSize="15sp"
+                android:fontFamily="@font/montserrat"
+                android:textColor="@color/black"
+                android:layout_marginStart="15dp"/>
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="15dp"
+                android:background="@drawable/right_next_icon" />
+        </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/rateUsButton"
@@ -133,7 +160,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:background="@color/white"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="2dp"
             android:paddingTop="15dp"
             android:paddingBottom="15dp">
 

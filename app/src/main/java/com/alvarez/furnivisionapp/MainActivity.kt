@@ -11,6 +11,7 @@ import android.util.Log
 import android.view.TextureView
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.DatePicker
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -230,8 +231,6 @@ class MainActivity : AppCompatActivity() {
         val paymentMethodsButton: RelativeLayout = findViewById(R.id.paymentMethodsButton)
         val deliveryAddressButton: RelativeLayout = findViewById(R.id.deliveryAddressButton)
 
-
-
         // Navigation Logic
         val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
 
@@ -415,7 +414,10 @@ class MainActivity : AppCompatActivity() {
             val dialog = AlertDialog.Builder(this)
                 .setView(dialogView)
                 .setPositiveButton("Confirm") { dialogInterface, which ->
-
+                    val datePicker = dialogView.findViewById<DatePicker>(R.id.datePicker)
+                    val year = datePicker.year
+                    val month = datePicker.month
+                    val day = datePicker.dayOfMonth
                 }
                 .setNegativeButton("Cancel") { dialogInterface, which ->
                     dialogInterface.dismiss()
