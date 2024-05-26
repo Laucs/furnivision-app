@@ -1,8 +1,11 @@
 package com.alvarez.furnivisionapp
 
 import android.annotation.SuppressLint
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.hardware.camera2.CameraManager
 import android.icu.text.DecimalFormat
 import android.net.Uri
@@ -25,30 +28,37 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.alvarez.furnivisionapp.data.AuthUtility
 import com.alvarez.furnivisionapp.data.CartItem
 import com.alvarez.furnivisionapp.data.Furniture
 import com.alvarez.furnivisionapp.data.Shop
 import com.alvarez.furnivisionapp.utils.CameraFunctions
-import com.alvarez.furnivisionapp.utils.CartListAdapter
 import com.alvarez.furnivisionapp.utils.HomePageFunctions
 import com.alvarez.furnivisionapp.utils.ShopListAdapter
 import com.alvarez.furnivisionapp.data.SessionManager
-import com.google.firebase.auth.FirebaseAuth
+import com.alvarez.furnivisionapp.data.ShopCart
+import com.alvarez.furnivisionapp.utils.CartListAdapter
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import java.io.File
-import kotlin.math.log
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var shops: Array<Shop>
     private lateinit var homePageFunctions: HomePageFunctions
     private lateinit var cameraFunctions: CameraFunctions
     private var activePage: Int? = null
     private lateinit var activeButton: LinearLayout
-    private var furniIndex: Int = 0
-    private var cartShop: Shop? = null
-    private var cartFurniture: StringBuilder = StringBuilder()
-    private var cartSummary: HashMap<String, Int>? = null
+    private lateinit var database: FirebaseFirestore
+    private var cartList: MutableList<ShopCart>? = mutableListOf()
+
+    companion object {
+        private const val ONE_MEGABYTE: Long = 1024 * 1024
+        private val PRICE_FORMAT = DecimalFormat("#0.00")
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -121,22 +131,188 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initShopPage(pageContainer: ViewGroup) {
+        database = FirebaseFirestore.getInstance()
+        database.collection("shops")
+            .get()
+            .addOnSuccessListener { result: QuerySnapshot ->
+                val shopList: List<Shop> = result.documents.mapNotNull { document ->
+                    document.toObject(Shop::class.java)?.apply {
+                        id = document.id
+                    }
+                }
+                val shopsView: RecyclerView = findViewById(R.id.shop_list)
+
+                val adapter = ShopListAdapter(shopList)
+
+                adapter.setOnItemClickListener (object : ShopListAdapter.OnItemClickListener {
+                    @SuppressLint("InflateParams")
+                    override fun onItemClick(shopID: String) {
+                        pageContainer.removeAllViews()
+                        var inflatedPage = layoutInflater.inflate(R.layout.activity_furniture_selection, null) as RelativeLayout
+                        pageContainer.addView(inflatedPage)
+                        initFurniSelectPage(shopID, pageContainer)
+                    }
+                })
+
+                shopsView.adapter = adapter
+                val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+                shopsView.layoutManager = layoutManager
+
+            }
+            .addOnFailureListener { exception: Exception ->
+                // Handle the error here
+                Log.d(TAG,"Error fetching documents: $exception")
+            }
+
+
 
     }
 
-    @SuppressLint("SetTextI18n", "DefaultLocale", "CommitPrefEdits")
-    private fun initFurniSelectPage(shop: Shop, pageContainer: ViewGroup){
+    @SuppressLint("SetTextI18n", "DefaultLocale", "CommitPrefEdits", "InflateParams")
+    private fun initFurniSelectPage(shopID: String, pageContainer: ViewGroup){
+        var index: Int = 0
+        database = FirebaseFirestore.getInstance()
 
-        var backBtn: ImageButton = findViewById(R.id.backBtn)
+        database.collection("furniture").whereEqualTo("shopID", shopID).get()
+            .addOnSuccessListener { result: QuerySnapshot ->
+                val furnitures: List<Furniture> = result.documents.mapNotNull { document ->
+                    document.toObject(Furniture::class.java)?.apply {
+                        id = document.id
+                    }
+                }
+
+                var addToCartBtn: Button = findViewById(R.id.addToCartButton)
+                var nextBtn: ImageButton = findViewById(R.id.nextBtn)
+                var prevBtn: ImageButton = findViewById(R.id.previousBtn)
+
+                var imageView: ImageView = findViewById(R.id.furnitureImage)
+                var nameTextView: TextView = findViewById(R.id.furnitureName)
+                var descTextView: TextView = findViewById(R.id.furnitureDesc)
+                var priceTextView: TextView = findViewById(R.id.furniturePrice)
+                var dimensionsTextView: TextView = findViewById(R.id.furnitureDimensions)
+                var stocksTextView: TextView = findViewById(R.id.furnitureStocks)
+
+
+
+                val storageReference = furnitures[index].img.let { it?.let { it1 ->
+                    Firebase.storage.getReferenceFromUrl(
+                        it1
+                    )
+                } }
+
+                storageReference?.getBytes(ONE_MEGABYTE)?.addOnSuccessListener { bytes ->
+                    val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+                    imageView.setImageBitmap(bitmap)
+                }
+                nameTextView.text = furnitures[index].name
+                descTextView.text = furnitures[index].description
+                priceTextView.text = "$ " + PRICE_FORMAT.format(furnitures[index].price)
+                dimensionsTextView.text = getString(R.string.dimensions) + " " + furnitures[index].dimensions
+                stocksTextView.text = getString(R.string.stock) + " " + furnitures[index].stocks.toString()
+
+
+                nextBtn.setOnClickListener {
+                    if (index != furnitures.size-1) {
+                        index++
+                        val storageRef = furnitures[index].img.let { it?.let { it1 ->
+                            Firebase.storage.getReferenceFromUrl(
+                                it1
+                            )
+                        } }
+
+                        storageRef?.getBytes(ONE_MEGABYTE)?.addOnSuccessListener { bytes ->
+                            val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+                            imageView.setImageBitmap(bitmap)
+                        }
+
+                        val price = furnitures[index].price?.toDouble() ?: 0.0
+                        nameTextView.text = furnitures[index].name
+                        descTextView.text = furnitures[index].description
+                        priceTextView.text = "$ " + PRICE_FORMAT.format(price)
+                        dimensionsTextView.text = getString(R.string.dimensions) + " " + furnitures[index].dimensions
+                        stocksTextView.text = getString(R.string.stock) + " " + furnitures[index].stocks.toString()
+                    }
+                }
+                prevBtn.setOnClickListener {
+                    if (index > 0) {
+                        index--
+                        val storageRef1 = furnitures[index].img.let { it?.let { it1 ->
+                            Firebase.storage.getReferenceFromUrl(
+                                it1
+                            )
+                        } }
+
+                        storageRef1?.getBytes(ONE_MEGABYTE)?.addOnSuccessListener { bytes ->
+                            val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+                            imageView.setImageBitmap(bitmap)
+                        }
+
+                        val price = furnitures[index].price?.toDouble() ?: 0.0
+                        nameTextView.text = furnitures[index].name
+                        descTextView.text = furnitures[index].description
+                        priceTextView.text = "$ " + PRICE_FORMAT.format(price)
+                        dimensionsTextView.text = getString(R.string.dimensions) + " " + furnitures[index].dimensions
+                        stocksTextView.text = getString(R.string.stock) + " " + furnitures[index].stocks.toString()
+                    }
+                }
+
+                addToCartBtn.setOnClickListener {
+                    val shopID = furnitures[index].shopID
+                    if (shopID != null) {
+                        database.collection("shops").document(shopID).get()
+                            .addOnSuccessListener { result: DocumentSnapshot? ->
+                                if (result != null && result.exists()) {
+                                    val shop = result.toObject(Shop::class.java)
+                                    if (shop != null) {
+                                        shop.id = result.id
+                                        addItemToCart(shop, furnitures[index])
+                                    }
+                                }
+                            }
+                            .addOnFailureListener { exception ->
+                                // Handle the failure
+                                Log.e("ERRO", "Error getting document", exception)
+                            }
+                    }
+                }
+            }
+
+        val backBtn: ImageButton = findViewById(R.id.backBtn)
 
         backBtn.setOnClickListener{
             pageContainer.removeAllViews()
-            var inflatedPage: RelativeLayout = layoutInflater.inflate(R.layout.activity_shop, null) as RelativeLayout
+            val inflatedPage: RelativeLayout = layoutInflater.inflate(R.layout.activity_shop, null) as RelativeLayout
             pageContainer.addView(inflatedPage)
             initShopPage(pageContainer)
-            furniIndex = 0
         }
     }
+    private fun addItemToCart(selectedShop: Shop, selectedFurniture: Furniture) {
+        // Find the ShopCart in the list
+        val shopCart = cartList?.find { it.shop.id == selectedShop.id }
+
+        if (shopCart != null) {
+            // Shop exists in the list, check for the furniture item
+            val cartItem = shopCart.items?.find { it.furniture.id == selectedFurniture.id }
+            if (cartItem != null) {
+                // Furniture exists in the list, increment the quantity
+                cartItem.quantity += 1
+            } else {
+                // Furniture does not exist, add it to the list
+                if (shopCart.items == null) {
+                    shopCart.items = mutableListOf(CartItem(selectedFurniture, 1))
+                } else {
+                    shopCart.items?.add(CartItem(selectedFurniture, 1))
+                }
+            }
+        } else {
+            // Shop does not exist, create a new ShopCart with the furniture item
+            cartList?.add(ShopCart(selectedShop, mutableListOf(CartItem(selectedFurniture, 1))))
+        }
+
+        // Log the updated cartList for debugging
+        Log.d(TAG, cartList.toString())
+    }
+
     private fun initCameraPage() {
         val cameraLayout: RelativeLayout = findViewById(R.id.cameraLayout)
         val galleryLayout: RelativeLayout  = findViewById(R.id.galleryLayout)
@@ -179,29 +355,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initCartPage(pageContainer: ViewGroup) {
-        val furnitures = cartShop?.furnitures
-        val cartItemList = cartFurniture.split(',').toString().trim(' ')
+        val cartListRecyclerView: RecyclerView = findViewById(R.id.cart_recycler_view)
+        val adapter = cartList?.let { CartListAdapter(it) }
 
-        Log.d("d", cartItemList.toString())
-
-        if (cartItemList != null) {
-            val cartItems = cartSummary?.mapNotNull { (id, count) ->
-                val furniture = furnitures?.find { it.id == id }
-                furniture?.let { CartItem(it, count) }
-            }?.toTypedArray()
-
-            if (cartItems != null) {
-                Log.d("cartItems", cartItems.toList().toString())
-            }
-
-            val cartListing: RecyclerView = findViewById(R.id.cart_recycler_view)
-            val adapter = CartListAdapter(cartItems ?: emptyArray())
-            cartListing.adapter = adapter
-            cartListing.apply {
-                this.adapter = adapter
-                layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
-            }
+        cartListRecyclerView.adapter = adapter
+        cartListRecyclerView.apply {
+            layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
         }
+
 
         val checkoutBtn: Button = findViewById(R.id.checkout_button)
 
