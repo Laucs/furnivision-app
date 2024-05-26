@@ -300,11 +300,14 @@ class MainActivity : AppCompatActivity() {
             val cartItem = shopCart.items?.find { it.furniture.id == selectedFurniture.id }
             if (cartItem != null) {
                 // Furniture exists in the list, increment the quantity
-                cartItem.quantity = cartItem.quantity.plus(1)
+                cartItem.quantity += 1
             } else {
                 // Furniture does not exist, add it to the list
-                shopCart.items.add(CartItem(selectedFurniture, 1))
-
+                if (shopCart.items == null) {
+                    shopCart.items = mutableListOf(CartItem(selectedFurniture, 1))
+                } else {
+                    shopCart.items?.add(CartItem(selectedFurniture, 1))
+                }
             }
         } else {
             // Shop does not exist, create a new ShopCart with the furniture item
@@ -571,6 +574,7 @@ class MainActivity : AppCompatActivity() {
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_delivery_address, null) as RelativeLayout)
             initBackButton()
         }
+        refreshProfile()
     }
 
     fun initToPayPage() {
@@ -806,6 +810,9 @@ class MainActivity : AppCompatActivity() {
         val saveButton: ImageButton = findViewById(R.id.applyChangesBtn)
         val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
         val nameTV: TextView = findViewById(R.id.nameTV)
+        val bdayTV: TextView = findViewById(R.id.bdayTV)
+        val genderTV: TextView = findViewById(R.id.genderTV)
+        val phoneTV: TextView = findViewById(R.id.phoneTV)
         val emailTV: TextView = findViewById(R.id.emailTV)
         val email = SessionManager.getUserEmail(this)
 
@@ -848,6 +855,36 @@ class MainActivity : AppCompatActivity() {
                         R.id.otherButton -> "Other"
                         else -> "Unknown"
                     }
+
+                    val firestore = FirebaseFirestore.getInstance()
+
+                    val userData = hashMapOf(
+                        "gender" to selectedGender
+                    )
+
+                    val email = SessionManager.getUserEmail(this)
+                    if (email != null) {
+                        firestore.collection("users")
+                            .whereEqualTo("email", email)
+                            .get()
+                            .addOnSuccessListener { querySnapshot ->
+                                for (document in querySnapshot.documents) {
+                                    document.reference.update(userData as Map<String, Any>)
+                                        .addOnSuccessListener {
+                                            Toast.makeText(this, "Gender updated successfully.", Toast.LENGTH_SHORT).show()
+                                            genderTV.text = selectedGender // Display the selected gender in the genderTV TextView
+                                        }
+                                        .addOnFailureListener { e ->
+                                            Toast.makeText(this, "Failed to update gender: ${e.message}", Toast.LENGTH_SHORT).show()
+                                        }
+                                }
+                            }
+                            .addOnFailureListener { e ->
+                                Toast.makeText(this, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
+                            }
+                    } else {
+                        Log.e("GetUser", "Invalid email: $email")
+                    }
                 }
                 .setNegativeButton("Cancel") { dialogInterface, which ->
                     dialogInterface.dismiss()
@@ -862,14 +899,79 @@ class MainActivity : AppCompatActivity() {
             // Inflate the custom layout/view
             val dialogView = layoutInflater.inflate(R.layout.activity_edit_birthday_dialog, null)
 
+            // Declare the datePicker variable
+            val datePicker = dialogView.findViewById<DatePicker>(R.id.datePicker)
+
+            // Retrieve the saved birthday from the database
+            val firestore = FirebaseFirestore.getInstance()
+            val email = SessionManager.getUserEmail(this)
+            if (email != null) {
+                firestore.collection("users")
+                    .whereEqualTo("email", email)
+                    .get()
+                    .addOnSuccessListener { querySnapshot ->
+                        if (!querySnapshot.isEmpty) {
+                            val document = querySnapshot.documents.first()
+                            val savedBirthday = document.getString("birthday")
+                            if (savedBirthday != null) {
+                                val savedBirthdayParts = savedBirthday.split("/")
+                                if (savedBirthdayParts.size == 3) {
+                                    val savedMonth = savedBirthdayParts[0].toInt()
+                                    val savedDay = savedBirthdayParts[1].toInt()
+                                    val savedYear = savedBirthdayParts[2].toInt()
+
+                                    // Set the initial date on the DatePicker
+                                    datePicker.updateDate(savedYear, savedMonth - 1, savedDay)
+                                }
+                            }
+                        }
+                    }
+                    .addOnFailureListener { e ->
+                        Log.e("GetUser", "Error retrieving birthday: ${e.message}", e)
+                    }
+            } else {
+                Log.e("GetUser", "Invalid email: $email")
+            }
+
             // Build the dialog
             val dialog = AlertDialog.Builder(this)
                 .setView(dialogView)
                 .setPositiveButton("Confirm") { dialogInterface, which ->
-                    val datePicker = dialogView.findViewById<DatePicker>(R.id.datePicker)
-                    val year = datePicker.year
-                    val month = datePicker.month
+                    val month = datePicker.month + 1 // DatePicker months are zero-based, so we add 1 to get the correct month
                     val day = datePicker.dayOfMonth
+                    val year = datePicker.year % 100 // Get the last two digits of the year
+
+                    val birthday = String.format("%02d/%02d/%02d", month, day, year) // Format the birthday as "mm/dd/yy"
+
+                    val firestore = FirebaseFirestore.getInstance()
+
+                    val userData = hashMapOf(
+                        "birthday" to birthday
+                    )
+
+                    val email = SessionManager.getUserEmail(this)
+                    if (email != null) {
+                        firestore.collection("users")
+                            .whereEqualTo("email", email)
+                            .get()
+                            .addOnSuccessListener { querySnapshot ->
+                                for (document in querySnapshot.documents) {
+                                    document.reference.update(userData as Map<String, Any>)
+                                        .addOnSuccessListener {
+                                            Toast.makeText(this, "Birthday updated successfully.", Toast.LENGTH_SHORT).show()
+                                            bdayTV.text = birthday // Display the birthday in the bdayTV TextView
+                                        }
+                                        .addOnFailureListener { e ->
+                                            Toast.makeText(this, "Failed to update birthday: ${e.message}", Toast.LENGTH_SHORT).show()
+                                        }
+                                }
+                            }
+                            .addOnFailureListener { e ->
+                                Toast.makeText(this, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
+                            }
+                    } else {
+                        Log.e("GetUser", "Invalid email: $email")
+                    }
                 }
                 .setNegativeButton("Cancel") { dialogInterface, which ->
                     dialogInterface.dismiss()
@@ -885,6 +987,9 @@ class MainActivity : AppCompatActivity() {
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_phone, null) as RelativeLayout)
             initProfileBackButton()
+            initEditPhonePage()
+
+
         }
 
         changeEmailButton.setOnClickListener {
@@ -902,13 +1007,229 @@ class MainActivity : AppCompatActivity() {
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_profile, null) as RelativeLayout)
             initProfilePage()
         }
+
+        val profilePic = findViewById<ImageButton>(R.id.profilePic)
+
+        val firestore = FirebaseFirestore.getInstance()
+        firestore.collection("users")
+            .whereEqualTo("email", email)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                if (!querySnapshot.isEmpty) {
+                    val document = querySnapshot.documents.first()
+                    val image = document.getString("image")
+                    if (image != null) {
+                        Glide.with(this)
+                            .load(image)
+                            .into(profilePic)
+                    }
+                    val phoneNum = document.getString("phoneNumber")
+                    if (phoneNum != null) {
+                        phoneTV.text = "0$phoneNum" // Display the phone number in the phoneTV TextView
+                    }
+                    val gender = document.getString("gender")
+                    if (gender != null) {
+                        genderTV.text = gender // Display the saved gender in the genderTV TextView
+                    }
+                    val birthday = document.getString("birthday")
+                    if (birthday != null) {
+                        val birthdayParts = birthday.split("/")
+                        if (birthdayParts.size == 3) {
+                            val month = birthdayParts[0].toInt()
+                            val day = birthdayParts[1].toInt()
+                            val year = birthdayParts[2].toInt()
+                            val formattedBirthday = String.format("%02d/%02d/%02d", month, day, year) // Format the saved birthday as "mm/dd/yy"
+                            bdayTV.text = formattedBirthday // Display the saved birthday in the bdayTV TextView
+                        }
+                    }
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e("GetUser", "Error getting user details: ${e.message}", e)
+            }
+            .addOnFailureListener { e ->
+                Log.w("TAG", "Error getting user name", e)
+            }
+        profilePic.setOnClickListener {
+            val email = SessionManager.getUserEmail(this)
+
+            if (email != null) {
+                showImageSelectionDialog(email)
+            } else {
+                Log.e("GetUser", "Invalid email: $email")
+            }
+        }
+
+
     }
+
+    fun refreshProfile(){
+        val profilePic = findViewById<ImageButton>(R.id.profilePic)
+        val email = SessionManager.getUserEmail(this)
+        val firestore = FirebaseFirestore.getInstance()
+
+        firestore.collection("users")
+            .whereEqualTo("email", email)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                if (!querySnapshot.isEmpty) {
+                    val document = querySnapshot.documents.first()
+                    val image = document.getString("image")
+                    if (image != null) {
+                        Glide.with(this)
+                            .load(image)
+                            .into(profilePic)
+                    }
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.w("TAG", "Error getting user name", e)
+            }
+    }
+
+
+    fun showImageSelectionDialog(userEmail: String) {
+        val images = arrayOf(
+            R.drawable.profile_pic1,
+            R.drawable.profile_pic2,
+            R.drawable.profile_pic3,
+            R.drawable.profile_pic4,
+            R.drawable.profile_pic5,
+            R.drawable.profile_pic6,
+            R.drawable.profile_pic7,
+            R.drawable.profile_pic8,
+            R.drawable.profile_pic9,
+            R.drawable.profile_pic10
+        )
+
+        val firestore = FirebaseFirestore.getInstance()
+
+        class ProfileImageAdapter(private val images: Array<Int>, private val onItemClick: (position: Int) -> Unit) :
+            RecyclerView.Adapter<ProfileImageAdapter.ViewHolder>() {
+
+            var selectedPosition: Int? = null
+
+            inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+                private val imageView: ImageView = itemView.findViewById(R.id.profileImage)
+                private val checkBox: CheckBox = itemView.findViewById(R.id.checkbox1)
+
+                fun bind(image: Int) {
+                    imageView.setImageResource(image)
+                    val position = adapterPosition
+                    val isSelected = position == selectedPosition
+                    itemView.isActivated = isSelected
+                    checkBox.isChecked = isSelected
+
+                    itemView.setOnClickListener {
+                        if (isSelected) {
+                            checkBox.isChecked = false
+                            selectedPosition = null
+                        } else {
+                            selectedPosition = position
+                            onItemClick(position)
+                            notifyDataSetChanged()
+                        }
+                    }
+                }
+            }
+
+            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+                val view = LayoutInflater.from(parent.context).inflate(R.layout.profile_image_item, parent, false)
+                return ViewHolder(view)
+            }
+
+            override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+                val image = images[position]
+                holder.bind(image)
+            }
+
+            override fun getItemCount(): Int {
+                return images.size
+            }
+        }
+
+        val dialogView = layoutInflater.inflate(R.layout.profile_selection_dialog, null)
+        val recyclerView = dialogView.findViewById<RecyclerView>(R.id.profileImageRecyclerView)
+
+        val adapter = ProfileImageAdapter(images) { position ->
+            // Handle the onItemClick event here if needed
+        }
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+
+        val dialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .setPositiveButton("Save") { dialogInterface, which ->
+                val selectedImageDrawable = images[adapter.selectedPosition ?: return@setPositiveButton]
+                val selectedBitmap = BitmapFactory.decodeResource(resources, selectedImageDrawable)
+
+                // Convert Bitmap to byte array
+                val baos = ByteArrayOutputStream()
+                selectedBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos)
+                val imageData = baos.toByteArray()
+
+                // Upload image data to Firestore
+                val storageRef = Firebase.storage.reference.child("profile_images/${userEmail}.png")
+                val uploadTask = storageRef.putBytes(imageData)
+
+                uploadTask.addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        storageRef.downloadUrl.addOnSuccessListener { uri ->
+                            // Save the image URL to Firestore
+                            val imageUrl = uri.toString()
+                            saveSelectedImage(userEmail, imageUrl, firestore)
+                        }.addOnFailureListener { e ->
+                            Toast.makeText(this, "Failed to get download URL: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        Toast.makeText(this, "Failed to upload image: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .create()
+
+        dialog.show()
+    }
+
+    // Function to save selected image URL to Firestore
+    private fun saveSelectedImage(userEmail: String, imageUrl: String, firestore: FirebaseFirestore) {
+        val selectedImageData = mapOf(
+            "image" to imageUrl
+        )
+
+        firestore.collection("users")
+            .whereEqualTo("email", userEmail)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                if (!querySnapshot.isEmpty) {
+                    val documentSnapshot = querySnapshot.documents[0]
+                    val documentId = documentSnapshot.id
+                    firestore.collection("users")
+                        .document(documentId)
+                        .update(selectedImageData)
+                        .addOnSuccessListener {
+                            Toast.makeText(this, "Image saved successfully.", Toast.LENGTH_SHORT).show()
+                            refreshProfile()
+                        }
+                        .addOnFailureListener { e ->
+                            Toast.makeText(this, "Failed to save image: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                } else {
+                    Toast.makeText(this, "User with email $userEmail not found.", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Error retrieving user document: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
 
     fun initPaymentMethodsPage() {
         val paypalLayout = findViewById<RelativeLayout>(R.id.paypalLayout)
 
         paypalLayout.setOnLongClickListener {
-            showEditDialog()
+            paypalEditDialog()
             true
         }
 
@@ -921,7 +1242,7 @@ class MainActivity : AppCompatActivity() {
         emailTextView.text = savedEmail
     }
 
-    fun showEditDialog() {
+    fun paypalEditDialog() {
         val dialogView = layoutInflater.inflate(R.layout.edit_paypal_dialog, null)
         val dialog = AlertDialog.Builder(this)
             .setView(dialogView)
@@ -950,42 +1271,182 @@ class MainActivity : AppCompatActivity() {
 
         dialog.show()
     }
-    fun initEditNamePage(){
+
+    fun initEditNamePage() {
         val email = SessionManager.getUserEmail(this)
-        val editNameET: TextView = findViewById(R.id.editNameET)
+        val editNameET: EditText = findViewById(R.id.editNameET)
+        val applyChangesBtn: ImageButton = findViewById(R.id.applyChangesBtn)
+
         if (email != null) {
             AuthUtility.getUserName(email,
                 onSuccess = { name ->
-                    editNameET.text = name
+                    editNameET.setText(name) // Set the user's current name in the EditText
                 },
                 onFailure = {
                     Log.e("GetUser", "Failed to retrieve user name")
                 }
             )
+
+            applyChangesBtn.setOnClickListener {
+                val newName = editNameET.text.toString() // Get the updated name from the EditText
+                val firestore = FirebaseFirestore.getInstance()
+
+                val userData = hashMapOf(
+                    "name" to newName
+                )
+
+                firestore.collection("users")
+                    .whereEqualTo("email", email)
+                    .get()
+                    .addOnSuccessListener { querySnapshot ->
+                        for (document in querySnapshot.documents) {
+                            document.reference.update(userData as Map<String, Any>)
+                                .addOnSuccessListener {
+                                    if (newName != document.getString("name")) {
+                                        Toast.makeText(this, "Name updated successfully.", Toast.LENGTH_SHORT).show()
+                                        val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
+                                        pageContainer.removeAllViews()
+                                        pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_account, null) as RelativeLayout)
+                                        initProfileEditPage()
+                                    } else {
+                                        Toast.makeText(this, "No new changes to the name.", Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                                .addOnFailureListener { e ->
+                                    Toast.makeText(this, "Failed to update name: ${e.message}", Toast.LENGTH_SHORT).show()
+                                }
+                        }
+                    }
+                    .addOnFailureListener { e ->
+                        Toast.makeText(this, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
+                    }
+            }
         } else {
             Log.e("GetUser", "Invalid email: $email")
         }
     }
 
-    fun initEditEmailPage(){
+    fun initEditEmailPage() {
         val email = SessionManager.getUserEmail(this)
         val editEmailET: TextView = findViewById(R.id.editEmailET)
+        val changeEmailButton: Button = findViewById(R.id.changeEmailButton)
+
         if (email != null) {
-            AuthUtility.getUserName(email,
-                onSuccess = { name ->
-                    editEmailET.text = email
-                },
-                onFailure = {
-                    Log.e("GetUser", "Failed to retrieve user name")
+            editEmailET.text = email
+
+            changeEmailButton.setOnClickListener {
+                val newEmail = editEmailET.text.toString().trim() // Get the updated email from the TextView and remove leading/trailing whitespaces
+
+                if (isEmailValid(newEmail)) {
+                    if (newEmail != email) {
+                        val firestore = FirebaseFirestore.getInstance()
+
+                        val userData = hashMapOf(
+                            "email" to newEmail
+                        )
+
+                        firestore.collection("users")
+                            .whereEqualTo("email", email)
+                            .get()
+                            .addOnSuccessListener { querySnapshot ->
+                                for (document in querySnapshot.documents) {
+                                    document.reference.update(userData as Map<String, Any>)
+                                        .addOnSuccessListener {
+                                            Toast.makeText(this, "Email updated successfully.", Toast.LENGTH_SHORT).show()
+                                            // Update the email in the session manager
+                                            SessionManager.setUserEmail(this, newEmail)
+                                            val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
+                                            pageContainer.removeAllViews()
+                                            pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_account, null) as RelativeLayout)
+                                            initProfileEditPage()
+                                        }
+                                        .addOnFailureListener { e ->
+                                            Toast.makeText(this, "Failed to update email: ${e.message}", Toast.LENGTH_SHORT).show()
+                                        }
+                                }
+                            }
+                            .addOnFailureListener { e ->
+                                Toast.makeText(this, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
+                            }
+                    } else {
+                        Toast.makeText(this, "No new changes to the email.", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Toast.makeText(this, "Invalid email format. Please enter a valid email.", Toast.LENGTH_SHORT).show()
                 }
-            )
+            }
         } else {
             Log.e("GetUser", "Invalid email: $email")
         }
     }
 
+    private fun isEmailValid(email: String): Boolean {
+        val pattern = Regex("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")
+        return pattern.matches(email)
+    }
 
+    fun initEditPhonePage() {
+        val email = SessionManager.getUserEmail(this)
+        val editPhoneET: EditText = findViewById(R.id.editPhoneET)
+        val changePhoneButton: Button = findViewById(R.id.changePhoneButton)
 
+        if (email != null) {
+            val firestore = FirebaseFirestore.getInstance()
+
+            firestore.collection("users")
+                .whereEqualTo("email", email)
+                .get()
+                .addOnSuccessListener { querySnapshot ->
+                    if (!querySnapshot.isEmpty) {
+                        val document = querySnapshot.documents.first()
+                        val phoneNum = document.getString("phoneNumber")
+                        if (phoneNum != null) {
+                            editPhoneET.setText(phoneNum)
+                        }
+
+                        changePhoneButton.setOnClickListener {
+                            val newPhoneNumber = editPhoneET.text.toString().trim() // Get the updated phone number from the EditText
+                            val isValidPhoneNumber = validatePhoneNumber(newPhoneNumber)
+
+                            if (isValidPhoneNumber) {
+                                if (newPhoneNumber != phoneNum) {
+                                    val userData = hashMapOf(
+                                        "phoneNumber" to newPhoneNumber
+                                    )
+
+                                    document.reference.update(userData as Map<String, Any>)
+                                        .addOnSuccessListener {
+                                            Toast.makeText(this, "Phone number updated successfully.", Toast.LENGTH_SHORT).show()
+                                            val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
+                                            pageContainer.removeAllViews()
+                                            pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_account, null) as RelativeLayout)
+                                            initProfileEditPage()
+                                        }
+                                        .addOnFailureListener { e ->
+                                            Toast.makeText(this, "Failed to update phone number: ${e.message}", Toast.LENGTH_SHORT).show()
+                                        }
+                                } else {
+                                    Toast.makeText(this, "No new changes to the phone number.", Toast.LENGTH_SHORT).show()
+                                }
+                            } else {
+                                Toast.makeText(this, "Invalid phone number format. Please enter a valid phone number.", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    } else {
+                        Log.e("GetUser", "No document found for email: $email")
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Log.e("GetUser", "Error getting phone number: ${e.message}", e)
+                }
+        } else {
+            Log.e("GetUser", "Invalid email: $email")
+        }
+    }
+    private fun validatePhoneNumber(phoneNumber: String): Boolean {
+        val phonePattern = Regex("[0-9]{10}") // Assumes a 10-digit phone number format
+        return phonePattern.matches(phoneNumber)
+    }
     fun countFurnitureOccurrences(furnitureArray: Array<String>): HashMap<String, Int> {
         val furnitureCountMap = HashMap<String, Int>()
 
