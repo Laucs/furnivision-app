@@ -48,6 +48,7 @@ import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.bumptech.glide.Glide
+import com.google.firebase.firestore.SetOptions
 
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -1061,35 +1062,96 @@ class MainActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    fun initEditNamePage(){
+    fun initEditNamePage() {
         val email = SessionManager.getUserEmail(this)
-        val editNameET: TextView = findViewById(R.id.editNameET)
+        val editNameET: EditText = findViewById(R.id.editNameET)
+        val applyChangesBtn: ImageButton = findViewById(R.id.applyChangesBtn)
+
         if (email != null) {
             AuthUtility.getUserName(email,
                 onSuccess = { name ->
-                    editNameET.text = name
+                    editNameET.setText(name) // Set the user's current name in the EditText
                 },
                 onFailure = {
                     Log.e("GetUser", "Failed to retrieve user name")
                 }
             )
+
+            applyChangesBtn.setOnClickListener {
+                val newName = editNameET.text.toString() // Get the updated name from the EditText
+                val firestore = FirebaseFirestore.getInstance()
+
+                val userData = hashMapOf(
+                    "name" to newName
+                )
+
+                firestore.collection("users")
+                    .whereEqualTo("email", email)
+                    .get()
+                    .addOnSuccessListener { querySnapshot ->
+                        for (document in querySnapshot.documents) {
+                            document.reference.update(userData as Map<String, Any>)
+                                .addOnSuccessListener {
+                                    Toast.makeText(this, "Name updated successfully.", Toast.LENGTH_SHORT).show()
+                                    val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
+                                    pageContainer.removeAllViews()
+                                    pageContainer.addView(layoutInflater.inflate(R.layout.activity_profile, null) as RelativeLayout)
+                                    initProfilePage()
+                                }
+                                .addOnFailureListener { e ->
+                                    Toast.makeText(this, "Failed to update name: ${e.message}", Toast.LENGTH_SHORT).show()
+                                }
+                        }
+                    }
+                    .addOnFailureListener { e ->
+                        Toast.makeText(this, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
+                    }
+            }
         } else {
             Log.e("GetUser", "Invalid email: $email")
         }
     }
 
-    fun initEditEmailPage(){
+    fun initEditEmailPage() {
         val email = SessionManager.getUserEmail(this)
         val editEmailET: TextView = findViewById(R.id.editEmailET)
+        val changeEmailButton: Button = findViewById(R.id.changeEmailButton)
+
         if (email != null) {
-            AuthUtility.getUserName(email,
-                onSuccess = { name ->
-                    editEmailET.text = email
-                },
-                onFailure = {
-                    Log.e("GetUser", "Failed to retrieve user name")
-                }
-            )
+            editEmailET.text = email
+
+            changeEmailButton.setOnClickListener {
+                val newEmail = editEmailET.text.toString() // Get the updated email from the TextView
+                val firestore = FirebaseFirestore.getInstance()
+
+                val userData = hashMapOf(
+                    "email" to newEmail
+                )
+
+                firestore.collection("users")
+                    .whereEqualTo("email", email)
+                    .get()
+                    .addOnSuccessListener { querySnapshot ->
+                        for (document in querySnapshot.documents) {
+                            document.reference.update(userData as Map<String, Any>)
+                                .addOnSuccessListener {
+                                    Toast.makeText(this, "Email updated successfully.", Toast.LENGTH_SHORT).show()
+                                    // Update the email in the session manager
+                                    SessionManager.setUserEmail(this, newEmail)
+                                    val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
+                                    pageContainer.removeAllViews()
+                                    pageContainer.addView(layoutInflater.inflate(R.layout.activity_profile, null) as RelativeLayout)
+                                    initProfilePage()
+                                }
+                                .addOnFailureListener { e ->
+                                    Toast.makeText(this, "Failed to update email: ${e.message}", Toast.LENGTH_SHORT).show()
+                                }
+                        }
+                    }
+                    .addOnFailureListener { e ->
+                        Toast.makeText(this, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
+                    }
+            }
         } else {
             Log.e("GetUser", "Invalid email: $email")
         }
