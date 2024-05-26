@@ -61,7 +61,7 @@
                 android:src="@drawable/email_icon" />
 
             <EditText
-                android:id="@+id/editNameET"
+                android:id="@+id/editEmailET"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
@@ -75,7 +75,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:background="#d9d9d9"
-                android:layout_below="@id/editNameET" />
+                android:layout_below="@id/editEmailET" />
 
         </RelativeLayout>
 
