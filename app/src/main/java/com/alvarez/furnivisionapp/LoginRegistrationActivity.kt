@@ -18,13 +18,20 @@ import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.alvarez.furnivisionapp.data.AuthUtility
+import com.alvarez.furnivisionapp.data.Furniture
 import com.alvarez.furnivisionapp.data.SessionManager
+import com.alvarez.furnivisionapp.data.Shop
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QueryDocumentSnapshot
+import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.ktx.initialize
 
 class LoginRegistrationActivity : AppCompatActivity() {
 
@@ -43,6 +50,11 @@ class LoginRegistrationActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login_registration)
         requestPermissions()
+
+    }
+
+    fun QueryDocumentSnapshot.toShop(): Shop {
+        return this.toObject(Shop::class.java)
     }
 
     private fun requestPermissions() {
