@@ -154,8 +154,8 @@ class LoginRegistrationActivity : AppCompatActivity() {
                         nameInput.text.toString()
                     ) { success ->
                         if (success) {
-                            showToast("Registration successful!")
-                            startMainActivity()
+                            showToast("Registration successful! Logging in...")
+                            startMainActivity(null)
                         } else {
                             showToast("Registration failed. Please try again.")
                         }
@@ -217,14 +217,14 @@ class LoginRegistrationActivity : AppCompatActivity() {
             loadingCard.visibility = View.GONE
 
             if (currentUser != null || userEmail != null) {
-                startMainActivity()
+                startMainActivity(null)
             } else {
                 loginPage.visibility = View.VISIBLE
             }
         }, 2500)
     }
 
-    fun startMainActivity(extras: Bundle? = null) {
+    fun startMainActivity(extras: Bundle?) {
         val intent = Intent(this, MainActivity::class.java).apply {
             extras?.let { putExtra("extraBundle", it) }
         }
