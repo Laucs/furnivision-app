@@ -1,9 +1,6 @@
 package com.alvarez.furnivisionapp.data
 
 import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
-import com.alvarez.furnivisionapp.LoginRegistrationActivity
 
 object SessionManager {
 

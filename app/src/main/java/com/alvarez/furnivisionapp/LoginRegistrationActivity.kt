@@ -32,6 +32,9 @@ class LoginRegistrationActivity : AppCompatActivity() {
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mFirestore: FirebaseFirestore
     private lateinit var loginPage: CardView
+    private lateinit var registrationPage: CardView
+    private lateinit var landingPage: CardView
+    private lateinit var loadingPage: CardView
 
     companion object {
         private const val RC_SIGN_IN = 20
@@ -76,6 +79,8 @@ class LoginRegistrationActivity : AppCompatActivity() {
         setupGoogleSignIn()
         setupLoginViews()
         setupRegistrationViews()
+        setupLandingPage()
+        setupLoadingPage()
         checkIfUserIsLoggedIn()
     }
 
@@ -86,13 +91,10 @@ class LoginRegistrationActivity : AppCompatActivity() {
             .build()
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
-        val googleSignInButton: ImageView = findViewById(R.id.google_signin_button)
-        googleSignInButton.setOnClickListener {
+        findViewById<ImageView>(R.id.google_signin_button).setOnClickListener {
             AuthUtility.signInWithGoogle(this, googleSignInClient, RC_SIGN_IN)
         }
-
-        val googleLoginButton: ImageView = findViewById(R.id.google_login_button)
-        googleLoginButton.setOnClickListener {
+        findViewById<ImageView>(R.id.google_login_button).setOnClickListener {
             AuthUtility.signInWithGoogle(this, googleSignInClient, RC_SIGN_IN)
         }
     }
@@ -108,7 +110,9 @@ class LoginRegistrationActivity : AppCompatActivity() {
             val email = emailEditText.text.toString()
             val password = passwordEditText.text.toString()
 
+            showLoadingPopup(true)
             AuthUtility.signInWithEmail(this, email, password) { success ->
+                showLoadingPopup(false)
                 if (success) {
                     SessionManager.saveUserEmail(this, email)
                     startMainActivity(Bundle().apply { putString("email", email) })
@@ -121,9 +125,8 @@ class LoginRegistrationActivity : AppCompatActivity() {
         }
     }
 
-
     private fun setupRegistrationViews() {
-        val registerPage: CardView = findViewById(R.id.reg_panel)
+        registrationPage = findViewById(R.id.reg_panel)
         val bgImage: ImageView = findViewById(R.id.bg_image)
         val nameInput: EditText = findViewById(R.id.reg_nameEditText)
         val emailInput: EditText = findViewById(R.id.reg_emailEditText)
@@ -131,7 +134,7 @@ class LoginRegistrationActivity : AppCompatActivity() {
         val confirmPasswordInput: EditText = findViewById(R.id.reg_confirmPassEditText)
 
         findViewById<Button>(R.id.register_Btn).setOnClickListener {
-            toggleViews(loginPage, registerPage)
+            toggleViews(loginPage, registrationPage)
             adjustBackgroundImageMargin(bgImage, -100f)
         }
 
@@ -147,12 +150,14 @@ class LoginRegistrationActivity : AppCompatActivity() {
                 emptyFields.isNotEmpty() -> showToast("The following fields are empty: ${emptyFields.joinToString(", ")}")
                 passwordInput.text.toString() != confirmPasswordInput.text.toString() -> showToast("Passwords don't match")
                 else -> {
+                    showLoadingPopup(true)
                     AuthUtility.createUserWithEmail(
                         this,
                         emailInput.text.toString(),
                         passwordInput.text.toString(),
                         nameInput.text.toString()
                     ) { success ->
+                        showLoadingPopup(false)
                         if (success) {
                             showToast("Registration successful! Logging in...")
                             startMainActivity(null)
@@ -165,8 +170,46 @@ class LoginRegistrationActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.reg_loginButton).setOnClickListener {
-            toggleViews(registerPage, loginPage)
+            toggleViews(registrationPage, loginPage)
             adjustBackgroundImageMargin(bgImage, 0f)
+        }
+    }
+
+    private fun setupLandingPage() {
+        landingPage = findViewById(R.id.start_page)
+        findViewById<Button>(R.id.signup_button).setOnClickListener {
+            landingPage.visibility = View.GONE
+            registrationPage.visibility = View.VISIBLE
+        }
+        findViewById<Button>(R.id.login_button).setOnClickListener {
+            landingPage.visibility = View.GONE
+            loginPage.visibility = View.VISIBLE
+        }
+    }
+
+    private fun setupLoadingPage() {
+        loadingPage = findViewById(R.id.loading_card)
+    }
+
+    private fun showLoadingPopup(show: Boolean) {
+        val loadingCard: CardView = findViewById(R.id.loading_card)
+        val loadingImage: ImageView = findViewById(R.id.loading_img)
+
+        if (show) {
+            val rotateAnimation = RotateAnimation(
+                0f, 360f,
+                Animation.RELATIVE_TO_SELF, 0.5f,
+                Animation.RELATIVE_TO_SELF, 0.5f
+            ).apply {
+                repeatCount = Animation.INFINITE
+                duration = 2000
+                interpolator = LinearInterpolator()
+            }
+            loadingImage.startAnimation(rotateAnimation)
+            loadingCard.visibility = View.VISIBLE
+        } else {
+            loadingImage.clearAnimation()
+            loadingCard.visibility = View.GONE
         }
     }
 
@@ -194,34 +237,12 @@ class LoginRegistrationActivity : AppCompatActivity() {
     }
 
     private fun checkIfUserIsLoggedIn() {
-        val loadingCard: CardView = findViewById(R.id.loading_card)
-        val loadingImage: ImageView = findViewById(R.id.loading_img)
-
-        val rotateAnimation = RotateAnimation(
-            0f, 360f,
-            Animation.RELATIVE_TO_SELF, 0.5f,
-            Animation.RELATIVE_TO_SELF, 0.5f
-        ).apply {
-            repeatCount = Animation.INFINITE
-            duration = 2000
-            interpolator = LinearInterpolator()
+        if (mAuth.currentUser != null) {
+            val email = SessionManager.getUserEmail(this)
+            startMainActivity(Bundle().apply { putString("email", email) })
+        } else {
+            landingPage.visibility = View.VISIBLE
         }
-
-        loadingCard.visibility = View.VISIBLE
-        loadingImage.startAnimation(rotateAnimation)
-
-        Handler().postDelayed({
-            val currentUser = mAuth.currentUser
-            val userEmail = SessionManager.getUserEmail(this)
-            loadingImage.clearAnimation()
-            loadingCard.visibility = View.GONE
-
-            if (currentUser != null || userEmail != null) {
-                startMainActivity(null)
-            } else {
-                loginPage.visibility = View.VISIBLE
-            }
-        }, 2500)
     }
 
     fun startMainActivity(extras: Bundle?) {
