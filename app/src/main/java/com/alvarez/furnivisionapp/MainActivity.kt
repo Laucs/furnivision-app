@@ -881,7 +881,14 @@ class MainActivity : AppCompatActivity() {
         val images = arrayOf(
             R.drawable.profile_pic1,
             R.drawable.profile_pic2,
-            R.drawable.profile_pic3
+            R.drawable.profile_pic3,
+            R.drawable.profile_pic4,
+            R.drawable.profile_pic5,
+            R.drawable.profile_pic6,
+            R.drawable.profile_pic7,
+            R.drawable.profile_pic8,
+            R.drawable.profile_pic9,
+            R.drawable.profile_pic10
         )
 
         val firestore = FirebaseFirestore.getInstance()
@@ -932,6 +939,7 @@ class MainActivity : AppCompatActivity() {
 
         val dialogView = layoutInflater.inflate(R.layout.profile_selection_dialog, null)
         val recyclerView = dialogView.findViewById<RecyclerView>(R.id.profileImageRecyclerView)
+
         val adapter = ProfileImageAdapter(images) { position ->
             // Handle the onItemClick event here if needed
         }
@@ -939,7 +947,6 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
         val dialog = AlertDialog.Builder(this)
-            .setTitle("Select Profile Picture")
             .setView(dialogView)
             .setPositiveButton("Save") { dialogInterface, which ->
                 val selectedImageDrawable = images[adapter.selectedPosition ?: return@setPositiveButton]
