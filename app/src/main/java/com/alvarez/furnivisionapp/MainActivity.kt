@@ -8,7 +8,9 @@ import android.icu.text.DecimalFormat
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.TextureView
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.DatePicker
@@ -649,13 +651,81 @@ class MainActivity : AppCompatActivity() {
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_profile, null) as RelativeLayout)
             initProfilePage()
         }
+
+        val profilePic = findViewById<ImageButton>(R.id.profilePic)
+        profilePic.setOnLongClickListener {
+            showImageSelectionDialog()
+            true
+        }
+
+    }
+
+    fun showImageSelectionDialog() {
+        val images = arrayOf(R.drawable.profile_pic1, R.drawable.profile_pic2, R.drawable.profile_pic3) // Replace with your available images
+        var selectedImageIndex = 0
+
+        class ProfileImageAdapter(private val images: Array<Int>, private val onItemClick: (position: Int) -> Unit) :
+            RecyclerView.Adapter<ProfileImageAdapter.ViewHolder>() {
+
+            inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+                private val imageView: ImageView = itemView.findViewById(R.id.profileImage)
+
+                fun bind(image: Int) {
+                    imageView.setImageResource(image)
+                    val isSelected = adapterPosition == selectedImageIndex
+                    itemView.isActivated = isSelected
+                }
+            }
+
+            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+                val view = LayoutInflater.from(parent.context).inflate(R.layout.profile_image_item, parent, false)
+                return ViewHolder(view)
+            }
+
+            override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+                val image = images[position]
+                holder.bind(image)
+
+                holder.itemView.setOnClickListener {
+                    onItemClick(position)
+                    notifyDataSetChanged()
+                }
+            }
+
+            override fun getItemCount(): Int {
+                return images.size
+            }
+        }
+
+        val dialogView = layoutInflater.inflate(R.layout.profile_selection_dialog, null)
+        val recyclerView = dialogView.findViewById<RecyclerView>(R.id.profileImageRecyclerView)
+        val adapter = ProfileImageAdapter(images) { position ->
+            selectedImageIndex = position
+        }
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+
+        val dialog = AlertDialog.Builder(this)
+            .setTitle("Select Profile Picture")
+            .setView(dialogView)
+            .setPositiveButton("Save") { dialogInterface, which ->
+                val selectedImage = images[selectedImageIndex]
+                val profilePic = findViewById<ImageButton>(R.id.profilePic)
+                profilePic.setImageResource(selectedImage)
+            }
+            .setNegativeButton("Cancel") { dialogInterface, which ->
+                // Do nothing, dialog will be dismissed automatically
+            }
+            .create()
+
+        dialog.show()
     }
 
     fun initPaymentMethodsPage() {
         val paypalLayout = findViewById<RelativeLayout>(R.id.paypalLayout)
 
         paypalLayout.setOnLongClickListener {
-            showEditDialog()
+            paypalEditDialog()
             true
         }
 
@@ -668,7 +738,7 @@ class MainActivity : AppCompatActivity() {
         emailTextView.text = savedEmail
     }
 
-    fun showEditDialog() {
+    fun paypalEditDialog() {
         val dialogView = layoutInflater.inflate(R.layout.edit_paypal_dialog, null)
         val dialog = AlertDialog.Builder(this)
             .setView(dialogView)
@@ -697,6 +767,7 @@ class MainActivity : AppCompatActivity() {
 
         dialog.show()
     }
+
     fun initEditNamePage(){
         val email = SessionManager.getUserEmail(this)
         val editNameET: TextView = findViewById(R.id.editNameET)
