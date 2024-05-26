@@ -35,7 +35,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:fontFamily="@font/montserrat"
-                android:text="Yancy Luceno"
+                android:text="Loading...."
                 android:textColor="@color/white"
                 android:textSize="20sp"
                 android:textStyle="bold"

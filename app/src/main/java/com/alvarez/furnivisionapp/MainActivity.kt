@@ -33,6 +33,7 @@ import com.alvarez.furnivisionapp.utils.HomePageFunctions
 import com.alvarez.furnivisionapp.utils.ShopListAdapter
 import com.alvarez.furnivisionapp.data.SessionManager
 import com.google.firebase.auth.FirebaseAuth
+import java.io.File
 import kotlin.math.log
 
 class MainActivity : AppCompatActivity() {
@@ -311,6 +312,22 @@ class MainActivity : AppCompatActivity() {
         val logoutButton: RelativeLayout = findViewById(R.id.logout_button)
         val aboutButton: RelativeLayout = findViewById(R.id.aboutButton)
         val rateUsButton: RelativeLayout = findViewById(R.id.rateUsButton)
+        val changePassButton: RelativeLayout = findViewById(R.id.changePasswordButton)
+        val email = SessionManager.getUserEmail(this)
+        val nameTV: TextView = findViewById(R.id.nameTV)
+
+        if (email != null) {
+            AuthUtility.getUserName(email,
+                onSuccess = { name ->
+                    nameTV.text = name
+                },
+                onFailure = {
+                    Log.e("GetUser", "Failed to retrieve user name")
+                }
+            )
+        } else {
+            Log.e("GetUser", "Invalid email: $email")
+        }
 
         initBackButton()
         // Navigation Logic
@@ -329,6 +346,12 @@ class MainActivity : AppCompatActivity() {
             initAboutPage()
 
         }
+        changePassButton.setOnClickListener {
+            activePage = (R.layout.activity_change_password)
+            pageContainer.removeAllViews()
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_change_password, null) as RelativeLayout)
+            initAboutPage()
+        }
         rateUsButton.setOnClickListener {
             try {
                 startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://search?q=")))
@@ -337,7 +360,34 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
+    fun clearCache() {
+        try {
+            val dir: File = cacheDir
+            if (deleteDir(dir)) {
+                println("Cache cleared successfully")
+            } else {
+                println("Cache clearing failed")
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+    fun deleteDir(dir: File?): Boolean {
+        if (dir != null && dir.isDirectory) {
+            val children: Array<String> = dir.list() ?: return false
+            for (child in children) {
+                val success = deleteDir(File(dir, child))
+                if (!success) {
+                    return false
+                }
+            }
+            return dir.delete()
+        } else if (dir != null && dir.isFile) {
+            return dir.delete()
+        } else {
+            return false
+        }
+    }
     fun initAboutPage(){
         val backButton: ImageButton = findViewById(R.id.backButton)
         backButton.setOnClickListener {
@@ -346,6 +396,7 @@ class MainActivity : AppCompatActivity() {
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_settings, null) as RelativeLayout)
             initSettingsPage()
         }
+
     }
 
     fun initBackButton(){
@@ -376,9 +427,26 @@ class MainActivity : AppCompatActivity() {
         val changePhoneButton: RelativeLayout = findViewById(R.id.changePhoneButton)
         val changeEmailButton: RelativeLayout = findViewById(R.id.changeEmailButton)
         val saveButton: ImageButton = findViewById(R.id.applyChangesBtn)
-
         val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
 
+        val nameTV: TextView = findViewById(R.id.nameTV)
+        val emailTV: TextView = findViewById(R.id.emailTV)
+        val email = SessionManager.getUserEmail(this)
+
+        if (email != null) {
+            AuthUtility.getUserName(email,
+                onSuccess = { name ->
+                    nameTV.text = name
+                    emailTV.text = email
+                },
+                onFailure = {
+                    Log.e("GetUser", "Failed to retrieve user name")
+                }
+            )
+        } else {
+            Log.e("GetUser", "Invalid email: $email")
+        }
+        initBackButton()
         changeNameButton.setOnClickListener {
             activePage = (R.layout.activity_edit_name)
             pageContainer.removeAllViews()
@@ -462,6 +530,16 @@ class MainActivity : AppCompatActivity() {
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_profile, null) as RelativeLayout)
             initProfilePage()
         }
+    }
+
+    fun initEditNamePage(){
+
+    }
+    fun initEditBioPage(){
+
+    }
+    fun initEditEmailPage(){
+
     }
 
     fun countFurnitureOccurrences(furnitureArray: Array<String>): HashMap<String, Int> {
