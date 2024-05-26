@@ -217,10 +217,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun initProfilePage() {
 
-
         val emailTextView: TextView = findViewById(R.id.email)
-        val userEmail = SessionManager.getUserEmail(this)
-        emailTextView.text = userEmail
+        val email = SessionManager.getUserEmail(this)
+        emailTextView.text = email
+        val nameTextView: TextView = findViewById(R.id.name)
 
         val settingsButton: ImageButton = findViewById(R.id.settingsButton)
         val toPayButton: RelativeLayout = findViewById(R.id.toPayButton)
@@ -233,6 +233,19 @@ class MainActivity : AppCompatActivity() {
 
         // Navigation Logic
         val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
+
+        if (email != null) {
+            AuthUtility.getUserName(email,
+                onSuccess = { name ->
+                    nameTextView.text = name
+                },
+                onFailure = {
+                    Log.e("GetUser", "Failed to retrieve user name")
+                }
+            )
+        } else {
+            Log.e("GetUser", "Invalid email: $email")
+        }
 
         settingsButton.setOnClickListener {
             activePage = (R.layout.activity_settings)

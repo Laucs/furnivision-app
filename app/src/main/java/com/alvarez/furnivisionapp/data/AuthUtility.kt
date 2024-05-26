@@ -2,6 +2,7 @@ package com.alvarez.furnivisionapp.data
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import com.alvarez.furnivisionapp.LoginRegistrationActivity
@@ -30,7 +31,7 @@ object AuthUtility {
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     Log.d(TAG, "signInWithCredential:success")
-                     (context as? LoginRegistrationActivity)?.startMainActivity()
+                     (context as? LoginRegistrationActivity)?.startMainActivity(null)
                     Toast.makeText(context, "Sign in Successful! Loading App...", Toast.LENGTH_SHORT).show()
                 } else {
                     Log.w(TAG, "signInWithCredential:failure", task.exception)
@@ -83,7 +84,7 @@ object AuthUtility {
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     Log.d(TAG, "signInWithEmail:success")
-                    (context as? LoginRegistrationActivity)?.startMainActivity()
+                    (context as? LoginRegistrationActivity)?.startMainActivity(null)
                     Toast.makeText(context, "Sign in Successful! Loading App...", Toast.LENGTH_SHORT).show()
                     onResult(true)
                 } else {
@@ -91,6 +92,30 @@ object AuthUtility {
                     Toast.makeText(context, "Sign in failed", Toast.LENGTH_SHORT).show()
                     onResult(false)
                 }
+            }
+    }
+
+    fun getUserName(email: String, onSuccess: (String) -> Unit, onFailure: () -> Unit) {
+        val db = Firebase.firestore
+        db.collection("users")
+            .whereEqualTo("email", email)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                if (!querySnapshot.isEmpty) {
+                    val document = querySnapshot.documents.first()
+                    val name = document.getString("name")
+                    if (name != null) {
+                        onSuccess(name)
+                    } else {
+                        onFailure()
+                    }
+                } else {
+                    onFailure()
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.w(TAG, "Error getting user name", e)
+                onFailure()
             }
     }
 
