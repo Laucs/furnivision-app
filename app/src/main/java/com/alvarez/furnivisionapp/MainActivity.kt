@@ -1595,35 +1595,39 @@ class MainActivity : AppCompatActivity() {
                 val newName = editNameET.text.toString() // Get the updated name from the EditText
                 val firestore = FirebaseFirestore.getInstance()
 
-                val userData = hashMapOf(
-                    "name" to newName
-                )
+                if (newName.isNullOrEmpty() || newName.length > 100) {
+                    Toast.makeText(this, "Please enter a valid name (1-100 characters).", Toast.LENGTH_SHORT).show()
+                } else {
+                    val userData = hashMapOf(
+                        "name" to newName
+                    )
 
-                firestore.collection("users")
-                    .whereEqualTo("email", email)
-                    .get()
-                    .addOnSuccessListener { querySnapshot ->
-                        for (document in querySnapshot.documents) {
-                            document.reference.update(userData as Map<String, Any>)
-                                .addOnSuccessListener {
-                                    if (newName != document.getString("name")) {
-                                        Toast.makeText(this, "Name updated successfully.", Toast.LENGTH_SHORT).show()
-                                        val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
-                                        pageContainer.removeAllViews()
-                                        pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_account, null) as RelativeLayout)
-                                        initProfileEditPage()
-                                    } else {
-                                        Toast.makeText(this, "No new changes to the name.", Toast.LENGTH_SHORT).show()
+                    firestore.collection("users")
+                        .whereEqualTo("email", email)
+                        .get()
+                        .addOnSuccessListener { querySnapshot ->
+                            for (document in querySnapshot.documents) {
+                                document.reference.update(userData as Map<String, Any>)
+                                    .addOnSuccessListener {
+                                        if (newName != document.getString("name")) {
+                                            Toast.makeText(this, "Name updated successfully.", Toast.LENGTH_SHORT).show()
+                                            val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
+                                            pageContainer.removeAllViews()
+                                            pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_account, null) as RelativeLayout)
+                                            initProfileEditPage()
+                                        } else {
+                                            Toast.makeText(this, "No new changes to the name.", Toast.LENGTH_SHORT).show()
+                                        }
                                     }
-                                }
-                                .addOnFailureListener { e ->
-                                    Toast.makeText(this, "Failed to update name: ${e.message}", Toast.LENGTH_SHORT).show()
-                                }
+                                    .addOnFailureListener { e ->
+                                        Toast.makeText(this, "Failed to update name: ${e.message}", Toast.LENGTH_SHORT).show()
+                                    }
+                            }
                         }
-                    }
-                    .addOnFailureListener { e ->
-                        Toast.makeText(this, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
-                    }
+                        .addOnFailureListener { e ->
+                            Toast.makeText(this, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                }
             }
         } else {
             Log.e("GetUser", "Invalid email: $email")
@@ -1641,42 +1645,53 @@ class MainActivity : AppCompatActivity() {
             changeEmailButton.setOnClickListener {
                 val newEmail = editEmailET.text.toString().trim() // Get the updated email from the TextView and remove leading/trailing whitespaces
 
-                if (isEmailValid(newEmail)) {
-                    if (newEmail != email) {
-                        val firestore = FirebaseFirestore.getInstance()
-
-                        val userData = hashMapOf(
-                            "email" to newEmail
-                        )
-
-                        firestore.collection("users")
-                            .whereEqualTo("email", email)
-                            .get()
-                            .addOnSuccessListener { querySnapshot ->
-                                for (document in querySnapshot.documents) {
-                                    document.reference.update(userData as Map<String, Any>)
-                                        .addOnSuccessListener {
-                                            Toast.makeText(this, "Email updated successfully.", Toast.LENGTH_SHORT).show()
-                                            // Update the email in the session manager
-                                            SessionManager.setUserEmail(this, newEmail)
-                                            val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
-                                            pageContainer.removeAllViews()
-                                            pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_account, null) as RelativeLayout)
-                                            initProfileEditPage()
-                                        }
-                                        .addOnFailureListener { e ->
-                                            Toast.makeText(this, "Failed to update email: ${e.message}", Toast.LENGTH_SHORT).show()
-                                        }
-                                }
-                            }
-                            .addOnFailureListener { e ->
-                                Toast.makeText(this, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
-                            }
-                    } else {
-                        Toast.makeText(this, "No new changes to the email.", Toast.LENGTH_SHORT).show()
-                    }
-                } else {
+                if (newEmail.isNullOrEmpty() || !isEmailValid(newEmail)) {
                     Toast.makeText(this, "Invalid email format. Please enter a valid email.", Toast.LENGTH_SHORT).show()
+                } else if (newEmail != email) {
+                    val firestore = FirebaseFirestore.getInstance()
+
+                    // Check if the new email is already used in another account
+                    firestore.collection("users")
+                        .whereEqualTo("email", newEmail)
+                        .get()
+                        .addOnSuccessListener { querySnapshot ->
+                            if (querySnapshot.isEmpty) {
+                                val userData = hashMapOf(
+                                    "email" to newEmail
+                                )
+
+                                firestore.collection("users")
+                                    .whereEqualTo("email", email)
+                                    .get()
+                                    .addOnSuccessListener { querySnapshot ->
+                                        for (document in querySnapshot.documents) {
+                                            document.reference.update(userData as Map<String, Any>)
+                                                .addOnSuccessListener {
+                                                    Toast.makeText(this, "Email updated successfully.", Toast.LENGTH_SHORT).show()
+                                                    // Update the email in the session manager
+                                                    SessionManager.setUserEmail(this, newEmail)
+                                                    val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
+                                                    pageContainer.removeAllViews()
+                                                    pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_account, null) as RelativeLayout)
+                                                    initProfileEditPage()
+                                                }
+                                                .addOnFailureListener { e ->
+                                                    Toast.makeText(this, "Failed to update email: ${e.message}", Toast.LENGTH_SHORT).show()
+                                                }
+                                        }
+                                    }
+                                    .addOnFailureListener { e ->
+                                        Toast.makeText(this, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
+                                    }
+                            } else {
+                                Toast.makeText(this, "Email is already used in another account.", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                        .addOnFailureListener { e ->
+                            Toast.makeText(this, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                } else {
+                    Toast.makeText(this, "No new changes to the email.", Toast.LENGTH_SHORT).show()
                 }
             }
         } else {
@@ -1712,28 +1727,43 @@ class MainActivity : AppCompatActivity() {
                             val newPhoneNumber = editPhoneET.text.toString().trim() // Get the updated phone number from the EditText
                             val isValidPhoneNumber = validatePhoneNumber(newPhoneNumber)
 
-                            if (isValidPhoneNumber) {
-                                if (newPhoneNumber != phoneNum) {
-                                    val userData = hashMapOf(
-                                        "phoneNumber" to newPhoneNumber
-                                    )
-
-                                    document.reference.update(userData as Map<String, Any>)
-                                        .addOnSuccessListener {
-                                            Toast.makeText(this, "Phone number updated successfully.", Toast.LENGTH_SHORT).show()
-                                            val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
-                                            pageContainer.removeAllViews()
-                                            pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_account, null) as RelativeLayout)
-                                            initProfileEditPage()
-                                        }
-                                        .addOnFailureListener { e ->
-                                            Toast.makeText(this, "Failed to update phone number: ${e.message}", Toast.LENGTH_SHORT).show()
-                                        }
-                                } else {
-                                    Toast.makeText(this, "No new changes to the phone number.", Toast.LENGTH_SHORT).show()
-                                }
-                            } else {
+                            if (newPhoneNumber.isNullOrEmpty()) {
+                                Toast.makeText(this, "Phone number cannot be empty.", Toast.LENGTH_SHORT).show()
+                            } else if (!isValidPhoneNumber) {
                                 Toast.makeText(this, "Invalid phone number format. Please enter a valid phone number.", Toast.LENGTH_SHORT).show()
+                            } else if (newPhoneNumber != phoneNum) {
+                                val firestore = FirebaseFirestore.getInstance()
+
+                                // Check if the new phone number is already used in another account
+                                firestore.collection("users")
+                                    .whereEqualTo("phoneNumber", newPhoneNumber)
+                                    .get()
+                                    .addOnSuccessListener { querySnapshot ->
+                                        if (querySnapshot.isEmpty) {
+                                            val userData = hashMapOf(
+                                                "phoneNumber" to newPhoneNumber
+                                            )
+
+                                            document.reference.update(userData as Map<String, Any>)
+                                                .addOnSuccessListener {
+                                                    Toast.makeText(this, "Phone number updated successfully.", Toast.LENGTH_SHORT).show()
+                                                    val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
+                                                    pageContainer.removeAllViews()
+                                                    pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_account, null) as RelativeLayout)
+                                                    initProfileEditPage()
+                                                }
+                                                .addOnFailureListener { e ->
+                                                    Toast.makeText(this, "Failed to update phone number: ${e.message}", Toast.LENGTH_SHORT).show()
+                                                }
+                                        } else {
+                                            Toast.makeText(this, "Phone number is already used in another account.", Toast.LENGTH_SHORT).show()
+                                        }
+                                    }
+                                    .addOnFailureListener { e ->
+                                        Toast.makeText(this, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
+                                    }
+                            } else {
+                                Toast.makeText(this, "No new changes to the phone number.", Toast.LENGTH_SHORT).show()
                             }
                         }
                     } else {
@@ -1747,6 +1777,7 @@ class MainActivity : AppCompatActivity() {
             Log.e("GetUser", "Invalid email: $email")
         }
     }
+
     private fun validatePhoneNumber(phoneNumber: String): Boolean {
         val phonePattern = Regex("[0-9]{10}") // Assumes a 10-digit phone number format
         return phonePattern.matches(phoneNumber)
