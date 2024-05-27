@@ -73,7 +73,9 @@
             android:layout_height="360dp"
             android:layout_toEndOf="@+id/previousBtn"
             android:layout_toStartOf="@+id/nextBtn"
-            app:cardBackgroundColor="@color/white_transparent"
+            app:cardBackgroundColor="@color/primary_lighter"
+            app:contentPaddingTop="10dp"
+            app:contentPaddingBottom="10dp"
             app:cardCornerRadius="10dp"
             android:elevation="20dp"
             >
