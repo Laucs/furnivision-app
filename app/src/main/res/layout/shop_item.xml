@@ -17,6 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/furni_green_light2">
+
             <androidx.cardview.widget.CardView
                 android:id="@+id/logo_section"
                 android:layout_width="wrap_content"
@@ -27,8 +28,8 @@
                 >
                 <ImageView
                     android:id="@+id/shop_logo"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
                     android:scaleType="fitXY"
                     android:background="@color/white"
                     />
@@ -64,12 +65,14 @@
                     android:text="@string/sample"
                     android:textSize="15sp"
                     android:layout_weight="1"
+                    android:ellipsize="end"
                     />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
+
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

@@ -301,7 +301,7 @@ class MainActivity : AppCompatActivity() {
 
         if (shopCart != null) {
             // Shop exists in the list, check for the furniture item
-            val cartItem = shopCart.items?.find { it.furniture.id == selectedFurniture.id }
+            val cartItem = shopCart.items.find { it.furniture.id == selectedFurniture.id }
             if (cartItem != null) {
                 // Furniture exists in the list, increment the quantity
                 cartItem.quantity += 1
@@ -310,7 +310,7 @@ class MainActivity : AppCompatActivity() {
                 if (shopCart.items == null) {
                     shopCart.items = mutableListOf(CartItem(selectedFurniture, 1))
                 } else {
-                    shopCart.items?.add(CartItem(selectedFurniture, 1))
+                    shopCart.items.add(CartItem(selectedFurniture, 1))
                 }
             }
         } else {
@@ -324,7 +324,6 @@ class MainActivity : AppCompatActivity() {
     private fun initCameraPage() {
         val cameraLayout: RelativeLayout = findViewById(R.id.cameraLayout)
         val galleryLayout: RelativeLayout  = findViewById(R.id.galleryLayout)
-        val videoLayout: RelativeLayout  = findViewById(R.id.videoLayout)
         val galleryImageView: ImageView = findViewById(R.id.galleryImageView)
 
         val galleryBtn: Button = findViewById(R.id.galleryButton)
@@ -332,29 +331,22 @@ class MainActivity : AppCompatActivity() {
         val cameraBtn: Button = findViewById(R.id.backButton)
         val cameraBtn2: Button = findViewById(R.id.vidCameraButton)
         val captureButton: Button = findViewById(R.id.captureButton)
-        val videoBtn: Button = findViewById(R.id.videoButton)
         val galleryPrevBtn: Button = findViewById(R.id.prevButton)
         val galleryNextBtn: Button = findViewById(R.id.nextButton)
-        val vidTextureView: TextureView = findViewById(R.id.videoTextureView)
-        val vidRecordButton: Button = findViewById(R.id.videoRecButton)
         val textureView: TextureView = findViewById(R.id.textureView)
         val cameraManager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
 
         cameraFunctions = CameraFunctions(
             cameraLayout,
             galleryLayout,
-            videoLayout,
             galleryImageView,
             galleryBtn,
             galleryBtn2,
             cameraBtn,
             cameraBtn2,
             captureButton,
-            videoBtn,
             galleryPrevBtn,
             galleryNextBtn,
-            vidTextureView,
-            vidRecordButton,
             filesDir,
             textureView,
             cameraManager,
@@ -408,8 +400,8 @@ class MainActivity : AppCompatActivity() {
         val orderTotalPaymentTextView: TextView = findViewById(R.id.total_payment_value)
         val totalValueTextView: TextView = findViewById(R.id.total_value)
 
-        val productProtectSubtotal = 1500
-        val shipSubtotal = 2500
+        val productProtectSubtotal = 0
+        val shipSubtotal = 0
         var merchSubTotal = cartList?.let { calculateTotalPrice(it) }
         var totalPayment = productProtectSubtotal + shipSubtotal + merchSubTotal!!
 
@@ -577,8 +569,117 @@ class MainActivity : AppCompatActivity() {
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_delivery_address, null) as RelativeLayout)
             initBackButton()
+            initDeliveryAddressPage()
         }
         refreshProfile()
+    }
+
+    fun initDeliveryAddressPage() {
+        val nameDeliveryTV = findViewById<TextView>(R.id.nameDeliveryTV)
+        val phoneDeliveryTV = findViewById<TextView>(R.id.phoneDeliveryTV)
+        val regionTV = findViewById<TextView>(R.id.regionTV)
+        val barangayTV = findViewById<TextView>(R.id.barangayTV)
+        val streetNameTV = findViewById<TextView>(R.id.streetNameTV)
+        val postalCodeTV = findViewById<TextView>(R.id.postalCodeTV)
+        val editDeliveryAddressButton = findViewById<Button>(R.id.editDeliveryAddresButton)
+
+        val dialogView = layoutInflater.inflate(R.layout.edit_delivery_address_dialog, null)
+        val nameDeliveryET = dialogView.findViewById<EditText>(R.id.nameDeliveryET)
+        val phoneDeliveryET = dialogView.findViewById<EditText>(R.id.phoneDeliveryET)
+        val regionET = dialogView.findViewById<EditText>(R.id.regionET)
+        val barangayET = dialogView.findViewById<EditText>(R.id.barangayET)
+        val streetNameET = dialogView.findViewById<EditText>(R.id.streetNameET)
+        val postalCodeET = dialogView.findViewById<EditText>(R.id.postalCodeET)
+
+        val dialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .setPositiveButton("Save") { _, _ ->
+                // Save the updated delivery address
+                nameDeliveryTV.text = nameDeliveryET.text
+                phoneDeliveryTV.text = phoneDeliveryET.text
+                regionTV.text = regionET.text
+                barangayTV.text = barangayET.text
+                streetNameTV.text = streetNameET.text
+                postalCodeTV.text = postalCodeET.text
+
+                // Save the delivery address in the database if needed
+                val firestore = FirebaseFirestore.getInstance()
+                val email = SessionManager.getUserEmail(this)
+                if (email != null) {
+                    val deliveryAddress = hashMapOf(
+                        "name" to nameDeliveryTV.text.toString(),
+                        "phone" to phoneDeliveryTV.text.toString(),
+                        "region" to regionTV.text.toString(),
+                        "barangay" to barangayTV.text.toString(),
+                        "streetName" to streetNameTV.text.toString(),
+                        "postalCode" to postalCodeTV.text.toString()
+                    )
+                    firestore.collection("users")
+                        .whereEqualTo("email", email)
+                        .get()
+                        .addOnSuccessListener { querySnapshot ->
+                            for (document in querySnapshot.documents) {
+                                document.reference.update("deliveryAddress", deliveryAddress)
+                                    .addOnSuccessListener {
+                                        Toast.makeText(this, "Delivery address updated successfully.", Toast.LENGTH_SHORT).show()
+                                    }
+                                    .addOnFailureListener { e ->
+                                        Toast.makeText(this, "Failed to update delivery address: ${e.message}", Toast.LENGTH_SHORT).show()
+                                    }
+                            }
+                        }
+                        .addOnFailureListener { e ->
+                            Toast.makeText(this, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                } else {
+                    Log.e("GetUser", "Invalid email: $email")
+                }
+            }
+            .setNegativeButton("Cancel") { _, _ ->
+                // Cancel the dialog
+            }
+            .create()
+
+        editDeliveryAddressButton.setOnClickListener {
+            // Set the initial values for the EditText fields
+            nameDeliveryET.setText(nameDeliveryTV.text)
+            phoneDeliveryET.setText(phoneDeliveryTV.text)
+            regionET.setText(regionTV.text)
+            barangayET.setText(barangayTV.text)
+            streetNameET.setText(streetNameTV.text)
+            postalCodeET.setText(postalCodeTV.text)
+
+            dialog.show()
+        }
+
+        val firestore = FirebaseFirestore.getInstance()
+        val email = SessionManager.getUserEmail(this)
+        if (email != null) {
+            firestore.collection("users")
+                .whereEqualTo("email", email)
+                .get()
+                .addOnSuccessListener { querySnapshot ->
+                    if (!querySnapshot.isEmpty) {
+                        val document = querySnapshot.documents.first()
+                        val deliveryAddress = document.get("deliveryAddress") as? Map<String, Any>
+
+                        // Populate the TextViews with the delivery address details
+                        if (deliveryAddress != null) {
+                            nameDeliveryTV.text = deliveryAddress["name"] as? String
+                            phoneDeliveryTV.text = deliveryAddress["phone"] as? String
+                            regionTV.text = deliveryAddress["region"] as? String
+                            barangayTV.text = deliveryAddress["barangay"] as? String
+                            streetNameTV.text = deliveryAddress["streetName"] as? String
+                            postalCodeTV.text = deliveryAddress["postalCode"] as? String
+                        }
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Log.e("GetUser", "Error getting user details: ${e.message}", e)
+                }
+        } else {
+            Log.e("GetUser", "Invalid email: $email")
+        }
     }
 
     fun initToPayPage() {

@@ -111,85 +111,96 @@
         android:layout_below="@id/furniture_img_viewer"
         app:cardCornerRadius="10dp">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:padding="20dp">
 
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/furnitureName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/spartan_extrabold"
-                    android:textAllCaps="true"
-                    android:textColor="@color/blue"
-                    android:textSize="20dp"
-                    android:text="Chair"/>
-
-                <TextView
-                    android:id="@+id/furnitureDesc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/furnitureName"
-                    android:fontFamily="@font/glacial_indifference_regular"
-                    android:textStyle="bold"
-                    android:textSize="17dp"
-                    android:text="Description"/>
-
-                <TextView
-                    android:id="@+id/furniturePrice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/furnitureDesc"
-                    android:layout_marginVertical="10dp"
-                    android:fontFamily="@font/spartan_extrabold"
-                    android:textStyle="bold"
-                    android:textSize="17dp"
-                    android:text="P 10,000"/>
-
-                <TextView
-                    android:id="@+id/furnitureDimensions"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/furniturePrice"
-                    android:fontFamily="@font/glacial_indifference_regular"
-                    android:textStyle="bold"
-                    android:textSize="17dp"
-                    android:text="@string/dimensions"/>
-
-                <TextView
-                    android:id="@+id/furnitureStocks"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/furnitureDimensions"
-                    android:fontFamily="@font/glacial_indifference_regular"
-                    android:textStyle="bold"
-                    android:textSize="17dp"
-                    android:text="@string/stock"/>
-
-                <TextView
-                    android:id="@+id/furniAvailColors"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/furnitureStocks"
-                    android:fontFamily="@font/glacial_indifference_regular"
-                    android:textStyle="bold"
-                    android:textSize="17dp"
-                    android:text="@string/colors" />
-
-            </RelativeLayout>
-
-            <LinearLayout
+            <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_above="@+id/furnibtns"
+                android:scrollbarAlwaysDrawVerticalTrack="true"
+                android:scrollbars="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/furnitureName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/spartan_extrabold"
+                        android:textAllCaps="true"
+                        android:textColor="@color/blue"
+                        android:textSize="18dp"
+                        android:text="Chair"/>
+
+                    <TextView
+                        android:id="@+id/furnitureDesc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/furnitureName"
+                        android:fontFamily="@font/glacial_indifference_regular"
+                        android:textStyle="bold"
+                        android:textSize="16dp"
+                        android:text="Description"/>
+
+                    <TextView
+                        android:id="@+id/furniturePrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/furnitureDesc"
+                        android:layout_marginVertical="10dp"
+                        android:fontFamily="@font/spartan_extrabold"
+                        android:textStyle="bold"
+                        android:textSize="17dp"
+                        android:text="P 10,000"/>
+
+                    <TextView
+                        android:id="@+id/furnitureDimensions"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/furniturePrice"
+                        android:fontFamily="@font/glacial_indifference_regular"
+                        android:textStyle="bold"
+                        android:textSize="17dp"
+                        android:text="@string/dimensions"/>
+
+                    <TextView
+                        android:id="@+id/furnitureStocks"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/furnitureDimensions"
+                        android:fontFamily="@font/glacial_indifference_regular"
+                        android:textStyle="bold"
+                        android:textSize="17dp"
+                        android:text="@string/stock"/>
+
+                    <TextView
+                        android:id="@+id/furniAvailColors"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/furnitureStocks"
+                        android:fontFamily="@font/glacial_indifference_regular"
+                        android:textStyle="bold"
+                        android:textSize="17dp"
+                        android:text="@string/colors" />
+
+                </RelativeLayout>
+
+            </ScrollView>
+
+            <LinearLayout
+                android:id="@+id/furnibtns"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:layout_alignParentBottom="true"
+                android:background="@color/transparent"
                 android:gravity="center"
                 >
 
@@ -216,7 +227,7 @@
 
             </LinearLayout>
 
-        </LinearLayout>
+        </RelativeLayout>
 
     </androidx.cardview.widget.CardView>
 

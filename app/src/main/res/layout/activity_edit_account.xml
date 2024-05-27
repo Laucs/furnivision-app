@@ -59,6 +59,7 @@
             android:layout_marginStart="15dp"
             android:background="@drawable/round_shape"
             android:scaleType="centerCrop"
+            android:src="@color/light_gray"
             android:contentDescription="Profile Picture"
             android:clipToOutline="true"
             android:outlineProvider="background" />
