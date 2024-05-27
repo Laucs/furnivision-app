@@ -618,19 +618,87 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+
+
     fun initDeliveryAddressPage() {
         val firestore = FirebaseFirestore.getInstance()
         val email = SessionManager.getUserEmail(this)
-
         val deliveryAddresses = mutableListOf<DeliveryAddress>()
-
         val deliveryAddressRecyclerView = findViewById<RecyclerView>(R.id.deliveryAddressRecyclerView)
         deliveryAddressRecyclerView.layoutManager = LinearLayoutManager(this)
-
+        val addNewDeliveryAddressButton = findViewById<RelativeLayout>(R.id.addNewDeliveryAddressButton)
         val deliveryAddressAdapter = DeliveryAddressAdapter(deliveryAddresses)
         deliveryAddressRecyclerView.adapter = deliveryAddressAdapter
 
-        val addNewDeliveryAddressButton = findViewById<Button>(R.id.addNewDeliveryAddressButton)
+        if (email != null) {
+            firestore.collection("users")
+                .document(email)
+                .collection("deliveryAddresses")
+                .addSnapshotListener { querySnapshot, e ->
+                    if (e != null) {
+                        Log.e("MainActivity", "Listen failed: ${e.message}")
+                        return@addSnapshotListener
+                    }
+
+                    deliveryAddresses.clear()
+                    querySnapshot?.documents?.forEach { document ->
+                        val deliveryAddressData = document.data
+                        if (deliveryAddressData != null) {
+                            val name = deliveryAddressData["name"] as? String
+                            val phone = deliveryAddressData["phone"] as? String
+                            val region = deliveryAddressData["region"] as? String
+                            val barangay = deliveryAddressData["barangay"] as? String
+                            val streetName = deliveryAddressData["streetName"] as? String
+                            val postalCode = deliveryAddressData["postalCode"] as? String
+                            val isChecked = deliveryAddressData["isChecked"] as? Boolean
+
+                            if (name != null && phone != null && region != null && barangay != null && streetName != null && postalCode != null && isChecked != null) {
+                                val deliveryAddress = DeliveryAddress(
+                                    name,
+                                    phone,
+                                    region,
+                                    barangay,
+                                    streetName,
+                                    postalCode,
+                                    isChecked
+                                )
+                                deliveryAddresses.add(deliveryAddress)
+                            } else {
+                                Log.e("MainActivity", "One or more fields are null")
+                            }
+                        } else {
+                            Log.e("MainActivity", "deliveryAddressData is null")
+                        }
+                    }
+                    deliveryAddressAdapter.notifyDataSetChanged()
+                }
+        } else {
+            Log.e("GetUser", "Invalid email: $email")
+        }
+
+        deliveryAddressAdapter.setOnItemClickListener(object : DeliveryAddressAdapter.OnItemClickListener {
+            override fun onItemClick(deliveryAddress: DeliveryAddress) {
+                val editDeleteDialogView = layoutInflater.inflate(R.layout.edit_delete_dialog, null)
+                val editButton = editDeleteDialogView.findViewById<Button>(R.id.editButton)
+                val deleteButton = editDeleteDialogView.findViewById<Button>(R.id.deleteButton)
+
+                val editDeleteDialog = AlertDialog.Builder(this@MainActivity)
+                    .setView(editDeleteDialogView)
+                    .create()
+
+                editButton.setOnClickListener {
+                    editDeleteDialog.dismiss()
+                    showEditDialog(deliveryAddress)
+                }
+
+                deleteButton.setOnClickListener {
+                    editDeleteDialog.dismiss()
+                    deleteDeliveryAddress(deliveryAddress)
+                }
+
+                editDeleteDialog.show()
+            }
+        })
 
         addNewDeliveryAddressButton.setOnClickListener {
             val addDialogView = layoutInflater.inflate(R.layout.add_delivery_address_dialog, null)
@@ -667,11 +735,6 @@ class MainActivity : AppCompatActivity() {
                             isChecked
                         )
 
-                        // Add the new delivery address to the list and notify the adapter
-                        deliveryAddresses.add(newDeliveryAddress)
-                        deliveryAddressAdapter.notifyDataSetChanged()
-
-                        // Save the new delivery address in the database
                         if (email != null) {
                             val deliveryAddressData = hashMapOf(
                                 "name" to newDeliveryAddress.name,
@@ -679,119 +742,32 @@ class MainActivity : AppCompatActivity() {
                                 "region" to newDeliveryAddress.region,
                                 "barangay" to newDeliveryAddress.barangay,
                                 "streetName" to newDeliveryAddress.streetName,
-                                "postalCode" to newDeliveryAddress.postalCode
+                                "postalCode" to newDeliveryAddress.postalCode,
+                                "isChecked" to newDeliveryAddress.isChecked
                             )
 
                             firestore.collection("users")
-                                .whereEqualTo("email", email)
-                                .get()
-                                .addOnSuccessListener { querySnapshot ->
-                                    for (document in querySnapshot.documents) {
-                                        document.reference.update("deliveryAddress", deliveryAddressData)
-                                            .addOnSuccessListener {
-                                                Toast.makeText(this, "Delivery address added successfully.", Toast.LENGTH_SHORT).show()
-                                            }
-                                            .addOnFailureListener { e ->
-                                                Toast.makeText(this, "Failed to add delivery address: ${e.message}", Toast.LENGTH_SHORT).show()
-                                            }
-                                    }
+                                .document(email)
+                                .collection("deliveryAddresses")
+                                .add(deliveryAddressData)
+                                .addOnSuccessListener {
+                                    Toast.makeText(this, "Delivery address added successfully.", Toast.LENGTH_SHORT).show()
                                 }
                                 .addOnFailureListener { e ->
-                                    Toast.makeText(this, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(this, "Failed to add delivery address: ${e.message}", Toast.LENGTH_SHORT).show()
                                 }
                         } else {
                             Log.e("GetUser", "Invalid email: $email")
                         }
                     }
                 }
-                .setNegativeButton("Cancel") { _, _ ->
-                    // Cancel the dialog
-                }
+                .setNegativeButton("Cancel") { _, _ -> }
                 .create()
 
             addDialog.show()
         }
-
-        deliveryAddressAdapter.setOnItemClickListener(object : DeliveryAddressAdapter.OnItemClickListener {
-            override fun onItemClick(deliveryAddress: DeliveryAddress) {
-                val editDeleteDialogView = layoutInflater.inflate(R.layout.edit_delete_dialog, null)
-                val editButton = editDeleteDialogView.findViewById<Button>(R.id.editButton)
-                val deleteButton = editDeleteDialogView.findViewById<Button>(R.id.deleteButton)
-
-                val editDeleteDialog = AlertDialog.Builder(this@MainActivity)
-                    .setView(editDeleteDialogView)
-                    .create()
-
-                editButton.setOnClickListener {
-                    editDeleteDialog.dismiss()
-                    showEditDialog(deliveryAddress)
-                }
-
-                deleteButton.setOnClickListener {
-                    editDeleteDialog.dismiss()
-                    deleteDeliveryAddress(deliveryAddress)
-                }
-
-                editDeleteDialog.show()
-            }
-        })
-
-        // Fetch delivery addresses from Firestore and populate the deliveryAddresses list
-        if (email != null) {
-            AuthUtility.getUserName(
-                email,
-                onSuccess = { name ->
-
-                    // Fetch delivery addresses using user's email
-                    firestore.collection("users")
-                        .whereEqualTo("email", email)
-                        .get()
-                        .addOnSuccessListener { querySnapshot ->
-                            for (document in querySnapshot.documents) {
-                                val deliveryAddressData = document.data
-                                if (deliveryAddressData != null) {
-                                    val name = deliveryAddressData["name"] as? String
-                                    val phone = deliveryAddressData["phone"] as? String
-                                    val region = deliveryAddressData["region"] as? String
-                                    val barangay = deliveryAddressData["barangay"] as? String
-                                    val streetName = deliveryAddressData["streetName"] as? String
-                                    val postalCode = deliveryAddressData["postalCode"] as? String
-                                    val isChecked = deliveryAddressData["isChecked"] as? Boolean
-
-                                    if (name != null && phone != null && region != null && barangay != null && streetName != null && postalCode != null && isChecked != null) {
-                                        // Create DeliveryAddress object
-                                        val deliveryAddress = DeliveryAddress(
-                                            name,
-                                            phone,
-                                            region,
-                                            barangay,
-                                            streetName,
-                                            postalCode,
-                                            isChecked
-                                        )
-                                        deliveryAddresses.add(deliveryAddress)
-                                    } else {
-                                        Log.e("MainActivity", "One or more fields are null")
-                                    }
-                                } else {
-                                    Log.e("MainActivity", "deliveryAddressData is null")
-                                }
-                            }
-                            // Notify the adapter that the data has changed
-                            deliveryAddressAdapter.notifyDataSetChanged()
-                        }
-                        .addOnFailureListener { e ->
-                            Toast.makeText(this, "Error fetching delivery addresses: ${e.message}", Toast.LENGTH_SHORT).show()
-                        }
-                },
-                onFailure = {
-                    Log.e("GetUser", "Failed to retrieve user name")
-                }
-            )
-        } else {
-            Log.e("GetUser", "Invalid email: $email")
-        }
     }
+
 
     fun showEditDialog(deliveryAddress: DeliveryAddress) {
         val editDialogView = layoutInflater.inflate(R.layout.edit_delivery_address_dialog, null)

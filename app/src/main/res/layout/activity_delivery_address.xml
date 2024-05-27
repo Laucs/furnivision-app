@@ -36,60 +36,70 @@
 
     </RelativeLayout>
 
-    <LinearLayout
-        android:id="@+id/currentMethod"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/accountHeader"
-        android:orientation="vertical"
-        android:layout_marginTop="10dp"
-        android:background="#F4F4F4">
+   <ScrollView
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       android:scrollbars="vertical"
+       android:layout_below="@id/accountHeader">
+       <LinearLayout
+           android:id="@+id/currentMethod"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:orientation="vertical"
+           android:layout_marginTop="10dp"
+           android:background="#F4F4F4">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Addresses"
-            android:textColor="#737373"
-            android:textSize="18sp"
-            android:paddingTop="10dp"
-            android:fontFamily="@font/glacial_indifference_regular"
-            android:textStyle="bold"
-            android:layout_marginStart="20dp"
-            android:layout_toEndOf="@id/cashImage"/>
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="Addresses"
+               android:textColor="#737373"
+               android:textSize="18sp"
+               android:paddingTop="10dp"
+               android:fontFamily="@font/glacial_indifference_regular"
+               android:textStyle="bold"
+               android:layout_marginStart="20dp"
+               android:layout_toEndOf="@id/cashImage"/>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/deliveryAddressRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="#f4f4f4"
-            android:scrollbars="horizontal" />
+           <androidx.recyclerview.widget.RecyclerView
+               android:id="@+id/deliveryAddressRecyclerView"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_marginTop="10dp"
+               android:background="#f4f4f4"
+               android:scrollbars="horizontal" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="3dp">
-            <Button
-                android:id="@+id/addNewDeliveryAddressButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:background="@color/white"
-                android:fontFamily="@font/spartan_medium"
-                android:padding="15dp"
-                android:text="Add new Address"
-                android:textColor="@color/primary_darker"
-                android:textSize="20sp"
-                android:textAllCaps="false"/>
-            <ImageButton
-                android:id="@+id/addIcon"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="55dp"
-                android:background="@drawable/plus_icon"
-                android:elevation="5dp"/>
-        </RelativeLayout>
-    </LinearLayout>
+           <RelativeLayout
+               android:id="@+id/addNewDeliveryAddressButton"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_marginTop="3dp"
+               android:padding="15dp"
+               android:background="@color/white"
+               android:layout_gravity="center">
+               <TextView
+                   android:id="@+id/addNewAddressTitle"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_gravity="center"
+                   android:background="@color/white"
+                   android:fontFamily="@font/spartan_medium"
+                   android:text="Add new Address"
+                   android:textColor="@color/primary_darker"
+                   android:layout_toEndOf="@id/addIcon"
+                   android:textSize="20sp"
+                   android:textAllCaps="false"/>
+               <ImageButton
+                   android:id="@+id/addIcon"
+                   android:layout_width="30dp"
+                   android:layout_height="30dp"
+                   android:layout_alignParentStart="true"
+                   android:layout_centerVertical="true"
+                   android:layout_marginStart="55dp"
+                   android:layout_marginEnd="20dp"
+                   android:background="@drawable/plus_icon" />
+           </RelativeLayout>
+       </LinearLayout>
+
+   </ScrollView>
 </RelativeLayout>
