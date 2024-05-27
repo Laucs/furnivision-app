@@ -59,11 +59,21 @@
             android:layout_marginStart="15dp"
             android:background="@drawable/round_shape"
             android:scaleType="centerCrop"
-            android:src="@color/light_gray"
+            android:src="@drawable/default_profile_pic"
             android:contentDescription="Profile Picture"
             android:clipToOutline="true"
             android:outlineProvider="background" />
 
+        <ImageButton
+            android:id="@+id/editButton"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_below="@+id/profilePic"
+            android:layout_marginStart="-29dp"
+            android:layout_marginTop="-20dp"
+            android:layout_toEndOf="@id/profilePic"
+            android:background="@drawable/edit_icon_1"
+            android:elevation="10dp" />
     </RelativeLayout>
 
     <ScrollView
@@ -104,7 +114,7 @@
                     android:layout_toStartOf="@id/nameEditBtn"
                     android:textSize="15sp"
                     android:fontFamily="@font/montserrat"
-                    android:textColor="@color/black"
+                    android:textColor="#6e6d6d"
                     android:layout_marginEnd="15dp"/>
 
                 <ImageButton
@@ -147,7 +157,7 @@
                     android:layout_toStartOf="@id/genderEditBtn"
                     android:textSize="15sp"
                     android:fontFamily="@font/montserrat"
-                    android:textColor="@color/black"
+                    android:textColor="#6e6d6d"
                     android:layout_marginEnd="15dp"/>
 
                 <ImageButton
@@ -188,7 +198,7 @@
                     android:layout_toStartOf="@id/bdayEditBtn"
                     android:textSize="15sp"
                     android:fontFamily="@font/montserrat"
-                    android:textColor="@color/black"
+                    android:textColor="#6e6d6d"
                     android:layout_marginEnd="15dp"/>
 
                 <ImageButton
@@ -229,7 +239,7 @@
                     android:layout_toStartOf="@id/phoneEditBtn"
                     android:textSize="15sp"
                     android:fontFamily="@font/montserrat"
-                    android:textColor="@color/black"
+                    android:textColor="#6e6d6d"
                     android:layout_marginEnd="15dp"/>
 
                 <ImageButton
@@ -270,7 +280,7 @@
                     android:layout_toStartOf="@id/emailEditBtn"
                     android:textSize="15sp"
                     android:fontFamily="@font/montserrat"
-                    android:textColor="@color/black"
+                    android:textColor="#6e6d6d"
                     android:layout_marginEnd="15dp"/>
 
                 <ImageButton
