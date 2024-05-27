@@ -1,11 +1,14 @@
 package com.alvarez.furnivisionapp.data
 
 data class DeliveryAddress(
-    val name: String?,
-    val phone: String?,
-    val region: String?,
-    val barangay: String?,
-    val streetName: String?,
-    val postalCode: String?,
-    val isChecked: Boolean = false
-)
+    var name: String = "",
+    var phone: String = "",
+    var region: String = "",
+    var barangay: String = "",
+    var streetName: String = "",
+    var postalCode: String = "",
+    var isChecked: Boolean = false
+) {
+    // No-argument constructor
+    constructor() : this("", "", "", "", "", "", false)
+}

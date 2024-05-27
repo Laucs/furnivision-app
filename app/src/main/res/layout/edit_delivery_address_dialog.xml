@@ -41,6 +41,7 @@
             android:hint="Enter phone number"
             android:textColor="#737373"
             android:textSize="15sp"
+            android:inputType="phone"
             android:layout_marginStart="10dp" />
     </LinearLayout>
     <EditText
@@ -51,6 +52,7 @@
         android:hint="Enter region"
         android:textSize="15sp"
         android:textColor="#595959"
+        android:inputType="text"
         android:layout_marginStart="20dp"
         android:layout_marginBottom="10dp"
         android:layout_marginEnd="20dp"/>
@@ -61,6 +63,7 @@
         android:hint="Enter barangay"
         android:textSize="15sp"
         android:textColor="#595959"
+        android:inputType="text"
         android:layout_marginStart="20dp"
         android:layout_marginBottom="10dp"
         android:fontFamily="@font/montserrat"
@@ -73,6 +76,7 @@
         android:hint="Enter street name"
         android:textSize="15sp"
         android:textColor="#595959"
+        android:inputType="text"
         android:layout_marginStart="20dp"
         android:layout_marginBottom="10dp"
         android:layout_marginEnd="20dp"/>
@@ -85,6 +89,7 @@
         android:layout_marginEnd="20dp"
         android:hint="Enter postal code"
         android:textColor="#595959"
+        android:inputType="number"
         android:fontFamily="@font/montserrat"
         android:textSize="15sp" />
     <LinearLayout
