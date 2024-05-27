@@ -1,0 +1,118 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <EditText
+        android:id="@+id/addNameDeliveryET"
+        android:layout_width="match_parent"
+        android:fontFamily="@font/montserrat"
+        android:layout_height="wrap_content"
+        android:hint="Enter name"
+        android:textSize="15sp"
+        android:textColor="#595959"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="20dp"
+        android:inputType="text"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:fontFamily="@font/montserrat"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="20dp">
+        <TextView
+            android:id="@+id/PH63"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="(+63)"
+            android:textColor="#737373"
+            android:textSize="15sp" />
+        <EditText
+            android:id="@+id/addPhoneDeliveryET"
+            android:layout_width="match_parent"
+            android:fontFamily="@font/montserrat"
+            android:layout_height="wrap_content"
+            android:hint="Enter phone number"
+            android:textColor="#737373"
+            android:textSize="15sp"
+            android:layout_marginStart="10dp" />
+    </LinearLayout>
+    <EditText
+        android:id="@+id/addRegionET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat"
+        android:hint="Enter region"
+        android:textSize="15sp"
+        android:textColor="#595959"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="20dp"/>
+    <EditText
+        android:id="@+id/addBarangayET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter barangay"
+        android:textSize="15sp"
+        android:textColor="#595959"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="10dp"
+        android:fontFamily="@font/montserrat"
+        android:layout_marginEnd="20dp"/>
+    <EditText
+        android:id="@+id/addStreetNameET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat"
+        android:hint="Enter street name"
+        android:textSize="15sp"
+        android:textColor="#595959"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="20dp"/>
+
+    <EditText
+        android:id="@+id/addPostalCodeET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:hint="Enter postal code"
+        android:textColor="#595959"
+        android:fontFamily="@font/montserrat"
+        android:textSize="15sp" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp">
+        <TextView
+            android:id="@+id/defaultTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:text="Make this default?"
+            android:fontFamily="@font/montserrat"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:textSize="15sp" />
+        <CheckBox
+            android:id="@+id/editCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:textColor="@color/primary_darker"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:layout_marginStart="20dp"
+            android:paddingTop="10dp" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,5 +1,5 @@
 package com.alvarez.furnivisionapp
-
+import com.alvarez.furnivisionapp.utils.DeliveryAddressAdapter
 import com.alvarez.furnivisionapp.utils.CartListAdapter
 import android.annotation.SuppressLint
 import android.content.ContentValues.TAG
@@ -582,56 +582,64 @@ class MainActivity : AppCompatActivity() {
         val firestore = FirebaseFirestore.getInstance()
         val email = SessionManager.getUserEmail(this)
 
-        val nameDeliveryTV = findViewById<TextView>(R.id.nameDeliveryTV)
-        val phoneDeliveryTV = findViewById<TextView>(R.id.phoneDeliveryTV)
-        val regionTV = findViewById<TextView>(R.id.regionTV)
-        val barangayTV = findViewById<TextView>(R.id.barangayTV)
-        val streetNameTV = findViewById<TextView>(R.id.streetNameTV)
-        val postalCodeTV = findViewById<TextView>(R.id.postalCodeTV)
+        val deliveryAddresses = mutableListOf<DeliveryAddress>()
+
+        val deliveryAddressRecyclerView = findViewById<RecyclerView>(R.id.deliveryAddressRecyclerView)
+        deliveryAddressRecyclerView.layoutManager = LinearLayoutManager(this)
+
+        val deliveryAddressAdapter = DeliveryAddressAdapter(deliveryAddresses)
+        deliveryAddressRecyclerView.adapter = deliveryAddressAdapter
+
         val addNewDeliveryAddressButton = findViewById<Button>(R.id.addNewDeliveryAddressButton)
 
         addNewDeliveryAddressButton.setOnClickListener {
-            val dialogView = layoutInflater.inflate(R.layout.edit_delivery_address_dialog, null)
-            val nameDeliveryET = dialogView.findViewById<EditText>(R.id.nameDeliveryET)
-            val phoneDeliveryET = dialogView.findViewById<EditText>(R.id.phoneDeliveryET)
-            val regionET = dialogView.findViewById<EditText>(R.id.regionET)
-            val barangayET = dialogView.findViewById<EditText>(R.id.barangayET)
-            val streetNameET = dialogView.findViewById<EditText>(R.id.streetNameET)
-            val postalCodeET = dialogView.findViewById<EditText>(R.id.postalCodeET)
+            val addDialogView = layoutInflater.inflate(R.layout.add_delivery_address_dialog, null)
+            val addNameDeliveryET = addDialogView.findViewById<EditText>(R.id.addNameDeliveryET)
+            val addPhoneDeliveryET = addDialogView.findViewById<EditText>(R.id.addPhoneDeliveryET)
+            val addRegionET = addDialogView.findViewById<EditText>(R.id.addRegionET)
+            val addBarangayET = addDialogView.findViewById<EditText>(R.id.addBarangayET)
+            val addStreetNameET = addDialogView.findViewById<EditText>(R.id.addStreetNameET)
+            val addPostalCodeET = addDialogView.findViewById<EditText>(R.id.addPostalCodeET)
+            val editCheckBox = addDialogView.findViewById<CheckBox>(R.id.editCheckBox)
 
-            val dialog = AlertDialog.Builder(this)
-                .setView(dialogView)
+            val addDialog = AlertDialog.Builder(this)
+                .setView(addDialogView)
                 .setPositiveButton("Save") { _, _ ->
-                    val name = nameDeliveryET.text?.toString()?.trim()
-                    val phone = phoneDeliveryET.text?.toString()?.trim()
-                    val region = regionET.text?.toString()?.trim()
-                    val barangay = barangayET.text?.toString()?.trim()
-                    val streetName = streetNameET.text?.toString()?.trim()
-                    val postalCode = postalCodeET.text?.toString()?.trim()
+                    val name = addNameDeliveryET.text?.toString()?.trim()
+                    val phone = addPhoneDeliveryET.text?.toString()?.trim()
+                    val region = addRegionET.text?.toString()?.trim()
+                    val barangay = addBarangayET.text?.toString()?.trim()
+                    val streetName = addStreetNameET.text?.toString()?.trim()
+                    val postalCode = addPostalCodeET.text?.toString()?.trim()
+                    val isChecked = editCheckBox.isChecked
 
                     if (name.isNullOrEmpty() || phone.isNullOrEmpty() || region.isNullOrEmpty() ||
                         barangay.isNullOrEmpty() || streetName.isNullOrEmpty() || postalCode.isNullOrEmpty()) {
                         Toast.makeText(this, "Please fill in all fields.", Toast.LENGTH_SHORT).show()
                     } else {
-                        val updatedDeliveryAddress = DeliveryAddress(
+                        val newDeliveryAddress = DeliveryAddress(
                             name,
                             phone,
                             region,
                             barangay,
                             streetName,
                             postalCode,
-                            false
+                            isChecked
                         )
 
-                        // Save the updated delivery address in the database
+                        // Add the new delivery address to the list and notify the adapter
+                        deliveryAddresses.add(newDeliveryAddress)
+                        deliveryAddressAdapter.notifyDataSetChanged()
+
+                        // Save the new delivery address in the database
                         if (email != null) {
                             val deliveryAddressData = hashMapOf(
-                                "name" to updatedDeliveryAddress.name,
-                                "phone" to updatedDeliveryAddress.phone,
-                                "region" to updatedDeliveryAddress.region,
-                                "barangay" to updatedDeliveryAddress.barangay,
-                                "streetName" to updatedDeliveryAddress.streetName,
-                                "postalCode" to updatedDeliveryAddress.postalCode
+                                "name" to newDeliveryAddress.name,
+                                "phone" to newDeliveryAddress.phone,
+                                "region" to newDeliveryAddress.region,
+                                "barangay" to newDeliveryAddress.barangay,
+                                "streetName" to newDeliveryAddress.streetName,
+                                "postalCode" to newDeliveryAddress.postalCode
                             )
 
                             firestore.collection("users")
@@ -641,10 +649,10 @@ class MainActivity : AppCompatActivity() {
                                     for (document in querySnapshot.documents) {
                                         document.reference.update("deliveryAddress", deliveryAddressData)
                                             .addOnSuccessListener {
-                                                Toast.makeText(this, "Delivery address updated successfully.", Toast.LENGTH_SHORT).show()
+                                                Toast.makeText(this, "Delivery address added successfully.", Toast.LENGTH_SHORT).show()
                                             }
                                             .addOnFailureListener { e ->
-                                                Toast.makeText(this, "Failed to update delivery address: ${e.message}", Toast.LENGTH_SHORT).show()
+                                                Toast.makeText(this, "Failed to add delivery address: ${e.message}", Toast.LENGTH_SHORT).show()
                                             }
                                     }
                                 }
@@ -661,43 +669,9 @@ class MainActivity : AppCompatActivity() {
                 }
                 .create()
 
-            // Populate the EditText fields with current delivery address details
-            nameDeliveryET.setText(nameDeliveryTV?.text ?: "")
-            phoneDeliveryET.setText(phoneDeliveryTV?.text ?: "")
-            regionET.setText(regionTV?.text ?: "")
-            barangayET.setText(barangayTV?.text ?: "")
-            streetNameET.setText(streetNameTV?.text ?: "")
-            postalCodeET.setText(postalCodeTV?.text ?: "")
-
-            dialog.show()
+            addDialog.show()
         }
 
-        if (email != null) {
-            firestore.collection("users")
-                .whereEqualTo("email", email)
-                .get()
-                .addOnSuccessListener { querySnapshot ->
-                    if (!querySnapshot.isEmpty) {
-                        val document = querySnapshot.documents.first()
-                        val deliveryAddress = document.get("deliveryAddress") as? Map<String, Any>
-
-                        // Display the delivery address details if available
-                        if (deliveryAddress != null) {
-                            nameDeliveryTV?.text = deliveryAddress["name"] as? String
-                            phoneDeliveryTV?.text = deliveryAddress["phone"] as? String
-                            regionTV?.text = deliveryAddress["region"] as? String
-                            barangayTV?.text = deliveryAddress["barangay"] as? String
-                            streetNameTV?.text = deliveryAddress["streetName"] as? String
-                            postalCodeTV?.text = deliveryAddress["postalCode"] as? String
-                        }
-                    }
-                }
-                .addOnFailureListener { e ->
-                    Log.e("GetUser", "Error getting user details: ${e  .message}", e)
-                }
-        } else {
-            Log.e("GetUser", "Invalid email: $email")
-        }
     }
 
 
