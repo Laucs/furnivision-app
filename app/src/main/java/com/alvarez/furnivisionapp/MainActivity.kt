@@ -9,9 +9,11 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.hardware.camera2.CameraManager
 import android.icu.text.DecimalFormat
+import android.media.Image
 import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract.CommonDataKinds.Im
+import android.text.InputType
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.TextureView
@@ -132,12 +134,35 @@ class MainActivity : AppCompatActivity() {
             pageContainer.addView(inflatedPage)
             initProfilePage()
         }
+        //toggle change favorite icons
+        val heartFill1 : ImageButton = findViewById(R.id.fav1_heart)
+        val heartFill2 : ImageButton = findViewById(R.id.fav2_heart)
+        val heartFill3 : ImageButton = findViewById(R.id.fav3_heart)
+        val heart1 : ImageButton = findViewById(R.id.pop1_heart)
+        val heart2 : ImageButton = findViewById(R.id.pop2_heart)
+        val heart3 : ImageButton = findViewById(R.id.pop3_heart)
+
+        heartFill1.setOnClickListener { toggleHeart(heartFill1) }
+        heartFill2.setOnClickListener { toggleHeart(heartFill2) }
+        heartFill3.setOnClickListener { toggleHeart(heartFill3) }
+        heart1.setOnClickListener { toggleHeart(heart1) }
+        heart2.setOnClickListener { toggleHeart(heart2) }
+        heart3.setOnClickListener { toggleHeart(heart3) }
     }
 
     private fun initHomePage(page: RelativeLayout, pageContainer: ViewGroup) {
         homePageFunctions = HomePageFunctions(page, AppCompatImageButton::class.java, this)
 
-
+    }
+    fun toggleHeart(heartButton: ImageButton) {
+        val isFilled = heartButton.tag as? Boolean ?: false
+        if (isFilled) {
+            heartButton.setImageResource(R.drawable.heart_empty)
+            heartButton.tag = false
+        } else {
+            heartButton.setImageResource(R.drawable.heart)
+            heartButton.tag = true
+        }
     }
 
     private fun initShopPage(pageContainer: ViewGroup) {
@@ -1071,8 +1096,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-    fun initChangePassPage(){
-        val backButton:ImageButton = findViewById(R.id.backButton)
+    fun initChangePassPage() {
+        val backButton: ImageButton = findViewById(R.id.backButton)
 
         backButton.setOnClickListener {
             val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
@@ -1080,7 +1105,49 @@ class MainActivity : AppCompatActivity() {
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_settings, null) as RelativeLayout)
             initSettingsPage()
         }
+
+        val editCurrentPass: EditText = findViewById(R.id.editCurrentPass)
+        val viewPasswordButton: ImageButton = findViewById(R.id.viewPasswordButton)
+        var isPasswordVisible = false
+
+        val editNewPassword: EditText = findViewById(R.id.editNewPassword)
+        val viewPasswordButton1: ImageButton = findViewById(R.id.viewPasswordButton1)
+        var isNewPasswordVisible = false
+
+        val editConfirmNewPassword: EditText = findViewById(R.id.logoutLabel)
+        val viewPasswordButton2: ImageButton = findViewById(R.id.viewPasswordButton2)
+        var isConfirmPasswordVisible = false
+
+        viewPasswordButton.setOnClickListener {
+            togglePasswordVisibility(editCurrentPass, viewPasswordButton, isPasswordVisible)
+            isPasswordVisible = !isPasswordVisible
+        }
+
+        viewPasswordButton1.setOnClickListener {
+            togglePasswordVisibility(editNewPassword, viewPasswordButton1, isNewPasswordVisible)
+            isNewPasswordVisible = !isNewPasswordVisible
+        }
+
+        viewPasswordButton2.setOnClickListener {
+            togglePasswordVisibility(editConfirmNewPassword, viewPasswordButton2, isConfirmPasswordVisible)
+            isConfirmPasswordVisible = !isConfirmPasswordVisible
+        }
     }
+
+    private fun togglePasswordVisibility(editText: EditText, button: ImageButton, isVisible: Boolean) {
+        if (isVisible) {
+            // Hide the password
+            editText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            button.setBackgroundResource(R.drawable.close_eye_icon)
+        } else {
+            // Show the password
+            editText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            button.setBackgroundResource(R.drawable.open_eye_icon)
+        }
+        // Move cursor to the end of the text
+        editText.setSelection(editText.text.length)
+    }
+
     fun clearCache() {
         try {
             val dir: File = cacheDir
