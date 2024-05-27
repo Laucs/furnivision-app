@@ -37,6 +37,7 @@ import com.alvarez.furnivisionapp.data.CartItem
 import com.alvarez.furnivisionapp.data.Furniture
 import com.alvarez.furnivisionapp.data.Order
 import com.alvarez.furnivisionapp.data.Shop
+import com.alvarez.furnivisionapp.data.DeliveryAddress
 import com.alvarez.furnivisionapp.utils.CameraFunctions
 import com.alvarez.furnivisionapp.utils.HomePageFunctions
 import com.alvarez.furnivisionapp.utils.ShopListAdapter
@@ -576,86 +577,101 @@ class MainActivity : AppCompatActivity() {
         refreshProfile()
     }
 
+
     fun initDeliveryAddressPage() {
+        val firestore = FirebaseFirestore.getInstance()
+        val email = SessionManager.getUserEmail(this)
+
         val nameDeliveryTV = findViewById<TextView>(R.id.nameDeliveryTV)
         val phoneDeliveryTV = findViewById<TextView>(R.id.phoneDeliveryTV)
         val regionTV = findViewById<TextView>(R.id.regionTV)
         val barangayTV = findViewById<TextView>(R.id.barangayTV)
         val streetNameTV = findViewById<TextView>(R.id.streetNameTV)
         val postalCodeTV = findViewById<TextView>(R.id.postalCodeTV)
-        val editDeliveryAddressButton = findViewById<Button>(R.id.editDeliveryAddresButton)
+        val addNewDeliveryAddressButton = findViewById<Button>(R.id.addNewDeliveryAddressButton)
 
-        val dialogView = layoutInflater.inflate(R.layout.edit_delivery_address_dialog, null)
-        val nameDeliveryET = dialogView.findViewById<EditText>(R.id.nameDeliveryET)
-        val phoneDeliveryET = dialogView.findViewById<EditText>(R.id.phoneDeliveryET)
-        val regionET = dialogView.findViewById<EditText>(R.id.regionET)
-        val barangayET = dialogView.findViewById<EditText>(R.id.barangayET)
-        val streetNameET = dialogView.findViewById<EditText>(R.id.streetNameET)
-        val postalCodeET = dialogView.findViewById<EditText>(R.id.postalCodeET)
+        addNewDeliveryAddressButton.setOnClickListener {
+            val dialogView = layoutInflater.inflate(R.layout.edit_delivery_address_dialog, null)
+            val nameDeliveryET = dialogView.findViewById<EditText>(R.id.nameDeliveryET)
+            val phoneDeliveryET = dialogView.findViewById<EditText>(R.id.phoneDeliveryET)
+            val regionET = dialogView.findViewById<EditText>(R.id.regionET)
+            val barangayET = dialogView.findViewById<EditText>(R.id.barangayET)
+            val streetNameET = dialogView.findViewById<EditText>(R.id.streetNameET)
+            val postalCodeET = dialogView.findViewById<EditText>(R.id.postalCodeET)
 
-        val dialog = AlertDialog.Builder(this)
-            .setView(dialogView)
-            .setPositiveButton("Save") { _, _ ->
-                // Save the updated delivery address
-                nameDeliveryTV.text = nameDeliveryET.text
-                phoneDeliveryTV.text = phoneDeliveryET.text
-                regionTV.text = regionET.text
-                barangayTV.text = barangayET.text
-                streetNameTV.text = streetNameET.text
-                postalCodeTV.text = postalCodeET.text
+            val dialog = AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setPositiveButton("Save") { _, _ ->
+                    val name = nameDeliveryET.text?.toString()?.trim()
+                    val phone = phoneDeliveryET.text?.toString()?.trim()
+                    val region = regionET.text?.toString()?.trim()
+                    val barangay = barangayET.text?.toString()?.trim()
+                    val streetName = streetNameET.text?.toString()?.trim()
+                    val postalCode = postalCodeET.text?.toString()?.trim()
 
-                // Save the delivery address in the database if needed
-                val firestore = FirebaseFirestore.getInstance()
-                val email = SessionManager.getUserEmail(this)
-                if (email != null) {
-                    val deliveryAddress = hashMapOf(
-                        "name" to nameDeliveryTV.text.toString(),
-                        "phone" to phoneDeliveryTV.text.toString(),
-                        "region" to regionTV.text.toString(),
-                        "barangay" to barangayTV.text.toString(),
-                        "streetName" to streetNameTV.text.toString(),
-                        "postalCode" to postalCodeTV.text.toString()
-                    )
-                    firestore.collection("users")
-                        .whereEqualTo("email", email)
-                        .get()
-                        .addOnSuccessListener { querySnapshot ->
-                            for (document in querySnapshot.documents) {
-                                document.reference.update("deliveryAddress", deliveryAddress)
-                                    .addOnSuccessListener {
-                                        Toast.makeText(this, "Delivery address updated successfully.", Toast.LENGTH_SHORT).show()
+                    if (name.isNullOrEmpty() || phone.isNullOrEmpty() || region.isNullOrEmpty() ||
+                        barangay.isNullOrEmpty() || streetName.isNullOrEmpty() || postalCode.isNullOrEmpty()) {
+                        Toast.makeText(this, "Please fill in all fields.", Toast.LENGTH_SHORT).show()
+                    } else {
+                        val updatedDeliveryAddress = DeliveryAddress(
+                            name,
+                            phone,
+                            region,
+                            barangay,
+                            streetName,
+                            postalCode,
+                            false
+                        )
+
+                        // Save the updated delivery address in the database
+                        if (email != null) {
+                            val deliveryAddressData = hashMapOf(
+                                "name" to updatedDeliveryAddress.name,
+                                "phone" to updatedDeliveryAddress.phone,
+                                "region" to updatedDeliveryAddress.region,
+                                "barangay" to updatedDeliveryAddress.barangay,
+                                "streetName" to updatedDeliveryAddress.streetName,
+                                "postalCode" to updatedDeliveryAddress.postalCode
+                            )
+
+                            firestore.collection("users")
+                                .whereEqualTo("email", email)
+                                .get()
+                                .addOnSuccessListener { querySnapshot ->
+                                    for (document in querySnapshot.documents) {
+                                        document.reference.update("deliveryAddress", deliveryAddressData)
+                                            .addOnSuccessListener {
+                                                Toast.makeText(this, "Delivery address updated successfully.", Toast.LENGTH_SHORT).show()
+                                            }
+                                            .addOnFailureListener { e ->
+                                                Toast.makeText(this, "Failed to update delivery address: ${e.message}", Toast.LENGTH_SHORT).show()
+                                            }
                                     }
-                                    .addOnFailureListener { e ->
-                                        Toast.makeText(this, "Failed to update delivery address: ${e.message}", Toast.LENGTH_SHORT).show()
-                                    }
-                            }
+                                }
+                                .addOnFailureListener { e ->
+                                    Toast.makeText(this, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
+                                }
+                        } else {
+                            Log.e("GetUser", "Invalid email: $email")
                         }
-                        .addOnFailureListener { e ->
-                            Toast.makeText(this, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
-                        }
-                } else {
-                    Log.e("GetUser", "Invalid email: $email")
+                    }
                 }
-            }
-            .setNegativeButton("Cancel") { _, _ ->
-                // Cancel the dialog
-            }
-            .create()
+                .setNegativeButton("Cancel") { _, _ ->
+                    // Cancel the dialog
+                }
+                .create()
 
-        editDeliveryAddressButton.setOnClickListener {
-            // Set the initial values for the EditText fields
-            nameDeliveryET.setText(nameDeliveryTV.text)
-            phoneDeliveryET.setText(phoneDeliveryTV.text)
-            regionET.setText(regionTV.text)
-            barangayET.setText(barangayTV.text)
-            streetNameET.setText(streetNameTV.text)
-            postalCodeET.setText(postalCodeTV.text)
+            // Populate the EditText fields with current delivery address details
+            nameDeliveryET.setText(nameDeliveryTV?.text ?: "")
+            phoneDeliveryET.setText(phoneDeliveryTV?.text ?: "")
+            regionET.setText(regionTV?.text ?: "")
+            barangayET.setText(barangayTV?.text ?: "")
+            streetNameET.setText(streetNameTV?.text ?: "")
+            postalCodeET.setText(postalCodeTV?.text ?: "")
 
             dialog.show()
         }
 
-        val firestore = FirebaseFirestore.getInstance()
-        val email = SessionManager.getUserEmail(this)
         if (email != null) {
             firestore.collection("users")
                 .whereEqualTo("email", email)
@@ -665,24 +681,25 @@ class MainActivity : AppCompatActivity() {
                         val document = querySnapshot.documents.first()
                         val deliveryAddress = document.get("deliveryAddress") as? Map<String, Any>
 
-                        // Populate the TextViews with the delivery address details
+                        // Display the delivery address details if available
                         if (deliveryAddress != null) {
-                            nameDeliveryTV.text = deliveryAddress["name"] as? String
-                            phoneDeliveryTV.text = deliveryAddress["phone"] as? String
-                            regionTV.text = deliveryAddress["region"] as? String
-                            barangayTV.text = deliveryAddress["barangay"] as? String
-                            streetNameTV.text = deliveryAddress["streetName"] as? String
-                            postalCodeTV.text = deliveryAddress["postalCode"] as? String
+                            nameDeliveryTV?.text = deliveryAddress["name"] as? String
+                            phoneDeliveryTV?.text = deliveryAddress["phone"] as? String
+                            regionTV?.text = deliveryAddress["region"] as? String
+                            barangayTV?.text = deliveryAddress["barangay"] as? String
+                            streetNameTV?.text = deliveryAddress["streetName"] as? String
+                            postalCodeTV?.text = deliveryAddress["postalCode"] as? String
                         }
                     }
                 }
                 .addOnFailureListener { e ->
-                    Log.e("GetUser", "Error getting user details: ${e.message}", e)
+                    Log.e("GetUser", "Error getting user details: ${e  .message}", e)
                 }
         } else {
             Log.e("GetUser", "Invalid email: $email")
         }
     }
+
 
     fun initToPayPage() {
 

@@ -57,113 +57,39 @@
             android:layout_marginStart="20dp"
             android:layout_toEndOf="@id/cashImage"/>
 
-        <LinearLayout
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/deliveryAddressRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:padding="20dp"
             android:layout_marginTop="10dp"
-            android:orientation="vertical">
+            android:padding="10dp"
+            android:background="#FFFFFF"
+            android:scrollbars="horizontal" />
 
-            <TextView
-                android:id="@+id/nameDeliveryTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Set Name"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                android:fontFamily="@font/montserrat"
-                android:textColor="#595959"
-                android:layout_marginStart="20dp"
-                android:enabled="false"/>
-
-           <LinearLayout
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:orientation="horizontal">
-               <TextView
-                   android:id="@+id/PH63"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:text="(+63)"
-                   android:textColor="#737373"
-                   android:textSize="15sp"
-
-                   android:fontFamily="@font/montserrat_light"
-                   android:textStyle="bold"
-                   android:layout_marginStart="20dp" />
-               <TextView
-                   android:id="@+id/phoneDeliveryTV"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:text="Set Number"
-                   android:textColor="#737373"
-                   android:textSize="15sp"
-                   android:fontFamily="@font/montserrat_light"
-                   android:textStyle="bold"
-                   android:layout_marginStart="10dp"
-                   android:enabled="false"/>
-
-           </LinearLayout>
-            <TextView
-                android:id="@+id/regionTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Set Region"
-                android:textSize="15sp"
-                android:fontFamily="@font/montserrat"
-                android:textColor="#595959"
-                android:layout_marginStart="20dp"
-                android:enabled="false"/>
-            <TextView
-                android:id="@+id/barangayTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="Set Barangay"
-                android:textSize="15sp"
-                android:fontFamily="@font/montserrat"
-                android:textColor="#595959"
-                android:layout_marginStart="20dp"/>
-            <TextView
-                android:id="@+id/streetNameTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Set Street"
-                android:textSize="15sp"
-                android:fontFamily="@font/montserrat"
-                android:textColor="#595959"
-                android:layout_marginStart="20dp"
-                android:enabled="false"/>
-            <TextView
-                android:id="@+id/postalCodeTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Set Postal Code"
-                android:textSize="15sp"
-                android:fontFamily="@font/montserrat"
-                android:textColor="#595959"
-                android:layout_marginStart="20dp"
-                android:enabled="false"/>
-
-        </LinearLayout>
-
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:padding="20dp">
+            android:layout_height="wrap_content">
             <Button
-                android:id="@+id/editDeliveryAddresButton"
+                android:id="@+id/addNewDeliveryAddressButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:background="@color/primary_darker"
+                android:background="@color/white"
                 android:fontFamily="@font/spartan_medium"
                 android:padding="15dp"
-                android:text="Edit"
-                android:textColor="@color/white"
+                android:text="Add new Address"
+                android:textColor="@color/primary_darker"
                 android:textSize="20sp"
                 android:textAllCaps="false"/>
-        </LinearLayout>
+            <ImageButton
+                android:id="@+id/addIcon"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="55dp"
+                android:background="@drawable/plus_icon"
+                android:elevation="5dp"/>
+        </RelativeLayout>
     </LinearLayout>
 </RelativeLayout>
