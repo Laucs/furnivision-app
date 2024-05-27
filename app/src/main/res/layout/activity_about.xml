@@ -68,58 +68,51 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:fontFamily="@font/spartan_medium"
-                android:text="v7.8.6.6"
+                android:text="v1.0"
                 android:textColor="@color/black"
                 android:textSize="15sp"
                 android:layout_marginTop="20dp"/>
 
         </LinearLayout>
 
-    <RelativeLayout
+    <Button
         android:id="@+id/clearCacheButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:background="@color/white"
         android:paddingTop="20dp"
+        android:text="Clear Cache"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/montserrat"
+        android:textColor="@color/primary_darker"
+        android:gravity="start"
+        android:paddingStart="20dp"
+        android:textAllCaps="false"
         android:layout_marginTop="20dp"
         android:paddingBottom="20dp"
         android:layout_below="@id/aboutContent">
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Clear Cache"
-            android:layout_centerVertical="true"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:fontFamily="@font/montserrat"
-            android:textColor="@color/primary_darker"
-            android:layout_marginStart="15dp" />
-    </RelativeLayout>
-
-    <RelativeLayout
+    </Button>
+    <Button
         android:id="@+id/verUpdateButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:background="@color/white"
         android:paddingTop="20dp"
+        android:text="Update Version"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/montserrat"
+        android:textColor="@color/primary_darker"
+        android:gravity="start"
+        android:paddingStart="20dp"
+        android:textAllCaps="false"
         android:layout_marginTop="1dp"
         android:paddingBottom="20dp"
         android:layout_below="@id/clearCacheButton">
 
+    </Button>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Version Update"
-            android:layout_centerVertical="true"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:fontFamily="@font/montserrat"
-            android:textColor="@color/primary_darker"
-            android:layout_marginStart="15dp" />
-    </RelativeLayout>
 </RelativeLayout>

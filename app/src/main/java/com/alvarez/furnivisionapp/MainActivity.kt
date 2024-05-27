@@ -11,6 +11,7 @@ import android.hardware.camera2.CameraManager
 import android.icu.text.DecimalFormat
 import android.net.Uri
 import android.os.Bundle
+import android.provider.ContactsContract.CommonDataKinds.Im
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.TextureView
@@ -489,7 +490,8 @@ class MainActivity : AppCompatActivity() {
         val accountInfoButton: RelativeLayout = findViewById(R.id.accountInfoButton)
         val paymentMethodsButton: RelativeLayout = findViewById(R.id.paymentMethodsButton)
         val deliveryAddressButton: RelativeLayout = findViewById(R.id.deliveryAddressButton)
-
+        val editButton: ImageButton = findViewById(R.id.editButton)
+        val profilePic: ImageButton = findViewById(R.id.profilePic)
         // Navigation Logic
         val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
 
@@ -506,6 +508,18 @@ class MainActivity : AppCompatActivity() {
             Log.e("GetUser", "Invalid email: $email")
         }
 
+        editButton.setOnClickListener {
+            activePage = R.layout.activity_edit_account
+            pageContainer.removeAllViews()
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_account, null) as RelativeLayout)
+            initProfileEditPage()
+        }
+        profilePic.setOnClickListener {
+            activePage = R.layout.activity_edit_account
+            pageContainer.removeAllViews()
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_account, null) as RelativeLayout)
+            initProfileEditPage()
+        }
         cartButton.setOnClickListener {
             activePage = R.layout.activity_cart
             pageContainer.removeAllViews()
@@ -699,50 +713,61 @@ class MainActivity : AppCompatActivity() {
 
         // Fetch delivery addresses from Firestore and populate the deliveryAddresses list
         if (email != null) {
-            firestore.collection("users")
-                .whereEqualTo("email", email)
-                .get()
-                .addOnSuccessListener { querySnapshot ->
-                    for (document in querySnapshot.documents) {
-                        val deliveryAddressData = document.data
-                        if (deliveryAddressData != null) {
-                            val name = deliveryAddressData["name"] as? String
-                            val phone = deliveryAddressData["phone"] as? String
-                            val region = deliveryAddressData["region"] as? String
-                            val barangay = deliveryAddressData["barangay"] as? String
-                            val streetName = deliveryAddressData["streetName"] as? String
-                            val postalCode = deliveryAddressData["postalCode"] as? String
-                            val isChecked = deliveryAddressData["isChecked"] as? Boolean
+            AuthUtility.getUserName(
+                email,
+                onSuccess = { name ->
 
-                            if (name != null && phone != null && region != null && barangay != null && streetName != null && postalCode != null && isChecked != null) {
-                                // Create DeliveryAddress object
-                                val deliveryAddress = DeliveryAddress(
-                                    name,
-                                    phone,
-                                    region,
-                                    barangay,
-                                    streetName,
-                                    postalCode,
-                                    isChecked
-                                )
-                                deliveryAddresses.add(deliveryAddress)
-                            } else {
-                                Log.e("MainActivity", "One or more fields are null")
+                    // Fetch delivery addresses using user's email
+                    firestore.collection("users")
+                        .whereEqualTo("email", email)
+                        .get()
+                        .addOnSuccessListener { querySnapshot ->
+                            for (document in querySnapshot.documents) {
+                                val deliveryAddressData = document.data
+                                if (deliveryAddressData != null) {
+                                    val name = deliveryAddressData["name"] as? String
+                                    val phone = deliveryAddressData["phone"] as? String
+                                    val region = deliveryAddressData["region"] as? String
+                                    val barangay = deliveryAddressData["barangay"] as? String
+                                    val streetName = deliveryAddressData["streetName"] as? String
+                                    val postalCode = deliveryAddressData["postalCode"] as? String
+                                    val isChecked = deliveryAddressData["isChecked"] as? Boolean
+
+                                    if (name != null && phone != null && region != null && barangay != null && streetName != null && postalCode != null && isChecked != null) {
+                                        // Create DeliveryAddress object
+                                        val deliveryAddress = DeliveryAddress(
+                                            name,
+                                            phone,
+                                            region,
+                                            barangay,
+                                            streetName,
+                                            postalCode,
+                                            isChecked
+                                        )
+                                        deliveryAddresses.add(deliveryAddress)
+                                    } else {
+                                        Log.e("MainActivity", "One or more fields are null")
+                                    }
+                                } else {
+                                    Log.e("MainActivity", "deliveryAddressData is null")
+                                }
                             }
-                        } else {
-                            Log.e("MainActivity", "deliveryAddressData is null")
+                            // Notify the adapter that the data has changed
+                            deliveryAddressAdapter.notifyDataSetChanged()
                         }
-                    }
-                    // Notify the adapter that the data has changed
-                    deliveryAddressAdapter.notifyDataSetChanged()
+                        .addOnFailureListener { e ->
+                            Toast.makeText(this, "Error fetching delivery addresses: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                },
+                onFailure = {
+                    Log.e("GetUser", "Failed to retrieve user name")
                 }
-                .addOnFailureListener { e ->
-                    Toast.makeText(this, "Error fetching delivery addresses: ${e.message}", Toast.LENGTH_SHORT).show()
-                }
+            )
         } else {
             Log.e("GetUser", "Invalid email: $email")
         }
     }
+
     fun showEditDialog(deliveryAddress: DeliveryAddress) {
         val editDialogView = layoutInflater.inflate(R.layout.edit_delivery_address_dialog, null)
         val editNameDeliveryET = editDialogView.findViewById<EditText>(R.id.nameDeliveryET)
@@ -1036,7 +1061,7 @@ class MainActivity : AppCompatActivity() {
             activePage = (R.layout.activity_change_password)
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_change_password, null) as RelativeLayout)
-            initAboutPage()
+            initChangePassPage()
         }
         rateUsButton.setOnClickListener {
             try {
@@ -1046,13 +1071,25 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+    fun initChangePassPage(){
+        val backButton:ImageButton = findViewById(R.id.backButton)
+
+        backButton.setOnClickListener {
+            val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
+            pageContainer.removeAllViews()
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_settings, null) as RelativeLayout)
+            initSettingsPage()
+        }
+    }
     fun clearCache() {
         try {
             val dir: File = cacheDir
             if (deleteDir(dir)) {
                 println("Cache cleared successfully")
+                Toast.makeText(this, "Cache cleared successfully", Toast.LENGTH_SHORT).show()
             } else {
                 println("Cache clearing failed")
+                Toast.makeText(this, "Cache clearing failed", Toast.LENGTH_SHORT).show()
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -1076,11 +1113,22 @@ class MainActivity : AppCompatActivity() {
     }
     fun initAboutPage(){
         val backButton: ImageButton = findViewById(R.id.backButton)
+        val clearCacheButton: Button = findViewById(R.id.clearCacheButton)
+        val verUpdateButton: Button = findViewById(R.id.verUpdateButton)
+
         backButton.setOnClickListener {
             val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_settings, null) as RelativeLayout)
             initSettingsPage()
+        }
+
+        clearCacheButton.setOnClickListener {
+            clearCache()
+        }
+
+        verUpdateButton.setOnClickListener {
+            Toast.makeText(this, "No Updates Available!", Toast.LENGTH_SHORT).show()
         }
 
     }
@@ -1363,6 +1411,17 @@ class MainActivity : AppCompatActivity() {
                 Log.e("GetUser", "Invalid email: $email")
             }
         }
+
+        val editButton: ImageButton = findViewById(R.id.editButton)
+
+        editButton.setOnClickListener(){
+            if (email != null) {
+                showImageSelectionDialog(email)
+            } else {
+                Log.e("GetUser", "Invalid email: $email")
+            }
+        }
+
 
 
     }
