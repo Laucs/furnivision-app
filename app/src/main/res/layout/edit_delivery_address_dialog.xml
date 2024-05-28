@@ -41,9 +41,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="20dp"
+                android:paddingHorizontal="2dp"
+                android:paddingTop="20dp"
                 android:background="#F4F4F4">
-
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Name"
+                    android:textColor="#737373"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/glacial_indifference_regular"
+                    android:textStyle="bold"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginBottom="5dp"/>
                 <EditText
                     android:id="@+id/nameDeliveryET"
                     android:layout_width="match_parent"
@@ -58,7 +68,16 @@
                     android:padding="10dp"
                     android:textColor="#595959"
                     android:textSize="15sp" />
-
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Contact Number"
+                    android:textColor="#737373"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/glacial_indifference_regular"
+                    android:textStyle="bold"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginBottom="5dp"/>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -89,6 +108,16 @@
                         android:padding="10dp"
                         android:background="@color/cardview_light_background"/>
                 </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Region"
+                    android:textColor="#737373"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/glacial_indifference_regular"
+                    android:textStyle="bold"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginBottom="5dp"/>
                 <EditText
                     android:id="@+id/regionET"
                     android:layout_width="match_parent"
@@ -103,6 +132,16 @@
                     android:layout_marginEnd="20dp"
                     android:padding="10dp"
                     android:background="@drawable/corder_radius_for_edit_text"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Barangay"
+                    android:textColor="#737373"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/glacial_indifference_regular"
+                    android:textStyle="bold"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginBottom="5dp"/>
                 <EditText
                     android:id="@+id/barangayET"
                     android:layout_width="match_parent"
@@ -117,6 +156,16 @@
                     android:layout_marginEnd="20dp"
                     android:padding="10dp"
                     android:background="@drawable/corder_radius_for_edit_text"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Street Name, Building, House No.,"
+                    android:textColor="#737373"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/glacial_indifference_regular"
+                    android:textStyle="bold"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginBottom="5dp"/>
                 <EditText
                     android:id="@+id/streetNameET"
                     android:layout_width="match_parent"
@@ -131,7 +180,16 @@
                     android:layout_marginEnd="20dp"
                     android:padding="10dp"
                     android:background="@drawable/corder_radius_for_edit_text"/>
-
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Postal Code"
+                    android:textColor="#737373"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/glacial_indifference_regular"
+                    android:textStyle="bold"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginBottom="5dp"/>
                 <EditText
                     android:id="@+id/postalCodeET"
                     android:layout_width="match_parent"
@@ -160,7 +218,7 @@
                         android:text="Make this default?"
                         android:fontFamily="@font/montserrat"
                         android:textStyle="bold"
-                        android:textColor="@color/black"
+                        android:textColor="@color/primary_darker"
                         android:textSize="15sp"
                         android:layout_centerVertical="true"/>
                     <CheckBox
