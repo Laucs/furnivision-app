@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingVertical="20dp">
+
+    <RelativeLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="40dp">
+        <ImageView
+            android:id="@+id/warningIcon"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginEnd="15dp"
+            android:background="@drawable/warning_icon"
+            android:contentDescription="Back" />
+        <TextView
+            android:id="@+id/deleteContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="10dp"
+            android:layout_below="@id/warningIcon"
+            android:text="This action cannot be undone. All values associated with this field will be lost."
+            android:gravity="center"
+            android:textSize="12sp"
+            android:layout_centerHorizontal="true"
+            />
+    </RelativeLayout>
+    <LinearLayout
+        android:layout_below="@id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingHorizontal="5dp">
+        <Button
+            android:id="@+id/cancelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#F4F4F4F4"
+            android:fontFamily="@font/spartan_medium"
+            android:layout_weight="1"
+            android:padding="10dp"
+            android:text="Cancel"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:textAllCaps="false"/>
+        <Button
+            android:id="@+id/confirmDeleteButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/design_default_color_error"
+            android:fontFamily="@font/spartan_medium"
+            android:layout_toEndOf="@id/editButton"
+            android:layout_weight="1"
+            android:padding="10dp"
+            android:text="Delete"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:textAllCaps="false"/>
+    </LinearLayout>
+
+</RelativeLayout>
