@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#F4F4F4">
+    android:background="#FFF">
     <RelativeLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
@@ -43,7 +43,7 @@
             android:orientation="vertical"
             android:paddingHorizontal="2dp"
             android:paddingTop="20dp"
-            android:background="#F4F4F4">
+            android:background="#FFF">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -96,7 +96,8 @@
                     android:text="(+63)"
                     android:textColor="#737373"
                     android:textSize="15sp"
-                    android:padding="10dp" />
+                    android:padding="10dp"
+                    android:background="@null"/>
                 <EditText
                     android:id="@+id/addPhoneDeliveryET"
                     android:layout_width="match_parent"
@@ -107,8 +108,7 @@
                     android:textSize="15sp"
                     android:singleLine="true"
                     android:padding="10dp"
-                    android:background="@drawable/corder_radius_for_edit_text"
-                    />
+                    android:background="@null" />
             </LinearLayout>
             <TextView
                 android:layout_width="wrap_content"
