@@ -220,6 +220,7 @@ class MainActivity : AppCompatActivity() {
                 Log.d("Open Cart", cartList.toString())
 
                 var addToCartBtn: Button = findViewById(R.id.addToCartButton)
+                var buyButton: Button = findViewById(R.id.addButton)
                 var nextBtn: ImageButton = findViewById(R.id.nextBtn)
                 var prevBtn: ImageButton = findViewById(R.id.previousBtn)
 
@@ -294,6 +295,28 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
 
+                // if buy button is clicked
+                buyButton.setOnClickListener {
+//                    val shopID = furnitures[index].shopID
+//                    if (shopID != null) {
+//                        database.collection("shops").document(shopID).get()
+//                            .addOnSuccessListener { result: DocumentSnapshot? ->
+//                                if (result != null && result.exists()) {
+//                                    val shop = result.toObject(Shop::class.java)
+//                                    if (shop != null) {
+//                                        shop.id = result.id
+//                                        addItemToCart(shop, furnitures[index])
+//                                    }
+//                                }
+//                            }
+//                            .addOnFailureListener { exception ->
+//                                // Handle the failure
+//                                Log.e("ERRO", "Error getting document", exception)
+//                            }
+//                    }
+//
+//                    Toast.makeText(this, "Furniture is added to Cart", Toast.LENGTH_SHORT).show()
+                }
                 addToCartBtn.setOnClickListener {
                     val shopID = furnitures[index].shopID
                     if (shopID != null) {
@@ -392,7 +415,6 @@ class MainActivity : AppCompatActivity() {
 
         totalPriceTextView.text = PRICE_FORMAT.format(totalPrice)
 
-
         val adapter = cartList?.let { CartListAdapter(it) }
 
         cartListRecyclerView.adapter = adapter
@@ -400,18 +422,20 @@ class MainActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
         }
 
-
         val checkoutBtn: Button = findViewById(R.id.checkout_button)
 
         checkoutBtn.setOnClickListener {
-            activePage = (R.layout.activity_orders)
-            pageContainer.removeAllViews()
-            pageContainer.addView(layoutInflater.inflate(R.layout.activity_orders, null) as RelativeLayout)
-            initOrderPage(pageContainer)
+            if (cartList.isNullOrEmpty()) {
+                Toast.makeText(this, "No items to checkout.", Toast.LENGTH_SHORT).show()
+            } else {
+                activePage = (R.layout.activity_orders)
+                pageContainer.removeAllViews()
+                pageContainer.addView(layoutInflater.inflate(R.layout.activity_orders, null) as RelativeLayout)
+                initOrderPage(pageContainer)
+            }
         }
-
-
     }
+
 
     fun calculateTotalPrice(shoppingCarts: MutableList<ShopCart>): Double {
         var totalPrice = 0.0
@@ -430,7 +454,16 @@ class MainActivity : AppCompatActivity() {
         val merchSubTotalTextView: TextView = findViewById(R.id.merch_subtotal_value)
         val orderTotalPaymentTextView: TextView = findViewById(R.id.total_payment_value)
         val totalValueTextView: TextView = findViewById(R.id.total_value)
+        val backButton: ImageButton = findViewById(R.id.backButton)
 
+        fetchAndDisplayDeliveryAddress()
+
+        backButton.setOnClickListener {
+            val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
+            pageContainer.removeAllViews()
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_cart, null) as RelativeLayout)
+            initCartPage(pageContainer)
+        }
         val productProtectSubtotal = 0
         val shipSubtotal = 0
         var merchSubTotal = cartList?.let { calculateTotalPrice(it) }
@@ -499,6 +532,58 @@ class MainActivity : AppCompatActivity() {
             initHomePage(inflatedPage, pageContainer)
         }
 
+    }
+    fun fetchAndDisplayDeliveryAddress() {
+        val firestore = FirebaseFirestore.getInstance()
+        val email = SessionManager.getUserEmail(this)
+
+        val nameDeliveryTV: TextView = findViewById(R.id.nameDeliveryTV)
+        val phoneDeliveryTV: TextView = findViewById(R.id.phoneDeliveryTV)
+        val regionTV: TextView = findViewById(R.id.regionTV)
+        val barangayTV: TextView = findViewById(R.id.barangayTV)
+        val streetNameTV: TextView = findViewById(R.id.streetNameTV)
+        val postalCodeTV: TextView = findViewById(R.id.postalCodeTV)
+
+        if (email != null) {
+            firestore.collection("users")
+                .whereEqualTo("email", email)
+                .get()
+                .addOnSuccessListener { querySnapshot ->
+                    if (!querySnapshot.isEmpty) {
+                        val userDocument = querySnapshot.documents.first()
+                        val deliveryAddressesData = userDocument.get("deliveryAddresses") as? List<HashMap<String, Any>>
+
+                        if (deliveryAddressesData != null && deliveryAddressesData.isNotEmpty()) {
+                            val deliveryAddressData = deliveryAddressesData.first()
+
+                            val name = deliveryAddressData["name"] as? String
+                            val phone = deliveryAddressData["phone"] as? String
+                            val region = deliveryAddressData["region"] as? String
+                            val barangay = deliveryAddressData["barangay"] as? String
+                            val streetName = deliveryAddressData["streetName"] as? String
+                            val postalCode = deliveryAddressData["postalCode"] as? String
+
+                            if (name != null && phone != null && region != null && barangay != null && streetName != null && postalCode != null) {
+                                nameDeliveryTV.text = name
+                                phoneDeliveryTV.text = phone
+                                regionTV.text = region
+                                barangayTV.text = barangay
+                                streetNameTV.text = streetName
+                                postalCodeTV.text = postalCode
+                            } else {
+                                Log.e("MainActivity", "One or more fields are null")
+                            }
+                        } else {
+                            Log.e("MainActivity", "No delivery addresses found")
+                        }
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Log.e("MainActivity", "Failed to fetch delivery addresses: ${e.message}")
+                }
+        } else {
+            Log.e("GetUser", "Invalid email: $email")
+        }
     }
 
     private fun initProfilePage() {

@@ -1,65 +1,70 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:layout_marginTop="-190dp"
+        android:scaleType="fitXY"
+        android:scaleX="-2"
+        android:scaleY="2"
+        android:src="@drawable/bg_blob3"
+        android:contentDescription="@string/content_desc_bg"/>
+    <RelativeLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="#FFF">
+
+        <ImageButton
+            android:id="@+id/backButton"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="15dp"
+            android:background="@drawable/green_back_button"
+            android:contentDescription="Back" />
+
+        <TextView
+            android:id="@+id/checkOutTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="20dp"
+            android:layout_toEndOf="@id/backButton"
+            android:fontFamily="@font/spartan_medium"
+            android:text="Order Details"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+        <ImageView
+            android:id="@+id/furniLogo"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="15dp"
+            android:src="@drawable/furni_logo"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:contentDescription="@string/app_name"/>
+    </RelativeLayout>
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:layout_below="@id/header">
+
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="350dp"
-                android:layout_marginTop="-190dp"
-                android:scaleType="fitXY"
-                android:scaleX="-2"
-                android:scaleY="2"
-                android:src="@drawable/bg_blob3"
-                android:contentDescription="@string/content_desc_bg"/>
-
-            <LinearLayout
-                android:id="@+id/header"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="40dp"
-                android:layout_marginTop="40dp"
-                android:orientation="horizontal"
-                tools:ignore="UseCompoundDrawables">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:fontFamily="@font/montserrat"
-                    android:text="@string/orders_title_page"
-                    android:textColor="@color/white"
-                    android:textSize="40sp"
-                    android:textStyle="bold"
-
-                    />
-
-                <ImageView
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:src="@drawable/furni_logo"
-                    android:contentDescription="@string/app_name"/>
-
-
-            </LinearLayout>
-
+            android:layout_height="wrap_content"
+            android:layout_below="@id/header">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/order_recycler_view"
-                android:layout_below="@id/header"
-                android:layout_marginTop="30dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                />
+                android:layout_marginTop="20dp" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/order_ship_add"
@@ -67,7 +72,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/order_recycler_view"
                 android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:background="@color/white"
                 app:cardCornerRadius="15dp">
@@ -81,6 +86,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         >
+
                         <ImageView
                             android:layout_width="40dp"
                             android:layout_height="40dp"
@@ -104,8 +110,6 @@
                             android:textColor="@color/white"
                             android:textSize="15sp"
                             android:textStyle="bold" />
-
-
                         <ImageButton
                             android:id="@+id/show_shipping_add_button"
                             android:layout_width="10dp"
@@ -120,36 +124,107 @@
                     </RelativeLayout>
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_below="@id/shipping_address_header"
-                        android:layout_marginBottom="12dp"
-                        android:orientation="horizontal">
-                        <TextView
-                            android:id="@+id/shipping_address_title_view"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="5dp"
-                            android:fontFamily="@font/montserrat_semibold"
-                            android:text="Home Address:"
-                            android:textColor="@color/primary_lighter2"
-                            android:textSize="13sp"
-                            android:textStyle="bold"
-                            tools:ignore="HardcodedText,RelativeOverlap,SmallSp" />
+                        android:padding="5dp"
+                        android:background="@color/white"
+                        android:orientation="vertical"
+                        android:layout_below="@id/shipping_address_header">
 
-                        <TextView
-                            android:id="@+id/shipping_address_text_view"
-                            android:layout_width="wrap_content"
+                        <RelativeLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/montserrat"
-                            android:text="@string/sample_address"
-                            android:textColor="@color/primary_lighter2"
-                            android:textSize="13sp"
-                            android:textStyle="bold"
-                            tools:ignore="HardcodedText,RelativeOverlap,SmallSp" />
-                    </LinearLayout>
+                            android:layout_marginStart="20dp"
+                            android:layout_marginEnd="20dp">
+                            <TextView
+                                android:id="@+id/nameDeliveryTV"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="20dp"
+                                android:enabled="false"
+                                android:fontFamily="@font/montserrat"
+                                android:text="Name"
+                                android:textColor="@color/primary"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
 
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="end"
+                                android:layout_alignParentEnd="true">
+                                <TextView
+                                    android:id="@+id/PH63"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="(+63)"
+                                    android:textColor="@color/primary"
+                                    android:textSize="12sp"
+                                    android:fontFamily="@font/montserrat"/>
+                                <TextView
+                                    android:id="@+id/phoneDeliveryTV"
+                                    android:layout_width="match_parent"
+                                    android:fontFamily="@font/montserrat"
+                                    android:layout_height="wrap_content"
+                                    android:text="phone number"
+                                    android:textColor="@color/primary"
+                                    android:textSize="12sp"
+                                    android:layout_marginStart="5dp" />
+                            </LinearLayout>
+                        </RelativeLayout>
+
+
+                        <TextView
+                            android:id="@+id/regionTV"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:enabled="false"
+                            android:fontFamily="@font/montserrat"
+                            android:text="Region"
+                            android:textColor="@color/primary"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/barangayTV"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:fontFamily="@font/montserrat"
+                            android:text="Barangay"
+                            android:textColor="@color/primary"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/streetNameTV"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:enabled="false"
+                            android:fontFamily="@font/montserrat"
+                            android:text="Street"
+                            android:textColor="@color/primary"
+                            android:textSize="12sp" />
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+                            <TextView
+                                android:id="@+id/postalCodeTV"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="20dp"
+                                android:enabled="false"
+                                android:fontFamily="@font/montserrat"
+                                android:text="Postal Code"
+                                android:textColor="@color/primary"
+                                android:textSize="12sp"
+                                android:layout_marginBottom="10dp"/>
+                        </RelativeLayout>
+                    </LinearLayout>
                 </RelativeLayout>
             </androidx.cardview.widget.CardView>
 
@@ -277,8 +352,8 @@
                     <RelativeLayout
                         android:id="@+id/payment_details_header"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        >
+                        android:layout_height="wrap_content">
+
                         <ImageView
                             android:layout_width="40dp"
                             android:layout_height="40dp"
@@ -334,7 +409,6 @@
                             android:textSize="14sp"
                             android:textStyle="bold"
                             tools:ignore="RelativeOverlap" />
-
 
                         <TextView
                             android:id="@+id/prod_protect_subtotal_title"
