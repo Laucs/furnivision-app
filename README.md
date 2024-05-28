@@ -8,7 +8,6 @@ Dashboard
 - clickable heart icons
 
 Shop
-- Adjust furniture pic/ details should be bigger than the pic
 - Buy button for the viewing of furniture should go directly to orders page
 
 Cart
@@ -27,5 +26,3 @@ Profile
 - Default functionality of Payment method
 
 - to Pay page should accept the furniture that has been checked out
-
--logout should have a confirmation dialog

@@ -637,12 +637,17 @@ class MainActivity : AppCompatActivity() {
             val addStreetNameET = addDialogView.findViewById<EditText>(R.id.addStreetNameET)
             val addPostalCodeET = addDialogView.findViewById<EditText>(R.id.addPostalCodeET)
             val editCheckBox = addDialogView.findViewById<CheckBox>(R.id.editCheckBox)
+            val closeButton = addDialogView.findViewById<ImageButton>(R.id.closeButton)
 
             val addDialog = AlertDialog.Builder(this)
                 .setView(addDialogView)
                 .setPositiveButton("Save", null)
                 .setNegativeButton("Cancel") { _, _ -> }
                 .create()
+
+            closeButton.setOnClickListener {
+                addDialog.dismiss()
+            }
 
             addDialog.setOnShowListener { dialog ->
                 val saveButton = (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
@@ -771,32 +776,11 @@ class MainActivity : AppCompatActivity() {
         }
         deliveryAddressAdapter.setOnItemClickListener(object : DeliveryAddressAdapter.OnItemClickListener {
             override fun onItemClick(deliveryAddress: DeliveryAddress) {
-                val editDeleteDialogView = layoutInflater.inflate(R.layout.edit_delete_dialog, null)
-                val editButton = editDeleteDialogView.findViewById<Button>(R.id.editButton)
-                val deleteButton = editDeleteDialogView.findViewById<Button>(R.id.deleteButton)
 
-                val editDeleteDialog = AlertDialog.Builder(this@MainActivity)
-                    .setView(editDeleteDialogView)
-                    .create()
-
-                editButton.setOnClickListener {
-                    editDeleteDialog.dismiss()
-                    showEditDialog(deliveryAddress, deliveryAddresses, deliveryAddressAdapter)
-                }
-
-                deleteButton.setOnClickListener {
-                    editDeleteDialog.dismiss()
-                    val index = deliveryAddresses.indexOf(deliveryAddress)
-                    if (index != -1) {
-                        deleteDeliveryAddress(deliveryAddress, deliveryAddresses, deliveryAddressAdapter)
-                    } else {
-                        Toast.makeText(this@MainActivity, "Delivery address not found.", Toast.LENGTH_SHORT).show()
-                    }
-                }
-
-                editDeleteDialog.show()
+                showEditDialog(deliveryAddress, deliveryAddresses, deliveryAddressAdapter)
             }
         })
+
     }
 
     fun showEditDialog(deliveryAddress: DeliveryAddress, deliveryAddresses: MutableList<DeliveryAddress>, deliveryAddressAdapter: DeliveryAddressAdapter) {
@@ -808,6 +792,7 @@ class MainActivity : AppCompatActivity() {
         val editStreetNameET = editDialogView.findViewById<EditText>(R.id.streetNameET)
         val editPostalCodeET = editDialogView.findViewById<EditText>(R.id.postalCodeET)
         val editCheckBox = editDialogView.findViewById<CheckBox>(R.id.editCheckBox)
+        val closeButton = editDialogView.findViewById<ImageButton>(R.id.closeButton)
         val firestore = FirebaseFirestore.getInstance()
 
         // Populate the EditText fields with current delivery address details
@@ -821,13 +806,19 @@ class MainActivity : AppCompatActivity() {
 
         val editDialog = AlertDialog.Builder(this@MainActivity)
             .setView(editDialogView)
-            .setPositiveButton("Save", null)
-            .setNegativeButton("Cancel") { _, _ -> }
+            .setPositiveButton("Update", null)
+            .setNegativeButton("Delete", null)
             .create()
 
+        closeButton.setOnClickListener {
+            editDialog.dismiss()
+        }
+
         editDialog.setOnShowListener { dialog ->
-            val saveButton = (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
-            saveButton.setOnClickListener {
+            val alertDialog = dialog as AlertDialog
+
+            val updateButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            updateButton.setOnClickListener {
                 val newName = editNameDeliveryET.text?.toString()?.trim()
                 val newPhone = editPhoneDeliveryET.text?.toString()?.trim()
                 val newRegion = editRegionET.text?.toString()?.trim()
@@ -896,7 +887,7 @@ class MainActivity : AppCompatActivity() {
                                                     // Notify adapter that the data has changed
                                                     deliveryAddressAdapter.notifyDataSetChanged()
                                                     Toast.makeText(this@MainActivity, "Delivery address updated successfully.", Toast.LENGTH_SHORT).show()
-                                                    dialog.dismiss()
+                                                    alertDialog.dismiss()
                                                 }
                                                 .addOnFailureListener { e ->
                                                     Toast.makeText(this@MainActivity, "Failed to update delivery address: ${e.message}", Toast.LENGTH_SHORT).show()
@@ -917,10 +908,81 @@ class MainActivity : AppCompatActivity() {
                     Log.e("YourActivity", "Invalid email: $email")
                 }
             }
+
+            val deleteButton = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+            deleteButton.setOnClickListener {
+
+                // Show the confirmation delete dialog
+                val confirmDeleteDialogView = layoutInflater.inflate(R.layout.confirm_delete_dialog, null)
+                val cancelButton = confirmDeleteDialogView.findViewById<Button>(R.id.cancelButton)
+                val confirmDeleteButton = confirmDeleteDialogView.findViewById<Button>(R.id.confirmDeleteButton)
+                val confirmDeleteDialog = AlertDialog.Builder(this@MainActivity)
+                    .setView(confirmDeleteDialogView)
+                    .create()
+
+                cancelButton.setOnClickListener {
+                    // Dismiss the confirmation dialog
+                    confirmDeleteDialog.dismiss()
+                }
+
+                confirmDeleteButton.setOnClickListener {
+                    // Proceed with deletion
+                    val email = SessionManager.getUserEmail(this@MainActivity)
+                    if (email != null) {
+                        firestore.collection("users")
+                            .whereEqualTo("email", email)
+                            .get()
+                            .addOnSuccessListener { querySnapshot ->
+                                for (document in querySnapshot.documents) {
+                                    val userRef = document.reference
+                                    userRef.get()
+                                        .addOnSuccessListener { userDocument ->
+                                            val deliveryAddressList = userDocument.get("deliveryAddresses") as? List<Map<String, Any>>
+                                            if (deliveryAddressList != null) {
+                                                val updatedDeliveryAddressList = deliveryAddressList.toMutableList().apply {
+                                                    val index = indexOfFirst { it["name"] == deliveryAddress.name && it["phone"] == deliveryAddress.phone }
+                                                    if (index != -1) {
+                                                        removeAt(index)
+                                                    }
+                                                }
+                                                userRef.update("deliveryAddresses", updatedDeliveryAddressList)
+                                                    .addOnSuccessListener {
+                                                        // Remove the delivery address from the local list
+                                                        deliveryAddresses.remove(deliveryAddress)
+                                                        // Notify adapter that the data has changed
+                                                        deliveryAddressAdapter.notifyDataSetChanged()
+                                                        Toast.makeText(this@MainActivity, "Delivery address deleted successfully.", Toast.LENGTH_SHORT).show()
+                                                    }
+                                                    .addOnFailureListener { e ->
+                                                        Toast.makeText(this@MainActivity, "Failed to delete delivery address: ${e.message}", Toast.LENGTH_SHORT).show()
+                                                    }
+                                            } else {
+                                                Toast.makeText(this@MainActivity, "No matching delivery address found.", Toast.LENGTH_SHORT).show()
+                                            }
+                                        }
+                                        .addOnFailureListener { e ->
+                                            Toast.makeText(this@MainActivity, "Error retrieving document: ${e.message}", Toast.LENGTH_SHORT).show()
+                                        }
+                                }
+                            }
+                            .addOnFailureListener { e ->
+                                Toast.makeText(this@MainActivity, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
+                            }
+                    } else {
+                        Log.e("YourActivity", "Invalid email: $email")
+                    }
+
+                    // Dismiss the confirmation dialog
+                    confirmDeleteDialog.dismiss()
+                }
+
+                confirmDeleteDialog.show()
+            }
         }
 
         editDialog.show()
     }
+
 
 
 
@@ -1119,13 +1181,36 @@ class MainActivity : AppCompatActivity() {
         initBackButton()
         // Navigation Logic
         val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
+        val confirmLogoutDialogView = layoutInflater.inflate(R.layout.confirm_logout_dialog, null)
+        val cancelButton = confirmLogoutDialogView.findViewById<Button>(R.id.cancelButton)
+        val confirmLogoutButton = confirmLogoutDialogView.findViewById<Button>(R.id.confirmLogoutButton)
 
         logoutButton.setOnClickListener {
-            AuthUtility.signOut(this)
-            val intent = Intent(this, LoginRegistrationActivity::class.java)
-            startActivity(intent)
-            finish()
+
+            val confirmLogoutDialogView = layoutInflater.inflate(R.layout.confirm_logout_dialog, null)
+            val cancelButton = confirmLogoutDialogView.findViewById<Button>(R.id.cancelButton)
+            val confirmLogoutButton = confirmLogoutDialogView.findViewById<Button>(R.id.confirmLogoutButton)
+
+            val confirmLogoutDialog = AlertDialog.Builder(this@MainActivity)
+                .setView(confirmLogoutDialogView)
+                .create()
+
+            cancelButton.setOnClickListener {
+                confirmLogoutDialog.dismiss()
+            }
+
+            confirmLogoutButton.setOnClickListener {
+                confirmLogoutDialog.dismiss()
+                AuthUtility.signOut(this@MainActivity)
+                val intent = Intent(this@MainActivity, LoginRegistrationActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
+
+            confirmLogoutDialog.show()
         }
+
+
         aboutButton.setOnClickListener {
             activePage = (R.layout.activity_about)
             pageContainer.removeAllViews()
@@ -1287,10 +1372,11 @@ class MainActivity : AppCompatActivity() {
         val email = SessionManager.getUserEmail(this)
 
         if (email != null) {
+            val censoredEmail = censorEmail(email)
             AuthUtility.getUserName(email,
                 onSuccess = { name ->
                     nameTV.text = name
-                    emailTV.text = email
+                    emailTV.text = censoredEmail
                 },
                 onFailure = {
                     Log.e("GetUser", "Failed to retrieve user name")
@@ -1299,6 +1385,7 @@ class MainActivity : AppCompatActivity() {
         } else {
             Log.e("GetUser", "Invalid email: $email")
         }
+
         initBackButton()
         changeNameButton.setOnClickListener {
             activePage = (R.layout.activity_edit_name)
@@ -1403,7 +1490,7 @@ class MainActivity : AppCompatActivity() {
                 Log.e("GetUser", "Invalid email: $email")
             }
 
-            // Build the dialog
+
             val dialog = AlertDialog.Builder(this)
                 .setView(dialogView)
                 .setPositiveButton("Confirm") { dialogInterface, which ->
@@ -1495,7 +1582,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     val phoneNum = document.getString("phoneNumber")
                     if (phoneNum != null) {
-                        phoneTV.text = "0$phoneNum" // Display the phone number in the phoneTV TextView
+                        phoneTV.text = censorPhoneNumber(phoneNum)
                     }
                     val gender = document.getString("gender")
                     if (gender != null) {
@@ -1542,6 +1629,17 @@ class MainActivity : AppCompatActivity() {
 
 
 
+    }
+    fun censorEmail(email: String): String {
+        if (email.length <= 6) return email // Email too short to censor
+        val atIndex = email.indexOf('@')
+        if (atIndex == -1 || atIndex <= 2) return email // Invalid email format
+
+        val firstLetter = email.first()
+        val lastLetter = email[atIndex - 1]
+        val domain = email.substring(atIndex)
+
+        return "$firstLetter*****$lastLetter$domain"
     }
 
     fun refreshProfile(){
@@ -1951,6 +2049,17 @@ class MainActivity : AppCompatActivity() {
             Log.e("GetUser", "Invalid email: $email")
         }
     }
+    // Function to censor phone number
+    fun censorPhoneNumber(phoneNumber: String): String {
+        return if (phoneNumber.length > 3) {
+            val visiblePart = phoneNumber.takeLast(3)
+            val censoredPart = "*".repeat(phoneNumber.length - 3)
+            "$censoredPart$visiblePart"
+        } else {
+            phoneNumber // If the phone number is too short to censor, return as is.
+        }
+    }
+
 
     private fun validatePhoneNumber(phoneNumber: String): Boolean {
         val phonePattern = Regex("[0-9]{10}") // Assumes a 10-digit phone number format
