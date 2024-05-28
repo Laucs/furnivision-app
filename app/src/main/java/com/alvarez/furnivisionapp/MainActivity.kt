@@ -932,12 +932,6 @@ class MainActivity : AppCompatActivity() {
                     return@setOnClickListener
                 }
 
-                // Check if more than one address is marked as default
-                if (newIsChecked && deliveryAddresses.filter { it.isChecked }.size > 1) {
-                    Toast.makeText(this@MainActivity, "Only one delivery address can be marked as default.", Toast.LENGTH_SHORT).show()
-                    return@setOnClickListener
-                }
-
                 val email = SessionManager.getUserEmail(this)
                 if (email != null) {
                     firestore.collection("users")
@@ -948,22 +942,62 @@ class MainActivity : AppCompatActivity() {
                                 val userRef = document.reference
                                 userRef.get()
                                     .addOnSuccessListener { userDocument ->
-                                        val deliveryAddressList = userDocument.get("deliveryAddresses") as? List<Map<String, Any>>
-                                        if (deliveryAddressList != null) {
-                                            val updatedDeliveryAddressList = deliveryAddressList.toMutableList().apply {
-                                                val index = indexOfFirst { it["name"] == deliveryAddress.name && it["phone"] == deliveryAddress.phone }
-                                                if (index != -1) {
-                                                    this[index] = mapOf(
-                                                        "name" to newName,
-                                                        "phone" to newPhone,
-                                                        "region" to newRegion,
-                                                        "barangay" to newBarangay,
-                                                        "streetName" to newStreetName,
-                                                        "postalCode" to newPostalCode,
-                                                        "isChecked" to newIsChecked
-                                                    )
-                                                }
+                                        val deliveryAddressList = userDocument.get("deliveryAddresses") as? MutableList<Map<String, Any>> ?: mutableListOf()
+
+                                        // Update the delivery address list
+                                        val updatedDeliveryAddressList = deliveryAddressList.toMutableList().apply {
+                                            val index = indexOfFirst { it["name"] == deliveryAddress.name && it["phone"] == deliveryAddress.phone }
+                                            if (index != -1) {
+                                                this[index] = mapOf(
+                                                    "name" to newName,
+                                                    "phone" to newPhone,
+                                                    "region" to newRegion,
+                                                    "barangay" to newBarangay,
+                                                    "streetName" to newStreetName,
+                                                    "postalCode" to newPostalCode,
+                                                    "isChecked" to newIsChecked
+                                                )
                                             }
+                                        }
+
+                                        // If the new address is checked, move it to the top and uncheck others
+                                        if (newIsChecked) {
+                                            val updatedAddresses = updatedDeliveryAddressList.map {
+                                                if (it["isChecked"] == true && it["name"] != newName) it.toMutableMap().apply { this["isChecked"] = false } else it
+                                            }.toMutableList()
+
+                                            // Find the updated address and move it to the top
+                                            val index = updatedAddresses.indexOfFirst { it["name"] == newName && it["phone"] == newPhone }
+                                            if (index != -1) {
+                                                val updatedAddress = updatedAddresses.removeAt(index)
+                                                updatedAddresses.add(0, updatedAddress)
+                                            }
+
+                                            // Update the database with the reordered list
+                                            userRef.update("deliveryAddresses", updatedAddresses)
+                                                .addOnSuccessListener {
+                                                    // Update the delivery address in the local list
+                                                    deliveryAddress.apply {
+                                                        name = newName
+                                                        phone = newPhone
+                                                        region = newRegion
+                                                        barangay = newBarangay
+                                                        streetName = newStreetName
+                                                        postalCode = newPostalCode
+                                                        isChecked = newIsChecked
+                                                    }
+                                                    // Notify adapter that the data has changed
+                                                    deliveryAddressAdapter.notifyDataSetChanged()
+                                                    Toast.makeText(this@MainActivity, "Delivery address updated successfully.", Toast.LENGTH_SHORT).show()
+                                                    alertDialog.dismiss()
+                                                    // Refresh the page to view the changes
+                                                    initDeliveryAddressPage()
+                                                }
+                                                .addOnFailureListener { e ->
+                                                    Toast.makeText(this@MainActivity, "Failed to update delivery address: ${e.message}", Toast.LENGTH_SHORT).show()
+                                                }
+                                        } else {
+                                            // Update the database with the modified list without reordering
                                             userRef.update("deliveryAddresses", updatedDeliveryAddressList)
                                                 .addOnSuccessListener {
                                                     // Update the delivery address in the local list
@@ -980,12 +1014,12 @@ class MainActivity : AppCompatActivity() {
                                                     deliveryAddressAdapter.notifyDataSetChanged()
                                                     Toast.makeText(this@MainActivity, "Delivery address updated successfully.", Toast.LENGTH_SHORT).show()
                                                     alertDialog.dismiss()
+                                                    // Refresh the page to view the changes
+                                                    initDeliveryAddressPage()
                                                 }
                                                 .addOnFailureListener { e ->
                                                     Toast.makeText(this@MainActivity, "Failed to update delivery address: ${e.message}", Toast.LENGTH_SHORT).show()
                                                 }
-                                        } else {
-                                            Toast.makeText(this@MainActivity, "No matching delivery address found.", Toast.LENGTH_SHORT).show()
                                         }
                                     }
                                     .addOnFailureListener { e ->
@@ -1001,7 +1035,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            val deleteButton = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+        val deleteButton = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE)
             deleteButton.setOnClickListener {
 
                 // Show the confirmation delete dialog
