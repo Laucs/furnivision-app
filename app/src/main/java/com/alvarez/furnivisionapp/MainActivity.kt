@@ -623,10 +623,9 @@ class MainActivity : AppCompatActivity() {
 
     fun initDeliveryAddressPage() {
         val firestore = FirebaseFirestore.getInstance()
-
         val addNewDeliveryAddressButton = findViewById<RelativeLayout>(R.id.addNewDeliveryAddressButton)
 
-
+        // Initialize the delivery address page
         initRefreshDeliveryAddress()
 
         addNewDeliveryAddressButton.setOnClickListener {
@@ -691,8 +690,11 @@ class MainActivity : AppCompatActivity() {
                                         document.reference
                                             .update("deliveryAddresses", FieldValue.arrayUnion(deliveryAddressData))
                                             .addOnSuccessListener {
+                                                // Fetch the updated delivery addresses from Firestore
+                                                initRefreshDeliveryAddress()
                                                 Toast.makeText(this, "Delivery address added successfully.", Toast.LENGTH_SHORT).show()
                                                 addDialog.dismiss()
+                                                initDeliveryAddressPage()
                                             }
                                             .addOnFailureListener { e ->
                                                 Toast.makeText(this, "Failed to add delivery address: ${e.message}", Toast.LENGTH_SHORT).show()
@@ -712,6 +714,7 @@ class MainActivity : AppCompatActivity() {
             addDialog.show()
         }
     }
+
 
     fun initRefreshDeliveryAddress() {
         val firestore = FirebaseFirestore.getInstance()
@@ -846,8 +849,11 @@ class MainActivity : AppCompatActivity() {
                     return@setOnClickListener
                 }
 
-
-                // Validation: Check if other custom validations are needed
+                // Check if more than one address is marked as default
+                if (newIsChecked && deliveryAddresses.filter { it.isChecked }.size > 1) {
+                    Toast.makeText(this@MainActivity, "Only one delivery address can be marked as default.", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
 
                 val email = SessionManager.getUserEmail(this)
                 if (email != null) {
