@@ -3,15 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="#F4F4F4">
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             >
             <RelativeLayout
                 android:id="@+id/header"
@@ -25,10 +21,48 @@
                     android:layout_height="440dp"
                     android:layout_marginTop="-294dp"
                     app:cardBackgroundColor="@color/primary"
-                    android:elevation="-30dp"
+                    android:elevation="-50dp"
                     app:cardCornerRadius="20dp"
                     >
+
                 </androidx.cardview.widget.CardView>
+
+                <RelativeLayout
+                    android:id="@+id/search_menu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/header_background"
+                    android:layout_marginTop="-30dp"
+                    android:outlineProvider="background"
+                    android:paddingHorizontal="50dp"
+                    android:elevation="20dp"
+                    android:background="@color/transparent"
+                    >
+
+                    <androidx.appcompat.widget.SearchView
+                        android:id="@+id/search_bar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/search_style"
+                        android:paddingHorizontal="10dp"
+                        android:drawablePadding="10dp"
+                        android:drawableStart="@drawable/baseline_search_24"
+                        app:defaultQueryHint="Search furniture"
+                        android:fontFamily="@font/quicksand"
+                        android:inputType="text"
+                        />
+
+                    <ListView
+                        android:id="@+id/search_list_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="600dp"
+                        android:layout_below="@id/search_bar"
+                        android:visibility="gone"
+                        android:elevation="20dp"
+                        android:divider="@color/white"
+                        />
+                </RelativeLayout>
+
 
                 <TextView
                     android:id="@+id/welcome"
@@ -46,15 +80,6 @@
                     android:textSize="25sp"
                     android:text="@string/welcome_dashboard"
                     />
-                <TextView
-                    android:id="@+id/emailTextView"
-                    android:layout_width="200sp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20sp"
-                    android:layout_marginTop="35sp"
-                    android:ellipsize="end"
-                    android:textColor="@color/white"
-                    android:textSize="25sp" />
 
                 <ImageView
                     android:id="@+id/logo"
@@ -65,110 +90,39 @@
                     android:layout_alignParentEnd="true"
                     android:src="@drawable/furni_logo"
                     android:contentDescription="@string/furnivision_logo_desc"/>
-                <EditText
-                    android:id="@+id/search_bar"
+            </RelativeLayout>
+            <ScrollView
+                android:id="@+id/content_scroll"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/header"
+                >
+                <LinearLayout
+                    android:id="@+id/content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/header_background"
-                    android:layout_marginHorizontal="50dp"
-                    android:layout_marginTop="-30dp"
-                    android:layout_marginBottom="20dp"
-                    android:paddingHorizontal="15dp"
-                    android:paddingVertical="10dp"
-                    android:elevation="5dp"
-                    android:background="@drawable/search_style"
-                    android:drawablePadding="10dp"
-                    android:drawableStart="@drawable/baseline_search_24"
-                    android:hint="Search furniture"
-                    android:fontFamily="@font/quicksand"
-                    android:inputType="text"
-                    />
-
-
-            </RelativeLayout>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/dashboard_navigation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/header"
-                app:cardBackgroundColor="@color/transparent"
-                app:cardElevation="0dp"
-                >
-                <HorizontalScrollView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:scrollbars="horizontal">
-
-                    <LinearLayout
-                        android:id="@+id/dashboard_navigation_container"
+                    android:layout_marginTop="-20dp"
+                    android:paddingTop="40dp"
+                    android:paddingHorizontal="25dp"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/content_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:layout_marginBottom="6dp"
+                        android:text="Shops"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/furni_green"/>
 
-                        <ImageButton
-                            android:id="@+id/chair_button"
-                            android:layout_width="90dp"
-                            android:layout_height="40dp"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginEnd="40dp"
-                            android:layout_marginStart="30dp"
-                            android:layout_marginVertical="15dp"
-                            android:elevation="10dp"
-                            android:background="@drawable/green_border"
-                            android:contentDescription="@string/sofa_button"
-                            android:src="@drawable/ic_chair1_foreground" />
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/shop_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:scrollbars="none"
+                        />
 
-                        <ImageButton
-                            android:id="@+id/bed_button"
-                            android:layout_width="90dp"
-                            android:layout_height="40dp"
-                            android:layout_marginEnd="40dp"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginHorizontal="5dp"
-                            android:elevation="10dp"
-                            android:background="@drawable/white_background"
-                            android:src="@drawable/ic_bed1_foreground"
-                            android:contentDescription="@string/bed_button" />
-
-                        <ImageButton
-                            android:id="@+id/table_button"
-                            android:layout_width="90dp"
-                            android:layout_height="40dp"
-                            android:layout_marginEnd="40dp"
-                            android:layout_marginVertical="15dp"
-                            android:elevation="10dp"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginHorizontal="5dp"
-                            android:background="@drawable/white_background"
-                            android:src="@drawable/ic_table_foreground"
-                            android:contentDescription="@string/table_button" />
-
-                        <ImageButton
-                            android:id="@+id/lamp_button"
-                            android:layout_width="100dp"
-                            android:layout_height="40dp"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginEnd="40dp"
-                            android:layout_marginVertical="15dp"
-                            android:elevation="10dp"
-                            android:background="@drawable/white_background"
-                            android:src="@drawable/ic_table_foreground"
-                            android:contentDescription="@string/lamp_button" />
-
-                    </LinearLayout>
-                </HorizontalScrollView>
-            </androidx.cardview.widget.CardView>
-
-            <include
-                android:id="@+id/content"
-                layout="@layout/dashboard_content"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:layout_marginVertical="10dp"
-                android:layout_marginHorizontal="25dp"
-                android:layout_below="@+id/dashboard_navigation"/>
+                </LinearLayout>
+            </ScrollView>
         </RelativeLayout>
-    </ScrollView>
-
 </RelativeLayout>

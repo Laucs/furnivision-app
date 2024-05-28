@@ -13,7 +13,9 @@ import android.media.Image
 import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract.CommonDataKinds.Im
+import android.text.Editable
 import android.text.InputType
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.TextureView
@@ -26,19 +28,24 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ListView
 import android.widget.RadioGroup
 import android.widget.RelativeLayout
+import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageButton
+import androidx.appcompat.widget.SearchView
+import androidx.cardview.widget.CardView
+import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.Visibility
 import com.alvarez.furnivisionapp.data.AuthUtility
 import com.alvarez.furnivisionapp.data.CartItem
 import com.alvarez.furnivisionapp.data.Furniture
-import com.alvarez.furnivisionapp.data.Order
 import com.alvarez.furnivisionapp.data.Shop
 import com.alvarez.furnivisionapp.data.DeliveryAddress
 import com.alvarez.furnivisionapp.utils.CameraFunctions
@@ -46,12 +53,12 @@ import com.alvarez.furnivisionapp.utils.HomePageFunctions
 import com.alvarez.furnivisionapp.utils.ShopListAdapter
 import com.alvarez.furnivisionapp.data.SessionManager
 import com.alvarez.furnivisionapp.data.ShopCart
+import com.alvarez.furnivisionapp.utils.SearchListAdapter
 import com.bumptech.glide.Glide
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
-import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import java.io.ByteArrayOutputStream
@@ -135,25 +142,127 @@ class MainActivity : AppCompatActivity() {
             pageContainer.addView(inflatedPage)
             initProfilePage()
         }
-        //toggle change favorite icons
-        val heartFill1 : ImageButton = findViewById(R.id.fav1_heart)
-        val heartFill2 : ImageButton = findViewById(R.id.fav2_heart)
-        val heartFill3 : ImageButton = findViewById(R.id.fav3_heart)
-        val heart1 : ImageButton = findViewById(R.id.pop1_heart)
-        val heart2 : ImageButton = findViewById(R.id.pop2_heart)
-        val heart3 : ImageButton = findViewById(R.id.pop3_heart)
-
-        heartFill1.setOnClickListener { toggleHeart(heartFill1) }
-        heartFill2.setOnClickListener { toggleHeart(heartFill2) }
-        heartFill3.setOnClickListener { toggleHeart(heartFill3) }
-        heart1.setOnClickListener { toggleHeart(heart1) }
-        heart2.setOnClickListener { toggleHeart(heart2) }
-        heart3.setOnClickListener { toggleHeart(heart3) }
     }
 
     private fun initHomePage(page: RelativeLayout, pageContainer: ViewGroup) {
         homePageFunctions = HomePageFunctions(page, AppCompatImageButton::class.java, this)
 
+
+        // Initialize RecyclerView and adapter
+        val shopsView: RecyclerView = pageContainer.findViewById(R.id.shop_list)
+
+
+
+        val database = FirebaseFirestore.getInstance()
+        database.collection("shops")
+            .get()
+            .addOnSuccessListener { result: QuerySnapshot ->
+                val shopList: List<Shop> = result.documents.mapNotNull { document ->
+                    document.toObject(Shop::class.java)?.apply {
+                        id = document.id
+                    }
+                }
+                val adapter = ShopListAdapter(shopList)
+                shopsView.adapter = adapter
+                shopsView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+                adapter.setOnItemClickListener(object : ShopListAdapter.OnItemClickListener {
+                    override fun onItemClick(shopID: String) {
+                        pageContainer.removeAllViews()
+                        val inflatedPage = layoutInflater.inflate(R.layout.activity_furniture_selection, null) as ViewGroup
+                        pageContainer.addView(inflatedPage)
+                        initFurniSelectPage(shopID, pageContainer)
+                    }
+                })
+            }
+            .addOnFailureListener { exception: Exception ->
+                Log.d(TAG, "Error fetching documents: $exception")
+                // Handle failure (e.g., show error message)
+            }
+
+
+
+
+
+        val searchBar: androidx.appcompat.widget.SearchView = findViewById(R.id.search_bar)
+        val contentScroll: ScrollView = findViewById(R.id.content_scroll)
+        val contentView: View = findViewById(R.id.content)
+        val searchlistView: ListView = findViewById(R.id.search_list_view)
+        var furnitureList: List<Furniture> = listOf()
+
+        database.collection("furniture").get()
+            .addOnSuccessListener { result: QuerySnapshot ->
+                furnitureList = result.documents.mapNotNull { document ->
+                    document.toObject(Furniture::class.java)?.apply {
+                        id = document.id
+                    }
+                }
+                Log.d(TAG, "Furniture list loaded with ${furnitureList.size} items")
+
+                runOnUiThread {
+                    val searchAdapter = SearchListAdapter(this, furnitureList)
+                    searchlistView.adapter = searchAdapter
+                }
+
+                searchBar.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
+                    override fun onQueryTextSubmit(query: String?): Boolean {
+                        // Handle search action (optional)
+                        return false
+                    }
+
+                    override fun onQueryTextChange(newText: String?): Boolean {
+                        val isSearchEmpty = newText.isNullOrEmpty()
+                        Log.d(TAG, "Search text changed: $newText")
+
+                        contentScroll.visibility = if (isSearchEmpty) View.VISIBLE else View.GONE
+                        contentView.visibility = if (isSearchEmpty) View.VISIBLE else View.GONE
+                        searchlistView.visibility = if (isSearchEmpty) View.GONE else View.VISIBLE
+
+                        if (!isSearchEmpty) {
+                            newText?.let {
+                                val filteredList = furnitureList.filter { furniture ->
+                                    furniture.name?.contains(it, ignoreCase = true) ?: false
+                                }
+                                (searchlistView.adapter as SearchListAdapter).updateList(filteredList)
+                                Log.d(TAG, "Filtered list updated with ${filteredList.size} items")
+                            }
+                        }
+
+                        searchlistView.setOnItemClickListener { parent, view, position, id  ->
+                            // Get the Furniture object corresponding to the clicked item
+                            val clickedFurniture = furnitureList[position]
+
+                            // Now you can use the data from the clicked Furniture object as needed
+                            val furnitureID = clickedFurniture.id
+                            val furnitureShopID = clickedFurniture.shopID
+
+                            // Perform further actions based on the clicked item's data
+                            pageContainer.removeAllViews()
+                            val inflatedPage = layoutInflater.inflate(R.layout.activity_furniture_selection, null) as ViewGroup
+                            pageContainer.addView(inflatedPage)
+                            if (furnitureShopID != null) {
+                                initFurniSelectPage(furnitureShopID, pageContainer)
+                            }
+                        }
+
+
+                        return true
+                    }
+                })
+            }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "Error fetching furniture data", exception)
+            }
+    }
+
+
+
+
+    fun showHide(view:View) {
+        view.visibility = if (view.visibility == View.VISIBLE){
+            View.GONE
+        } else{
+            View.VISIBLE
+        }
     }
     fun toggleHeart(heartButton: ImageButton) {
         val isFilled = heartButton.tag as? Boolean ?: false
@@ -167,42 +276,61 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initShopPage(pageContainer: ViewGroup) {
-        database = FirebaseFirestore.getInstance()
+        val database = FirebaseFirestore.getInstance()
+        val shopsView: RecyclerView = findViewById(R.id.shop_list)
+        val searchBar: SearchView = findViewById(R.id.search_store)
+
+        val adapter = ShopListAdapter(emptyList())
+
+        adapter.setOnItemClickListener(object : ShopListAdapter.OnItemClickListener {
+            @SuppressLint("InflateParams")
+            override fun onItemClick(shopID: String) {
+                pageContainer.removeAllViews()
+                val inflatedPage = layoutInflater.inflate(R.layout.activity_furniture_selection, null) as ViewGroup
+                pageContainer.addView(inflatedPage)
+                initFurniSelectPage(shopID, pageContainer)
+            }
+        })
+
+        var originalList: List<Shop> = emptyList()
+
+        shopsView.adapter = adapter
+        shopsView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+
         database.collection("shops")
             .get()
             .addOnSuccessListener { result: QuerySnapshot ->
-                val shopList: List<Shop> = result.documents.mapNotNull { document ->
+                originalList = result.documents.mapNotNull { document ->
                     document.toObject(Shop::class.java)?.apply {
                         id = document.id
                     }
                 }
-                val shopsView: RecyclerView = findViewById(R.id.shop_list)
-
-                val adapter = ShopListAdapter(shopList)
-
-                adapter.setOnItemClickListener (object : ShopListAdapter.OnItemClickListener {
-                    @SuppressLint("InflateParams")
-                    override fun onItemClick(shopID: String) {
-                        pageContainer.removeAllViews()
-                        var inflatedPage = layoutInflater.inflate(R.layout.activity_furniture_selection, null) as RelativeLayout
-                        pageContainer.addView(inflatedPage)
-                        initFurniSelectPage(shopID, pageContainer)
-                    }
-                })
-
-                shopsView.adapter = adapter
-                val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-                shopsView.layoutManager = layoutManager
-
+                adapter.updateList(originalList)
             }
             .addOnFailureListener { exception: Exception ->
-                // Handle the error here
-                Log.d(TAG,"Error fetching documents: $exception")
+                Log.d(TAG, "Error fetching documents: $exception")
             }
 
+        searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                // Handle search action (optional)
+                return false
+            }
 
-
+            override fun onQueryTextChange(newText: String?): Boolean {
+                val filteredList = if (newText.isNullOrEmpty()) {
+                    // If search query is empty, show original list
+                    originalList
+                } else {
+                    // Filter the list based on search query
+                    adapter.filter(newText)
+                }
+                adapter.updateList(filteredList)
+                return true
+            }
+        })
     }
+
 
     @SuppressLint("SetTextI18n", "DefaultLocale", "CommitPrefEdits", "InflateParams")
     private fun initFurniSelectPage(shopID: String, pageContainer: ViewGroup){
@@ -505,11 +633,9 @@ class MainActivity : AppCompatActivity() {
                 .whereEqualTo("email", email)
                 .get()
                 .addOnSuccessListener { result: QuerySnapshot ->
-                    if (!result.isEmpty) {
-                        val document = result.documents.first()
-                        val userId = document.id
-                        order.put("userID", userId)
-                    }
+                    val document = result.documents.first()
+                    val userId = document.id
+                    order["userID"] = userId
                 }
                 .addOnFailureListener { e: Exception ->
                     Log.w(TAG, "Error getting phone number", e)
@@ -1254,6 +1380,7 @@ class MainActivity : AppCompatActivity() {
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_rate, null) as RelativeLayout)
             initToRatePage()
         }
+        
     }
 
     fun initToRatePage() {
