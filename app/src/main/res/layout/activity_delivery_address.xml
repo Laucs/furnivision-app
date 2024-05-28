@@ -52,7 +52,7 @@
            <TextView
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
-               android:text="Addresses"
+               android:text="Address"
                android:textColor="#737373"
                android:textSize="18sp"
                android:paddingTop="10dp"
@@ -84,11 +84,12 @@
                    android:layout_gravity="center"
                    android:background="@color/white"
                    android:fontFamily="@font/spartan_medium"
-                   android:text="Add new Address"
+                   android:text="Add New Address"
                    android:textColor="@color/primary_darker"
                    android:layout_toEndOf="@id/addIcon"
-                   android:textSize="20sp"
-                   android:textAllCaps="false"/>
+                   android:textSize="15sp"
+                   android:textAllCaps="false"
+                   android:layout_centerVertical="true"/>
                <ImageButton
                    android:id="@+id/addIcon"
                    android:layout_width="30dp"
@@ -96,7 +97,7 @@
                    android:layout_alignParentStart="true"
                    android:layout_centerVertical="true"
                    android:layout_marginStart="55dp"
-                   android:layout_marginEnd="20dp"
+                   android:layout_marginEnd="10dp"
                    android:background="@drawable/plus_icon" />
            </RelativeLayout>
        </LinearLayout>

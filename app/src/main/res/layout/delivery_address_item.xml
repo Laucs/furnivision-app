@@ -11,11 +11,17 @@
         android:background="@color/white"
         android:orientation="vertical">
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp">
             <TextView
                 android:id="@+id/nameDeliveryTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
                 android:enabled="false"
                 android:fontFamily="@font/montserrat"
                 android:text="Set Name"
@@ -23,31 +29,31 @@
                 android:textSize="15sp"
                 android:textStyle="bold" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:fontFamily="@font/montserrat"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp">
-            <TextView
-                android:id="@+id/PH63"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="(+63)"
-                android:textColor="#737373"
-                android:textSize="12sp"
-                android:fontFamily="@font/montserrat"/>
-            <TextView
-                android:id="@+id/phoneDeliveryTV"
-                android:layout_width="match_parent"
-                android:fontFamily="@font/montserrat"
-                android:layout_height="wrap_content"
-                android:text="Enter phone number"
-                android:textColor="#737373"
-                android:textSize="12sp"
-                android:layout_marginStart="10dp" />
-        </LinearLayout>
+                android:orientation="horizontal"
+                android:gravity="end"
+                android:layout_alignParentEnd="true">
+                <TextView
+                    android:id="@+id/PH63"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="(+63)"
+                    android:textColor="#737373"
+                    android:textSize="15sp"
+                    android:fontFamily="@font/montserrat"/>
+                <TextView
+                    android:id="@+id/phoneDeliveryTV"
+                    android:layout_width="match_parent"
+                    android:fontFamily="@font/montserrat"
+                    android:layout_height="wrap_content"
+                    android:text="Enter phone number"
+                    android:textColor="#737373"
+                    android:textSize="15sp"
+                    android:layout_marginStart="10dp" />
+            </LinearLayout>
+        </RelativeLayout>
 
 
         <TextView

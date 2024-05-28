@@ -1,148 +1,237 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#F4F4F4">
-
-    <LinearLayout
+    android:background="#FFF">
+    <RelativeLayout
+        android:id="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="20dp"
-        android:background="#F4F4F4">
+        android:layout_height="60dp"
+        android:background="#396057">
 
-        <EditText
-            android:id="@+id/nameDeliveryET"
+        <ImageButton
+            android:id="@+id/closeButton"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="15dp"
+            android:background="@drawable/exit_icon_white"
+            android:contentDescription="Back" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="20dp"
+            android:background="#396057"
+            android:fontFamily="@font/spartan_medium"
+            android:text="Edit Address"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+    </RelativeLayout>
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/corder_radius_for_edit_text"
-            android:fontFamily="@font/montserrat"
-            android:hint="Enter name"
-            android:inputType="text"
-            android:padding="10dp"
-            android:textColor="#595959"
-            android:textSize="15sp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:fontFamily="@font/montserrat"
-            android:layout_marginStart="20dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginEnd="20dp"
-            android:background="@drawable/corder_radius_for_edit_text">
-            <TextView
-                android:id="@+id/PH63"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="(+63)"
-                android:textColor="#737373"
-                android:textSize="15sp"
-                android:padding="10dp"
-                android:background="@color/cardview_light_background"/>
-            <EditText
-                android:id="@+id/phoneDeliveryET"
+            android:scrollbars="vertical"
+            android:layout_below="@id/header">
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/montserrat"
-                android:hint="Enter phone number"
-                android:textColor="#737373"
-                android:textSize="15sp"
-                android:inputType="number"
-                tools:ignore="TextFields"
-                android:padding="10dp"
-                android:background="@color/cardview_light_background"/>
-        </LinearLayout>
-        <EditText
-            android:id="@+id/regionET"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/montserrat"
-            android:hint="Enter region"
-            android:textSize="15sp"
-            android:textColor="#595959"
-            android:inputType="text"
-            android:layout_marginStart="20dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginEnd="20dp"
-            android:padding="10dp"
-            android:background="@drawable/corder_radius_for_edit_text"/>
-        <EditText
-            android:id="@+id/barangayET"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Enter barangay"
-            android:textSize="15sp"
-            android:textColor="#595959"
-            android:inputType="text"
-            android:layout_marginStart="20dp"
-            android:layout_marginBottom="10dp"
-            android:fontFamily="@font/montserrat"
-            android:layout_marginEnd="20dp"
-            android:padding="10dp"
-            android:background="@drawable/corder_radius_for_edit_text"/>
-        <EditText
-            android:id="@+id/streetNameET"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/montserrat"
-            android:hint="Enter street name"
-            android:textSize="15sp"
-            android:textColor="#595959"
-            android:inputType="text"
-            android:layout_marginStart="20dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginEnd="20dp"
-            android:padding="10dp"
-            android:background="@drawable/corder_radius_for_edit_text"/>
-
-        <EditText
-            android:id="@+id/postalCodeET"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:hint="Enter postal code"
-            android:textColor="#595959"
-            android:inputType="number"
-            android:fontFamily="@font/montserrat"
-            android:textSize="15sp"
-            android:padding="10dp"
-            android:background="@drawable/corder_radius_for_edit_text"/>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginEnd="20dp">
-            <TextView
-                android:id="@+id/defaultTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Make this default?"
-                android:fontFamily="@font/montserrat"
-                android:textStyle="bold"
-                android:textColor="@color/black"
-                android:textSize="15sp"
-                android:layout_centerVertical="true"/>
-            <CheckBox
-                android:id="@+id/editCheckBox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="false"
-                android:textColor="@color/primary_darker"
-                android:textSize="15sp"
-                android:layout_alignParentEnd="true"
-                android:textStyle="bold" />
-        </RelativeLayout>
-
-    </LinearLayout>
-</ScrollView>
+                android:orientation="vertical"
+                android:paddingHorizontal="2dp"
+                android:paddingTop="20dp"
+                android:background="#fff">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Name"
+                    android:textColor="#737373"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/glacial_indifference_regular"
+                    android:textStyle="bold"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginBottom="5dp"/>
+                <EditText
+                    android:id="@+id/nameDeliveryET"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/corder_radius_for_edit_text"
+                    android:fontFamily="@font/montserrat"
+                    android:hint="Enter name"
+                    android:inputType="text"
+                    android:padding="10dp"
+                    android:textColor="#595959"
+                    android:textSize="15sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Contact Number"
+                    android:textColor="#737373"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/glacial_indifference_regular"
+                    android:textStyle="bold"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginBottom="5dp"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:fontFamily="@font/montserrat"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:background="@drawable/corder_radius_for_edit_text">
+                    <TextView
+                        android:id="@+id/PH63"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="(+63)"
+                        android:textColor="#737373"
+                        android:textSize="15sp"
+                        android:padding="10dp"
+                        android:background="@null"
+                        />
+                    <EditText
+                        android:id="@+id/phoneDeliveryET"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat"
+                        android:hint="Enter phone number"
+                        android:textColor="#737373"
+                        android:textSize="15sp"
+                        android:inputType="number"
+                        android:padding="10dp"
+                        android:background="@null"/>
+                </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Region"
+                    android:textColor="#737373"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/glacial_indifference_regular"
+                    android:textStyle="bold"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginBottom="5dp"/>
+                <EditText
+                    android:id="@+id/regionET"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat"
+                    android:hint="Enter region"
+                    android:textSize="15sp"
+                    android:textColor="#595959"
+                    android:inputType="text"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:padding="10dp"
+                    android:background="@drawable/corder_radius_for_edit_text"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Barangay"
+                    android:textColor="#737373"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/glacial_indifference_regular"
+                    android:textStyle="bold"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginBottom="5dp"/>
+                <EditText
+                    android:id="@+id/barangayET"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter barangay"
+                    android:textSize="15sp"
+                    android:textColor="#595959"
+                    android:inputType="text"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:fontFamily="@font/montserrat"
+                    android:layout_marginEnd="20dp"
+                    android:padding="10dp"
+                    android:background="@drawable/corder_radius_for_edit_text"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Street Name, Building, House No.,"
+                    android:textColor="#737373"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/glacial_indifference_regular"
+                    android:textStyle="bold"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginBottom="5dp"/>
+                <EditText
+                    android:id="@+id/streetNameET"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat"
+                    android:hint="Enter street name"
+                    android:textSize="15sp"
+                    android:textColor="#595959"
+                    android:inputType="text"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:padding="10dp"
+                    android:background="@drawable/corder_radius_for_edit_text"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Postal Code"
+                    android:textColor="#737373"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/glacial_indifference_regular"
+                    android:textStyle="bold"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginBottom="5dp"/>
+                <EditText
+                    android:id="@+id/postalCodeET"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:hint="Enter postal code"
+                    android:textColor="#595959"
+                    android:inputType="number"
+                    android:fontFamily="@font/montserrat"
+                    android:textSize="15sp"
+                    android:padding="10dp"
+                    android:background="@drawable/corder_radius_for_edit_text"/>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginEnd="20dp">
+                    <TextView
+                        android:id="@+id/defaultTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Make this default?"
+                        android:fontFamily="@font/montserrat"
+                        android:textStyle="bold"
+                        android:textColor="@color/primary_darker"
+                        android:textSize="15sp"
+                        android:layout_centerVertical="true"/>
+                    <CheckBox
+                        android:id="@+id/editCheckBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="false"
+                        android:textColor="@color/primary_darker"
+                        android:textSize="15sp"
+                        android:layout_alignParentEnd="true"
+                        android:textStyle="bold" />
+                </RelativeLayout>
+            </LinearLayout>
+    </ScrollView>
+</RelativeLayout>
