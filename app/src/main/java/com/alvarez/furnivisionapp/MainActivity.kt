@@ -549,7 +549,7 @@ class MainActivity : AppCompatActivity() {
             activePage = R.layout.activity_cart
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_cart, null) as RelativeLayout)
-            initCartPage()
+            initCartPage(pageContainer)
         }
 
         settingsButton.setOnClickListener {
