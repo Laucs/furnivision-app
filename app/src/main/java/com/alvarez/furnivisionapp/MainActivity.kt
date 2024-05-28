@@ -63,6 +63,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.util.Calendar
 import java.util.Date
 
 class MainActivity : AppCompatActivity() {
@@ -347,6 +348,7 @@ class MainActivity : AppCompatActivity() {
                 Log.d("Open Cart", cartList.toString())
 
                 var addToCartBtn: Button = findViewById(R.id.addToCartButton)
+                var buyButton: Button = findViewById(R.id.addButton)
                 var nextBtn: ImageButton = findViewById(R.id.nextBtn)
                 var prevBtn: ImageButton = findViewById(R.id.previousBtn)
 
@@ -421,6 +423,28 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
 
+                // if buy button is clicked
+                buyButton.setOnClickListener {
+//                    val shopID = furnitures[index].shopID
+//                    if (shopID != null) {
+//                        database.collection("shops").document(shopID).get()
+//                            .addOnSuccessListener { result: DocumentSnapshot? ->
+//                                if (result != null && result.exists()) {
+//                                    val shop = result.toObject(Shop::class.java)
+//                                    if (shop != null) {
+//                                        shop.id = result.id
+//                                        addItemToCart(shop, furnitures[index])
+//                                    }
+//                                }
+//                            }
+//                            .addOnFailureListener { exception ->
+//                                // Handle the failure
+//                                Log.e("ERRO", "Error getting document", exception)
+//                            }
+//                    }
+//
+//                    Toast.makeText(this, "Furniture is added to Cart", Toast.LENGTH_SHORT).show()
+                }
                 addToCartBtn.setOnClickListener {
                     val shopID = furnitures[index].shopID
                     if (shopID != null) {
@@ -519,7 +543,6 @@ class MainActivity : AppCompatActivity() {
 
         totalPriceTextView.text = PRICE_FORMAT.format(totalPrice)
 
-
         val adapter = cartList?.let { CartListAdapter(it) }
 
         cartListRecyclerView.adapter = adapter
@@ -527,18 +550,20 @@ class MainActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
         }
 
-
         val checkoutBtn: Button = findViewById(R.id.checkout_button)
 
         checkoutBtn.setOnClickListener {
-            activePage = (R.layout.activity_orders)
-            pageContainer.removeAllViews()
-            pageContainer.addView(layoutInflater.inflate(R.layout.activity_orders, null) as RelativeLayout)
-            initOrderPage(pageContainer)
+            if (cartList.isNullOrEmpty()) {
+                Toast.makeText(this, "No items to checkout.", Toast.LENGTH_SHORT).show()
+            } else {
+                activePage = (R.layout.activity_orders)
+                pageContainer.removeAllViews()
+                pageContainer.addView(layoutInflater.inflate(R.layout.activity_orders, null) as RelativeLayout)
+                initOrderPage(pageContainer)
+            }
         }
-
-
     }
+
 
     fun calculateTotalPrice(shoppingCarts: MutableList<ShopCart>): Double {
         var totalPrice = 0.0
@@ -557,7 +582,16 @@ class MainActivity : AppCompatActivity() {
         val merchSubTotalTextView: TextView = findViewById(R.id.merch_subtotal_value)
         val orderTotalPaymentTextView: TextView = findViewById(R.id.total_payment_value)
         val totalValueTextView: TextView = findViewById(R.id.total_value)
+        val backButton: ImageButton = findViewById(R.id.backButton)
 
+        fetchAndDisplayDeliveryAddress()
+
+        backButton.setOnClickListener {
+            val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
+            pageContainer.removeAllViews()
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_cart, null) as RelativeLayout)
+            initCartPage(pageContainer)
+        }
         val productProtectSubtotal = 0
         val shipSubtotal = 0
         var merchSubTotal = cartList?.let { calculateTotalPrice(it) }
@@ -625,11 +659,69 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
+    fun fetchAndDisplayDeliveryAddress() {
+        val firestore = FirebaseFirestore.getInstance()
+        val email = SessionManager.getUserEmail(this)
+
+        val nameDeliveryTV: TextView = findViewById(R.id.nameDeliveryTV)
+        val phoneDeliveryTV: TextView = findViewById(R.id.phoneDeliveryTV)
+        val regionTV: TextView = findViewById(R.id.regionTV)
+        val barangayTV: TextView = findViewById(R.id.barangayTV)
+        val streetNameTV: TextView = findViewById(R.id.streetNameTV)
+        val postalCodeTV: TextView = findViewById(R.id.postalCodeTV)
+
+        if (email != null) {
+            firestore.collection("users")
+                .whereEqualTo("email", email)
+                .get()
+                .addOnSuccessListener { querySnapshot ->
+                    if (!querySnapshot.isEmpty) {
+                        val userDocument = querySnapshot.documents.first()
+                        val deliveryAddressesData = userDocument.get("deliveryAddresses") as? List<HashMap<String, Any>>
+
+                        if (deliveryAddressesData != null && deliveryAddressesData.isNotEmpty()) {
+                            val deliveryAddressData = deliveryAddressesData.first()
+
+                            val name = deliveryAddressData["name"] as? String
+                            val phone = deliveryAddressData["phone"] as? String
+                            val region = deliveryAddressData["region"] as? String
+                            val barangay = deliveryAddressData["barangay"] as? String
+                            val streetName = deliveryAddressData["streetName"] as? String
+                            val postalCode = deliveryAddressData["postalCode"] as? String
+
+                            if (name != null && phone != null && region != null && barangay != null && streetName != null && postalCode != null) {
+                                nameDeliveryTV.text = name
+                                phoneDeliveryTV.text = phone
+                                regionTV.text = region
+                                barangayTV.text = barangay
+                                streetNameTV.text = streetName
+                                postalCodeTV.text = postalCode
+                            } else {
+                                Log.e("MainActivity", "One or more fields are null")
+                            }
+                        } else {
+                            Log.e("MainActivity", "No delivery addresses found")
+                        }
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Log.e("MainActivity", "Failed to fetch delivery addresses: ${e.message}")
+                }
+        } else {
+            Log.e("GetUser", "Invalid email: $email")
+        }
+    }
 
     private fun initProfilePage() {
         val emailTextView: TextView = findViewById(R.id.email)
         val email = SessionManager.getUserEmail(this)
-        emailTextView.text = email
+        if (email != null) {
+            val censoredEmail = censorEmail(email)
+            emailTextView.text = censoredEmail
+        } else {
+            // Handle the case where email is null
+            Log.e("GetUserEmail", "Email is null")
+        }
         val nameTextView: TextView = findViewById(R.id.name)
 
         val settingsButton: ImageButton = findViewById(R.id.settingsButton)
@@ -763,12 +855,17 @@ class MainActivity : AppCompatActivity() {
             val addStreetNameET = addDialogView.findViewById<EditText>(R.id.addStreetNameET)
             val addPostalCodeET = addDialogView.findViewById<EditText>(R.id.addPostalCodeET)
             val editCheckBox = addDialogView.findViewById<CheckBox>(R.id.editCheckBox)
+            val closeButton = addDialogView.findViewById<ImageButton>(R.id.closeButton)
 
             val addDialog = AlertDialog.Builder(this)
                 .setView(addDialogView)
                 .setPositiveButton("Save", null)
                 .setNegativeButton("Cancel") { _, _ -> }
                 .create()
+
+            closeButton.setOnClickListener {
+                addDialog.dismiss()
+            }
 
             addDialog.setOnShowListener { dialog ->
                 val saveButton = (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
@@ -897,32 +994,11 @@ class MainActivity : AppCompatActivity() {
         }
         deliveryAddressAdapter.setOnItemClickListener(object : DeliveryAddressAdapter.OnItemClickListener {
             override fun onItemClick(deliveryAddress: DeliveryAddress) {
-                val editDeleteDialogView = layoutInflater.inflate(R.layout.edit_delete_dialog, null)
-                val editButton = editDeleteDialogView.findViewById<Button>(R.id.editButton)
-                val deleteButton = editDeleteDialogView.findViewById<Button>(R.id.deleteButton)
 
-                val editDeleteDialog = AlertDialog.Builder(this@MainActivity)
-                    .setView(editDeleteDialogView)
-                    .create()
-
-                editButton.setOnClickListener {
-                    editDeleteDialog.dismiss()
-                    showEditDialog(deliveryAddress, deliveryAddresses, deliveryAddressAdapter)
-                }
-
-                deleteButton.setOnClickListener {
-                    editDeleteDialog.dismiss()
-                    val index = deliveryAddresses.indexOf(deliveryAddress)
-                    if (index != -1) {
-                        deleteDeliveryAddress(deliveryAddress, deliveryAddresses, deliveryAddressAdapter)
-                    } else {
-                        Toast.makeText(this@MainActivity, "Delivery address not found.", Toast.LENGTH_SHORT).show()
-                    }
-                }
-
-                editDeleteDialog.show()
+                showEditDialog(deliveryAddress, deliveryAddresses, deliveryAddressAdapter)
             }
         })
+
     }
 
     fun showEditDialog(deliveryAddress: DeliveryAddress, deliveryAddresses: MutableList<DeliveryAddress>, deliveryAddressAdapter: DeliveryAddressAdapter) {
@@ -934,6 +1010,7 @@ class MainActivity : AppCompatActivity() {
         val editStreetNameET = editDialogView.findViewById<EditText>(R.id.streetNameET)
         val editPostalCodeET = editDialogView.findViewById<EditText>(R.id.postalCodeET)
         val editCheckBox = editDialogView.findViewById<CheckBox>(R.id.editCheckBox)
+        val closeButton = editDialogView.findViewById<ImageButton>(R.id.closeButton)
         val firestore = FirebaseFirestore.getInstance()
 
         // Populate the EditText fields with current delivery address details
@@ -947,13 +1024,19 @@ class MainActivity : AppCompatActivity() {
 
         val editDialog = AlertDialog.Builder(this@MainActivity)
             .setView(editDialogView)
-            .setPositiveButton("Save", null)
-            .setNegativeButton("Cancel") { _, _ -> }
+            .setPositiveButton("Update", null)
+            .setNegativeButton("Delete", null)
             .create()
 
+        closeButton.setOnClickListener {
+            editDialog.dismiss()
+        }
+
         editDialog.setOnShowListener { dialog ->
-            val saveButton = (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
-            saveButton.setOnClickListener {
+            val alertDialog = dialog as AlertDialog
+
+            val updateButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            updateButton.setOnClickListener {
                 val newName = editNameDeliveryET.text?.toString()?.trim()
                 val newPhone = editPhoneDeliveryET.text?.toString()?.trim()
                 val newRegion = editRegionET.text?.toString()?.trim()
@@ -975,12 +1058,6 @@ class MainActivity : AppCompatActivity() {
                     return@setOnClickListener
                 }
 
-                // Check if more than one address is marked as default
-                if (newIsChecked && deliveryAddresses.filter { it.isChecked }.size > 1) {
-                    Toast.makeText(this@MainActivity, "Only one delivery address can be marked as default.", Toast.LENGTH_SHORT).show()
-                    return@setOnClickListener
-                }
-
                 val email = SessionManager.getUserEmail(this)
                 if (email != null) {
                     firestore.collection("users")
@@ -991,22 +1068,62 @@ class MainActivity : AppCompatActivity() {
                                 val userRef = document.reference
                                 userRef.get()
                                     .addOnSuccessListener { userDocument ->
-                                        val deliveryAddressList = userDocument.get("deliveryAddresses") as? List<Map<String, Any>>
-                                        if (deliveryAddressList != null) {
-                                            val updatedDeliveryAddressList = deliveryAddressList.toMutableList().apply {
-                                                val index = indexOfFirst { it["name"] == deliveryAddress.name && it["phone"] == deliveryAddress.phone }
-                                                if (index != -1) {
-                                                    this[index] = mapOf(
-                                                        "name" to newName,
-                                                        "phone" to newPhone,
-                                                        "region" to newRegion,
-                                                        "barangay" to newBarangay,
-                                                        "streetName" to newStreetName,
-                                                        "postalCode" to newPostalCode,
-                                                        "isChecked" to newIsChecked
-                                                    )
-                                                }
+                                        val deliveryAddressList = userDocument.get("deliveryAddresses") as? MutableList<Map<String, Any>> ?: mutableListOf()
+
+                                        // Update the delivery address list
+                                        val updatedDeliveryAddressList = deliveryAddressList.toMutableList().apply {
+                                            val index = indexOfFirst { it["name"] == deliveryAddress.name && it["phone"] == deliveryAddress.phone }
+                                            if (index != -1) {
+                                                this[index] = mapOf(
+                                                    "name" to newName,
+                                                    "phone" to newPhone,
+                                                    "region" to newRegion,
+                                                    "barangay" to newBarangay,
+                                                    "streetName" to newStreetName,
+                                                    "postalCode" to newPostalCode,
+                                                    "isChecked" to newIsChecked
+                                                )
                                             }
+                                        }
+
+                                        // If the new address is checked, move it to the top and uncheck others
+                                        if (newIsChecked) {
+                                            val updatedAddresses = updatedDeliveryAddressList.map {
+                                                if (it["isChecked"] == true && it["name"] != newName) it.toMutableMap().apply { this["isChecked"] = false } else it
+                                            }.toMutableList()
+
+                                            // Find the updated address and move it to the top
+                                            val index = updatedAddresses.indexOfFirst { it["name"] == newName && it["phone"] == newPhone }
+                                            if (index != -1) {
+                                                val updatedAddress = updatedAddresses.removeAt(index)
+                                                updatedAddresses.add(0, updatedAddress)
+                                            }
+
+                                            // Update the database with the reordered list
+                                            userRef.update("deliveryAddresses", updatedAddresses)
+                                                .addOnSuccessListener {
+                                                    // Update the delivery address in the local list
+                                                    deliveryAddress.apply {
+                                                        name = newName
+                                                        phone = newPhone
+                                                        region = newRegion
+                                                        barangay = newBarangay
+                                                        streetName = newStreetName
+                                                        postalCode = newPostalCode
+                                                        isChecked = newIsChecked
+                                                    }
+                                                    // Notify adapter that the data has changed
+                                                    deliveryAddressAdapter.notifyDataSetChanged()
+                                                    Toast.makeText(this@MainActivity, "Delivery address updated successfully.", Toast.LENGTH_SHORT).show()
+                                                    alertDialog.dismiss()
+                                                    // Refresh the page to view the changes
+                                                    initDeliveryAddressPage()
+                                                }
+                                                .addOnFailureListener { e ->
+                                                    Toast.makeText(this@MainActivity, "Failed to update delivery address: ${e.message}", Toast.LENGTH_SHORT).show()
+                                                }
+                                        } else {
+                                            // Update the database with the modified list without reordering
                                             userRef.update("deliveryAddresses", updatedDeliveryAddressList)
                                                 .addOnSuccessListener {
                                                     // Update the delivery address in the local list
@@ -1022,13 +1139,13 @@ class MainActivity : AppCompatActivity() {
                                                     // Notify adapter that the data has changed
                                                     deliveryAddressAdapter.notifyDataSetChanged()
                                                     Toast.makeText(this@MainActivity, "Delivery address updated successfully.", Toast.LENGTH_SHORT).show()
-                                                    dialog.dismiss()
+                                                    alertDialog.dismiss()
+                                                    // Refresh the page to view the changes
+                                                    initDeliveryAddressPage()
                                                 }
                                                 .addOnFailureListener { e ->
                                                     Toast.makeText(this@MainActivity, "Failed to update delivery address: ${e.message}", Toast.LENGTH_SHORT).show()
                                                 }
-                                        } else {
-                                            Toast.makeText(this@MainActivity, "No matching delivery address found.", Toast.LENGTH_SHORT).show()
                                         }
                                     }
                                     .addOnFailureListener { e ->
@@ -1043,10 +1160,81 @@ class MainActivity : AppCompatActivity() {
                     Log.e("YourActivity", "Invalid email: $email")
                 }
             }
+
+        val deleteButton = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+            deleteButton.setOnClickListener {
+
+                // Show the confirmation delete dialog
+                val confirmDeleteDialogView = layoutInflater.inflate(R.layout.confirm_delete_dialog, null)
+                val cancelButton = confirmDeleteDialogView.findViewById<Button>(R.id.cancelButton)
+                val confirmDeleteButton = confirmDeleteDialogView.findViewById<Button>(R.id.confirmDeleteButton)
+                val confirmDeleteDialog = AlertDialog.Builder(this@MainActivity)
+                    .setView(confirmDeleteDialogView)
+                    .create()
+
+                cancelButton.setOnClickListener {
+                    // Dismiss the confirmation dialog
+                    confirmDeleteDialog.dismiss()
+                }
+
+                confirmDeleteButton.setOnClickListener {
+                    // Proceed with deletion
+                    val email = SessionManager.getUserEmail(this@MainActivity)
+                    if (email != null) {
+                        firestore.collection("users")
+                            .whereEqualTo("email", email)
+                            .get()
+                            .addOnSuccessListener { querySnapshot ->
+                                for (document in querySnapshot.documents) {
+                                    val userRef = document.reference
+                                    userRef.get()
+                                        .addOnSuccessListener { userDocument ->
+                                            val deliveryAddressList = userDocument.get("deliveryAddresses") as? List<Map<String, Any>>
+                                            if (deliveryAddressList != null) {
+                                                val updatedDeliveryAddressList = deliveryAddressList.toMutableList().apply {
+                                                    val index = indexOfFirst { it["name"] == deliveryAddress.name && it["phone"] == deliveryAddress.phone }
+                                                    if (index != -1) {
+                                                        removeAt(index)
+                                                    }
+                                                }
+                                                userRef.update("deliveryAddresses", updatedDeliveryAddressList)
+                                                    .addOnSuccessListener {
+                                                        // Remove the delivery address from the local list
+                                                        deliveryAddresses.remove(deliveryAddress)
+                                                        // Notify adapter that the data has changed
+                                                        deliveryAddressAdapter.notifyDataSetChanged()
+                                                        Toast.makeText(this@MainActivity, "Delivery address deleted successfully.", Toast.LENGTH_SHORT).show()
+                                                    }
+                                                    .addOnFailureListener { e ->
+                                                        Toast.makeText(this@MainActivity, "Failed to delete delivery address: ${e.message}", Toast.LENGTH_SHORT).show()
+                                                    }
+                                            } else {
+                                                Toast.makeText(this@MainActivity, "No matching delivery address found.", Toast.LENGTH_SHORT).show()
+                                            }
+                                        }
+                                        .addOnFailureListener { e ->
+                                            Toast.makeText(this@MainActivity, "Error retrieving document: ${e.message}", Toast.LENGTH_SHORT).show()
+                                        }
+                                }
+                            }
+                            .addOnFailureListener { e ->
+                                Toast.makeText(this@MainActivity, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
+                            }
+                    } else {
+                        Log.e("YourActivity", "Invalid email: $email")
+                    }
+
+                    // Dismiss the confirmation dialog
+                    confirmDeleteDialog.dismiss()
+                }
+
+                confirmDeleteDialog.show()
+            }
         }
 
         editDialog.show()
     }
+
 
 
 
@@ -1246,13 +1434,36 @@ class MainActivity : AppCompatActivity() {
         initBackButton()
         // Navigation Logic
         val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
+        val confirmLogoutDialogView = layoutInflater.inflate(R.layout.confirm_logout_dialog, null)
+        val cancelButton = confirmLogoutDialogView.findViewById<Button>(R.id.cancelButton)
+        val confirmLogoutButton = confirmLogoutDialogView.findViewById<Button>(R.id.confirmLogoutButton)
 
         logoutButton.setOnClickListener {
-            AuthUtility.signOut(this)
-            val intent = Intent(this, LoginRegistrationActivity::class.java)
-            startActivity(intent)
-            finish()
+
+            val confirmLogoutDialogView = layoutInflater.inflate(R.layout.confirm_logout_dialog, null)
+            val cancelButton = confirmLogoutDialogView.findViewById<Button>(R.id.cancelButton)
+            val confirmLogoutButton = confirmLogoutDialogView.findViewById<Button>(R.id.confirmLogoutButton)
+
+            val confirmLogoutDialog = AlertDialog.Builder(this@MainActivity)
+                .setView(confirmLogoutDialogView)
+                .create()
+
+            cancelButton.setOnClickListener {
+                confirmLogoutDialog.dismiss()
+            }
+
+            confirmLogoutButton.setOnClickListener {
+                confirmLogoutDialog.dismiss()
+                AuthUtility.signOut(this@MainActivity)
+                val intent = Intent(this@MainActivity, LoginRegistrationActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
+
+            confirmLogoutDialog.show()
         }
+
+
         aboutButton.setOnClickListener {
             activePage = (R.layout.activity_about)
             pageContainer.removeAllViews()
@@ -1414,10 +1625,11 @@ class MainActivity : AppCompatActivity() {
         val email = SessionManager.getUserEmail(this)
 
         if (email != null) {
+            val censoredEmail = censorEmail(email)
             AuthUtility.getUserName(email,
                 onSuccess = { name ->
                     nameTV.text = name
-                    emailTV.text = email
+                    emailTV.text = censoredEmail
                 },
                 onFailure = {
                     Log.e("GetUser", "Failed to retrieve user name")
@@ -1426,6 +1638,7 @@ class MainActivity : AppCompatActivity() {
         } else {
             Log.e("GetUser", "Invalid email: $email")
         }
+
         initBackButton()
         changeNameButton.setOnClickListener {
             activePage = (R.layout.activity_edit_name)
@@ -1499,6 +1712,20 @@ class MainActivity : AppCompatActivity() {
             // Declare the datePicker variable
             val datePicker = dialogView.findViewById<DatePicker>(R.id.datePicker)
 
+            // Calculate the maximum date (current year - 13 years)
+            val cal = Calendar.getInstance()
+            cal.add(Calendar.YEAR, -13)
+            val maxDate = cal.time.time
+
+            // Set the minimum date to January 1, 1900
+            val minDate = Calendar.getInstance()
+            minDate.set(1900, Calendar.JANUARY, 1)
+            val minDateMillis = minDate.time.time
+
+            // Set the minimum and maximum dates for the DatePicker
+            datePicker.minDate = minDateMillis
+            datePicker.maxDate = maxDate
+
             // Retrieve the saved birthday from the database
             val firestore = FirebaseFirestore.getInstance()
             val email = SessionManager.getUserEmail(this)
@@ -1530,7 +1757,7 @@ class MainActivity : AppCompatActivity() {
                 Log.e("GetUser", "Invalid email: $email")
             }
 
-            // Build the dialog
+            // Create and show the AlertDialog
             val dialog = AlertDialog.Builder(this)
                 .setView(dialogView)
                 .setPositiveButton("Confirm") { dialogInterface, which ->
@@ -1579,6 +1806,7 @@ class MainActivity : AppCompatActivity() {
             dialog.show()
         }
 
+
         changePhoneButton.setOnClickListener {
             activePage = (R.layout.activity_edit_phone)
             pageContainer.removeAllViews()
@@ -1622,7 +1850,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     val phoneNum = document.getString("phoneNumber")
                     if (phoneNum != null) {
-                        phoneTV.text = "0$phoneNum" // Display the phone number in the phoneTV TextView
+                        phoneTV.text = censorPhoneNumber(phoneNum)
                     }
                     val gender = document.getString("gender")
                     if (gender != null) {
@@ -1669,6 +1897,17 @@ class MainActivity : AppCompatActivity() {
 
 
 
+    }
+    fun censorEmail(email: String): String {
+        if (email.length <= 6) return email // Email too short to censor
+        val atIndex = email.indexOf('@')
+        if (atIndex == -1 || atIndex <= 2) return email // Invalid email format
+
+        val firstLetter = email.first()
+        val lastLetter = email[atIndex - 1]
+        val domain = email.substring(atIndex)
+
+        return "$firstLetter*****$lastLetter$domain"
     }
 
     fun refreshProfile(){
@@ -1941,7 +2180,8 @@ class MainActivity : AppCompatActivity() {
         val changeEmailButton: Button = findViewById(R.id.changeEmailButton)
 
         if (email != null) {
-            editEmailET.text = email
+//            check if email is fetched by displaying in edit text
+//            editEmailET.text = email
 
             changeEmailButton.setOnClickListener {
                 val newEmail = editEmailET.text.toString().trim() // Get the updated email from the TextView and remove leading/trailing whitespaces
@@ -1992,7 +2232,7 @@ class MainActivity : AppCompatActivity() {
                             Toast.makeText(this, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
                         }
                 } else {
-                    Toast.makeText(this, "No new changes to the email.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Input email is same current email.", Toast.LENGTH_SHORT).show()
                 }
             }
         } else {
@@ -2021,7 +2261,7 @@ class MainActivity : AppCompatActivity() {
                         val document = querySnapshot.documents.first()
                         val phoneNum = document.getString("phoneNumber")
                         if (phoneNum != null) {
-                            editPhoneET.setText(phoneNum)
+//                            editPhoneET.setText(phoneNum)
                         }
 
                         changePhoneButton.setOnClickListener {
@@ -2064,7 +2304,7 @@ class MainActivity : AppCompatActivity() {
                                         Toast.makeText(this, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
                                     }
                             } else {
-                                Toast.makeText(this, "No new changes to the phone number.", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(this, "Input phone number is same current phone number.", Toast.LENGTH_SHORT).show()
                             }
                         }
                     } else {
@@ -2078,6 +2318,17 @@ class MainActivity : AppCompatActivity() {
             Log.e("GetUser", "Invalid email: $email")
         }
     }
+    // Function to censor phone number
+    fun censorPhoneNumber(phoneNumber: String): String {
+        return if (phoneNumber.length > 3) {
+            val visiblePart = phoneNumber.takeLast(3)
+            val censoredPart = "*".repeat(phoneNumber.length - 3)
+            "$censoredPart$visiblePart"
+        } else {
+            phoneNumber // If the phone number is too short to censor, return as is.
+        }
+    }
+
 
     private fun validatePhoneNumber(phoneNumber: String): Boolean {
         val phonePattern = Regex("[0-9]{10}") // Assumes a 10-digit phone number format
