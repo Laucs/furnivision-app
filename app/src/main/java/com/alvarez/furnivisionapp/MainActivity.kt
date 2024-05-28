@@ -56,6 +56,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.util.Calendar
 import java.util.Date
 
 class MainActivity : AppCompatActivity() {
@@ -1465,6 +1466,20 @@ class MainActivity : AppCompatActivity() {
             // Declare the datePicker variable
             val datePicker = dialogView.findViewById<DatePicker>(R.id.datePicker)
 
+            // Calculate the maximum date (current year - 13 years)
+            val cal = Calendar.getInstance()
+            cal.add(Calendar.YEAR, -13)
+            val maxDate = cal.time.time
+
+            // Set the minimum date to January 1, 1900
+            val minDate = Calendar.getInstance()
+            minDate.set(1900, Calendar.JANUARY, 1)
+            val minDateMillis = minDate.time.time
+
+            // Set the minimum and maximum dates for the DatePicker
+            datePicker.minDate = minDateMillis
+            datePicker.maxDate = maxDate
+
             // Retrieve the saved birthday from the database
             val firestore = FirebaseFirestore.getInstance()
             val email = SessionManager.getUserEmail(this)
@@ -1496,7 +1511,7 @@ class MainActivity : AppCompatActivity() {
                 Log.e("GetUser", "Invalid email: $email")
             }
 
-
+            // Create and show the AlertDialog
             val dialog = AlertDialog.Builder(this)
                 .setView(dialogView)
                 .setPositiveButton("Confirm") { dialogInterface, which ->
@@ -1544,6 +1559,7 @@ class MainActivity : AppCompatActivity() {
             // Show the dialog
             dialog.show()
         }
+
 
         changePhoneButton.setOnClickListener {
             activePage = (R.layout.activity_edit_phone)
