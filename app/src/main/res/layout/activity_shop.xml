@@ -51,15 +51,15 @@
 
                     />
 
-                <EditText
+                <androidx.appcompat.widget.SearchView
+                    android:id="@+id/search_store"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/search_style"
                     android:layout_marginHorizontal="50dp"
                     android:layout_marginTop="30dp"
                     android:drawableStart="@drawable/baseline_search_24"
-                    android:paddingHorizontal="15dp"
-                    android:paddingVertical="10dp"
+                    android:paddingHorizontal="10dp"
                     android:hint="@string/search_store"
                     android:inputType="text"
                     android:fontFamily="@font/glacial_indifference_regular"
@@ -81,6 +81,7 @@
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:contentDescription="ads_bg"
                         android:scaleType="fitXY"
                         android:src="@drawable/ads_background"
                         />
@@ -105,7 +106,7 @@
                 android:id="@+id/content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="30dp"
+                android:paddingHorizontal="25dp"
                 android:layout_below="@id/sub_header"
                 android:layout_marginBottom="30dp"
                 android:orientation="vertical">
@@ -113,7 +114,7 @@
                     android:id="@+id/content_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="6dp"
+                    android:layout_marginBottom="15dp"
                     android:text="@string/select_shops"
                     android:textSize="18sp"
                     android:textStyle="bold"

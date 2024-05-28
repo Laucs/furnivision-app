@@ -1,5 +1,5 @@
 package com.alvarez.furnivisionapp
-
+import com.alvarez.furnivisionapp.utils.DeliveryAddressAdapter
 import com.alvarez.furnivisionapp.utils.CartListAdapter
 import android.annotation.SuppressLint
 import android.content.ContentValues.TAG
@@ -9,8 +9,13 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.hardware.camera2.CameraManager
 import android.icu.text.DecimalFormat
+import android.media.Image
 import android.net.Uri
 import android.os.Bundle
+import android.provider.ContactsContract.CommonDataKinds.Im
+import android.text.Editable
+import android.text.InputType
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.TextureView
@@ -23,26 +28,35 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ListView
 import android.widget.RadioGroup
 import android.widget.RelativeLayout
+import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageButton
+import androidx.appcompat.widget.SearchView
+import androidx.cardview.widget.CardView
+import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.Visibility
 import com.alvarez.furnivisionapp.data.AuthUtility
 import com.alvarez.furnivisionapp.data.CartItem
 import com.alvarez.furnivisionapp.data.Furniture
 import com.alvarez.furnivisionapp.data.Shop
+import com.alvarez.furnivisionapp.data.DeliveryAddress
 import com.alvarez.furnivisionapp.utils.CameraFunctions
 import com.alvarez.furnivisionapp.utils.HomePageFunctions
 import com.alvarez.furnivisionapp.utils.ShopListAdapter
 import com.alvarez.furnivisionapp.data.SessionManager
 import com.alvarez.furnivisionapp.data.ShopCart
+import com.alvarez.furnivisionapp.utils.SearchListAdapter
 import com.bumptech.glide.Glide
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.ktx.Firebase
@@ -133,10 +147,12 @@ class MainActivity : AppCompatActivity() {
         homePageFunctions = HomePageFunctions(page, AppCompatImageButton::class.java, this)
 
 
-    }
+        // Initialize RecyclerView and adapter
+        val shopsView: RecyclerView = pageContainer.findViewById(R.id.shop_list)
 
-    private fun initShopPage(pageContainer: ViewGroup) {
-        database = FirebaseFirestore.getInstance()
+
+
+        val database = FirebaseFirestore.getInstance()
         database.collection("shops")
             .get()
             .addOnSuccessListener { result: QuerySnapshot ->
@@ -145,33 +161,175 @@ class MainActivity : AppCompatActivity() {
                         id = document.id
                     }
                 }
-                val shopsView: RecyclerView = findViewById(R.id.shop_list)
-
                 val adapter = ShopListAdapter(shopList)
-
-                adapter.setOnItemClickListener (object : ShopListAdapter.OnItemClickListener {
-                    @SuppressLint("InflateParams")
+                shopsView.adapter = adapter
+                shopsView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+                adapter.setOnItemClickListener(object : ShopListAdapter.OnItemClickListener {
                     override fun onItemClick(shopID: String) {
                         pageContainer.removeAllViews()
-                        var inflatedPage = layoutInflater.inflate(R.layout.activity_furniture_selection, null) as RelativeLayout
+                        val inflatedPage = layoutInflater.inflate(R.layout.activity_furniture_selection, null) as ViewGroup
                         pageContainer.addView(inflatedPage)
                         initFurniSelectPage(shopID, pageContainer)
                     }
                 })
-
-                shopsView.adapter = adapter
-                val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-                shopsView.layoutManager = layoutManager
-
             }
             .addOnFailureListener { exception: Exception ->
-                // Handle the error here
-                Log.d(TAG,"Error fetching documents: $exception")
+                Log.d(TAG, "Error fetching documents: $exception")
+                // Handle failure (e.g., show error message)
             }
 
 
 
+
+
+        val searchBar: androidx.appcompat.widget.SearchView = findViewById(R.id.search_bar)
+        val contentScroll: ScrollView = findViewById(R.id.content_scroll)
+        val contentView: View = findViewById(R.id.content)
+        val searchlistView: ListView = findViewById(R.id.search_list_view)
+        var furnitureList: List<Furniture> = listOf()
+
+        database.collection("furniture").get()
+            .addOnSuccessListener { result: QuerySnapshot ->
+                furnitureList = result.documents.mapNotNull { document ->
+                    document.toObject(Furniture::class.java)?.apply {
+                        id = document.id
+                    }
+                }
+                Log.d(TAG, "Furniture list loaded with ${furnitureList.size} items")
+
+                runOnUiThread {
+                    val searchAdapter = SearchListAdapter(this, furnitureList)
+                    searchlistView.adapter = searchAdapter
+                }
+
+                searchBar.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
+                    override fun onQueryTextSubmit(query: String?): Boolean {
+                        // Handle search action (optional)
+                        return false
+                    }
+
+                    override fun onQueryTextChange(newText: String?): Boolean {
+                        val isSearchEmpty = newText.isNullOrEmpty()
+                        Log.d(TAG, "Search text changed: $newText")
+
+                        contentScroll.visibility = if (isSearchEmpty) View.VISIBLE else View.GONE
+                        contentView.visibility = if (isSearchEmpty) View.VISIBLE else View.GONE
+                        searchlistView.visibility = if (isSearchEmpty) View.GONE else View.VISIBLE
+
+                        if (!isSearchEmpty) {
+                            newText?.let {
+                                val filteredList = furnitureList.filter { furniture ->
+                                    furniture.name?.contains(it, ignoreCase = true) ?: false
+                                }
+                                (searchlistView.adapter as SearchListAdapter).updateList(filteredList)
+                                Log.d(TAG, "Filtered list updated with ${filteredList.size} items")
+                            }
+                        }
+
+                        searchlistView.setOnItemClickListener { parent, view, position, id  ->
+                            // Get the Furniture object corresponding to the clicked item
+                            val clickedFurniture = furnitureList[position]
+
+                            // Now you can use the data from the clicked Furniture object as needed
+                            val furnitureID = clickedFurniture.id
+                            val furnitureShopID = clickedFurniture.shopID
+
+                            // Perform further actions based on the clicked item's data
+                            pageContainer.removeAllViews()
+                            val inflatedPage = layoutInflater.inflate(R.layout.activity_furniture_selection, null) as ViewGroup
+                            pageContainer.addView(inflatedPage)
+                            if (furnitureShopID != null) {
+                                initFurniSelectPage(furnitureShopID, pageContainer)
+                            }
+                        }
+
+
+                        return true
+                    }
+                })
+            }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "Error fetching furniture data", exception)
+            }
     }
+
+
+
+
+    fun showHide(view:View) {
+        view.visibility = if (view.visibility == View.VISIBLE){
+            View.GONE
+        } else{
+            View.VISIBLE
+        }
+    }
+    fun toggleHeart(heartButton: ImageButton) {
+        val isFilled = heartButton.tag as? Boolean ?: false
+        if (isFilled) {
+            heartButton.setImageResource(R.drawable.heart_empty)
+            heartButton.tag = false
+        } else {
+            heartButton.setImageResource(R.drawable.heart)
+            heartButton.tag = true
+        }
+    }
+
+    private fun initShopPage(pageContainer: ViewGroup) {
+        val database = FirebaseFirestore.getInstance()
+        val shopsView: RecyclerView = findViewById(R.id.shop_list)
+        val searchBar: SearchView = findViewById(R.id.search_store)
+
+        val adapter = ShopListAdapter(emptyList())
+
+        adapter.setOnItemClickListener(object : ShopListAdapter.OnItemClickListener {
+            @SuppressLint("InflateParams")
+            override fun onItemClick(shopID: String) {
+                pageContainer.removeAllViews()
+                val inflatedPage = layoutInflater.inflate(R.layout.activity_furniture_selection, null) as ViewGroup
+                pageContainer.addView(inflatedPage)
+                initFurniSelectPage(shopID, pageContainer)
+            }
+        })
+
+        var originalList: List<Shop> = emptyList()
+
+        shopsView.adapter = adapter
+        shopsView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+
+        database.collection("shops")
+            .get()
+            .addOnSuccessListener { result: QuerySnapshot ->
+                originalList = result.documents.mapNotNull { document ->
+                    document.toObject(Shop::class.java)?.apply {
+                        id = document.id
+                    }
+                }
+                adapter.updateList(originalList)
+            }
+            .addOnFailureListener { exception: Exception ->
+                Log.d(TAG, "Error fetching documents: $exception")
+            }
+
+        searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                // Handle search action (optional)
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                val filteredList = if (newText.isNullOrEmpty()) {
+                    // If search query is empty, show original list
+                    originalList
+                } else {
+                    // Filter the list based on search query
+                    adapter.filter(newText)
+                }
+                adapter.updateList(filteredList)
+                return true
+            }
+        })
+    }
+
 
     @SuppressLint("SetTextI18n", "DefaultLocale", "CommitPrefEdits", "InflateParams")
     private fun initFurniSelectPage(shopID: String, pageContainer: ViewGroup){
@@ -441,11 +599,9 @@ class MainActivity : AppCompatActivity() {
                 .whereEqualTo("email", email)
                 .get()
                 .addOnSuccessListener { result: QuerySnapshot ->
-                    if (!result.isEmpty) {
-                        val document = result.documents.first()
-                        val userId = document.id
-                        order.put("userID", userId)
-                    }
+                    val document = result.documents.first()
+                    val userId = document.id
+                    order["userID"] = userId
                 }
                 .addOnFailureListener { e: Exception ->
                     Log.w(TAG, "Error getting phone number", e)
@@ -485,7 +641,8 @@ class MainActivity : AppCompatActivity() {
         val accountInfoButton: RelativeLayout = findViewById(R.id.accountInfoButton)
         val paymentMethodsButton: RelativeLayout = findViewById(R.id.paymentMethodsButton)
         val deliveryAddressButton: RelativeLayout = findViewById(R.id.deliveryAddressButton)
-
+        val editButton: ImageButton = findViewById(R.id.editButton)
+        val profilePic: ImageButton = findViewById(R.id.profilePic)
         // Navigation Logic
         val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
 
@@ -502,10 +659,23 @@ class MainActivity : AppCompatActivity() {
             Log.e("GetUser", "Invalid email: $email")
         }
 
+        editButton.setOnClickListener {
+            activePage = R.layout.activity_edit_account
+            pageContainer.removeAllViews()
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_account, null) as RelativeLayout)
+            initProfileEditPage()
+        }
+        profilePic.setOnClickListener {
+            activePage = R.layout.activity_edit_account
+            pageContainer.removeAllViews()
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_account, null) as RelativeLayout)
+            initProfileEditPage()
+        }
         cartButton.setOnClickListener {
             activePage = R.layout.activity_cart
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_cart, null) as RelativeLayout)
+            initCartPage(pageContainer)
         }
 
         settingsButton.setOnClickListener {
@@ -574,113 +744,369 @@ class MainActivity : AppCompatActivity() {
         refreshProfile()
     }
 
+
+
+
     fun initDeliveryAddressPage() {
-        val nameDeliveryTV = findViewById<TextView>(R.id.nameDeliveryTV)
-        val phoneDeliveryTV = findViewById<TextView>(R.id.phoneDeliveryTV)
-        val regionTV = findViewById<TextView>(R.id.regionTV)
-        val barangayTV = findViewById<TextView>(R.id.barangayTV)
-        val streetNameTV = findViewById<TextView>(R.id.streetNameTV)
-        val postalCodeTV = findViewById<TextView>(R.id.postalCodeTV)
-        val editDeliveryAddressButton = findViewById<Button>(R.id.editDeliveryAddresButton)
+        val firestore = FirebaseFirestore.getInstance()
+        val addNewDeliveryAddressButton = findViewById<RelativeLayout>(R.id.addNewDeliveryAddressButton)
 
-        val dialogView = layoutInflater.inflate(R.layout.edit_delivery_address_dialog, null)
-        val nameDeliveryET = dialogView.findViewById<EditText>(R.id.nameDeliveryET)
-        val phoneDeliveryET = dialogView.findViewById<EditText>(R.id.phoneDeliveryET)
-        val regionET = dialogView.findViewById<EditText>(R.id.regionET)
-        val barangayET = dialogView.findViewById<EditText>(R.id.barangayET)
-        val streetNameET = dialogView.findViewById<EditText>(R.id.streetNameET)
-        val postalCodeET = dialogView.findViewById<EditText>(R.id.postalCodeET)
+        // Initialize the delivery address page
+        initRefreshDeliveryAddress()
 
-        val dialog = AlertDialog.Builder(this)
-            .setView(dialogView)
-            .setPositiveButton("Save") { _, _ ->
-                // Save the updated delivery address
-                nameDeliveryTV.text = nameDeliveryET.text
-                phoneDeliveryTV.text = phoneDeliveryET.text
-                regionTV.text = regionET.text
-                barangayTV.text = barangayET.text
-                streetNameTV.text = streetNameET.text
-                postalCodeTV.text = postalCodeET.text
+        addNewDeliveryAddressButton.setOnClickListener {
+            val addDialogView = layoutInflater.inflate(R.layout.add_delivery_address_dialog, null)
+            val addNameDeliveryET = addDialogView.findViewById<EditText>(R.id.addNameDeliveryET)
+            val addPhoneDeliveryET = addDialogView.findViewById<EditText>(R.id.addPhoneDeliveryET)
+            val addRegionET = addDialogView.findViewById<EditText>(R.id.addRegionET)
+            val addBarangayET = addDialogView.findViewById<EditText>(R.id.addBarangayET)
+            val addStreetNameET = addDialogView.findViewById<EditText>(R.id.addStreetNameET)
+            val addPostalCodeET = addDialogView.findViewById<EditText>(R.id.addPostalCodeET)
+            val editCheckBox = addDialogView.findViewById<CheckBox>(R.id.editCheckBox)
 
-                // Save the delivery address in the database if needed
-                val firestore = FirebaseFirestore.getInstance()
-                val email = SessionManager.getUserEmail(this)
-                if (email != null) {
-                    val deliveryAddress = hashMapOf(
-                        "name" to nameDeliveryTV.text.toString(),
-                        "phone" to phoneDeliveryTV.text.toString(),
-                        "region" to regionTV.text.toString(),
-                        "barangay" to barangayTV.text.toString(),
-                        "streetName" to streetNameTV.text.toString(),
-                        "postalCode" to postalCodeTV.text.toString()
-                    )
-                    firestore.collection("users")
-                        .whereEqualTo("email", email)
-                        .get()
-                        .addOnSuccessListener { querySnapshot ->
-                            for (document in querySnapshot.documents) {
-                                document.reference.update("deliveryAddress", deliveryAddress)
-                                    .addOnSuccessListener {
-                                        Toast.makeText(this, "Delivery address updated successfully.", Toast.LENGTH_SHORT).show()
+            val addDialog = AlertDialog.Builder(this)
+                .setView(addDialogView)
+                .setPositiveButton("Save", null)
+                .setNegativeButton("Cancel") { _, _ -> }
+                .create()
+
+            addDialog.setOnShowListener { dialog ->
+                val saveButton = (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
+                saveButton.setOnClickListener {
+                    val name = addNameDeliveryET.text?.toString()?.trim()
+                    val phone = addPhoneDeliveryET.text?.toString()?.trim()
+                    val region = addRegionET.text?.toString()?.trim()
+                    val barangay = addBarangayET.text?.toString()?.trim()
+                    val streetName = addStreetNameET.text?.toString()?.trim()
+                    val postalCode = addPostalCodeET.text?.toString()?.trim()
+                    val isChecked = editCheckBox.isChecked
+
+                    if (name.isNullOrEmpty() || phone.isNullOrEmpty() || region.isNullOrEmpty() ||
+                        barangay.isNullOrEmpty() || streetName.isNullOrEmpty() || postalCode.isNullOrEmpty()) {
+                        Toast.makeText(this, "Please fill in all fields.", Toast.LENGTH_SHORT).show()
+                    } else {
+                        val newDeliveryAddress = DeliveryAddress(
+                            name,
+                            phone,
+                            region,
+                            barangay,
+                            streetName,
+                            postalCode,
+                            isChecked
+                        )
+
+                        val email = SessionManager.getUserEmail(this)
+                        // Update the delivery addresses field within the user's document
+                        if (email != null) {
+                            val deliveryAddressData = mapOf(
+                                "name" to newDeliveryAddress.name,
+                                "phone" to newDeliveryAddress.phone,
+                                "region" to newDeliveryAddress.region,
+                                "barangay" to newDeliveryAddress.barangay,
+                                "streetName" to newDeliveryAddress.streetName,
+                                "postalCode" to newDeliveryAddress.postalCode,
+                                "isChecked" to newDeliveryAddress.isChecked
+                            )
+
+                            firestore.collection("users")
+                                .whereEqualTo("email", email)
+                                .get()
+                                .addOnSuccessListener { querySnapshot ->
+                                    for (document in querySnapshot.documents) {
+                                        document.reference
+                                            .update("deliveryAddresses", FieldValue.arrayUnion(deliveryAddressData))
+                                            .addOnSuccessListener {
+                                                // Fetch the updated delivery addresses from Firestore
+                                                initRefreshDeliveryAddress()
+                                                Toast.makeText(this, "Delivery address added successfully.", Toast.LENGTH_SHORT).show()
+                                                addDialog.dismiss()
+                                                initDeliveryAddressPage()
+                                            }
+                                            .addOnFailureListener { e ->
+                                                Toast.makeText(this, "Failed to add delivery address: ${e.message}", Toast.LENGTH_SHORT).show()
+                                            }
                                     }
-                                    .addOnFailureListener { e ->
-                                        Toast.makeText(this, "Failed to update delivery address: ${e.message}", Toast.LENGTH_SHORT).show()
-                                    }
-                            }
+                                }
+                                .addOnFailureListener { e ->
+                                    Toast.makeText(this, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
+                                }
+                        } else {
+                            Log.e("GetUser", "Invalid email: $email")
                         }
-                        .addOnFailureListener { e ->
-                            Toast.makeText(this, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
-                        }
-                } else {
-                    Log.e("GetUser", "Invalid email: $email")
+                    }
                 }
             }
-            .setNegativeButton("Cancel") { _, _ ->
-                // Cancel the dialog
-            }
-            .create()
 
-        editDeliveryAddressButton.setOnClickListener {
-            // Set the initial values for the EditText fields
-            nameDeliveryET.setText(nameDeliveryTV.text)
-            phoneDeliveryET.setText(phoneDeliveryTV.text)
-            regionET.setText(regionTV.text)
-            barangayET.setText(barangayTV.text)
-            streetNameET.setText(streetNameTV.text)
-            postalCodeET.setText(postalCodeTV.text)
-
-            dialog.show()
+            addDialog.show()
         }
+    }
 
+
+    fun initRefreshDeliveryAddress() {
         val firestore = FirebaseFirestore.getInstance()
         val email = SessionManager.getUserEmail(this)
+        val deliveryAddresses = mutableListOf<DeliveryAddress>()
+        val deliveryAddressRecyclerView = findViewById<RecyclerView>(R.id.deliveryAddressRecyclerView)
+        deliveryAddressRecyclerView.layoutManager = LinearLayoutManager(this)
+        val deliveryAddressAdapter = DeliveryAddressAdapter(deliveryAddresses)
+        deliveryAddressRecyclerView.adapter = deliveryAddressAdapter
+
         if (email != null) {
             firestore.collection("users")
                 .whereEqualTo("email", email)
                 .get()
                 .addOnSuccessListener { querySnapshot ->
                     if (!querySnapshot.isEmpty) {
-                        val document = querySnapshot.documents.first()
-                        val deliveryAddress = document.get("deliveryAddress") as? Map<String, Any>
+                        val userDocument = querySnapshot.documents.first()
+                        val deliveryAddressesData = userDocument.get("deliveryAddresses") as? List<HashMap<String, Any>>
 
-                        // Populate the TextViews with the delivery address details
-                        if (deliveryAddress != null) {
-                            nameDeliveryTV.text = deliveryAddress["name"] as? String
-                            phoneDeliveryTV.text = deliveryAddress["phone"] as? String
-                            regionTV.text = deliveryAddress["region"] as? String
-                            barangayTV.text = deliveryAddress["barangay"] as? String
-                            streetNameTV.text = deliveryAddress["streetName"] as? String
-                            postalCodeTV.text = deliveryAddress["postalCode"] as? String
+                        if (deliveryAddressesData != null) {
+                            deliveryAddressesData.forEach { deliveryAddressData ->
+                                val name = deliveryAddressData["name"] as? String
+                                val phone = deliveryAddressData["phone"] as? String
+                                val region = deliveryAddressData["region"] as? String
+                                val barangay = deliveryAddressData["barangay"] as? String
+                                val streetName = deliveryAddressData["streetName"] as? String
+                                val postalCode = deliveryAddressData["postalCode"] as? String
+                                val isChecked = deliveryAddressData["isChecked"] as? Boolean
+
+                                if (name != null && phone != null && region != null && barangay != null && streetName != null && postalCode != null && isChecked != null) {
+                                    val deliveryAddress = DeliveryAddress(
+                                        name,
+                                        phone,
+                                        region,
+                                        barangay,
+                                        streetName,
+                                        postalCode,
+                                        isChecked
+                                    )
+                                    deliveryAddresses.add(deliveryAddress)
+                                } else {
+                                    Log.e("MainActivity", "One or more fields are null")
+                                }
+                            }
                         }
                     }
+                    deliveryAddressAdapter.notifyDataSetChanged()
                 }
                 .addOnFailureListener { e ->
-                    Log.e("GetUser", "Error getting user details: ${e.message}", e)
+                    Log.e("MainActivity", "Failed to fetch delivery addresses: ${e.message}")
                 }
         } else {
             Log.e("GetUser", "Invalid email: $email")
         }
+        deliveryAddressAdapter.setOnItemClickListener(object : DeliveryAddressAdapter.OnItemClickListener {
+            override fun onItemClick(deliveryAddress: DeliveryAddress) {
+                val editDeleteDialogView = layoutInflater.inflate(R.layout.edit_delete_dialog, null)
+                val editButton = editDeleteDialogView.findViewById<Button>(R.id.editButton)
+                val deleteButton = editDeleteDialogView.findViewById<Button>(R.id.deleteButton)
+
+                val editDeleteDialog = AlertDialog.Builder(this@MainActivity)
+                    .setView(editDeleteDialogView)
+                    .create()
+
+                editButton.setOnClickListener {
+                    editDeleteDialog.dismiss()
+                    showEditDialog(deliveryAddress, deliveryAddresses, deliveryAddressAdapter)
+                }
+
+                deleteButton.setOnClickListener {
+                    editDeleteDialog.dismiss()
+                    val index = deliveryAddresses.indexOf(deliveryAddress)
+                    if (index != -1) {
+                        deleteDeliveryAddress(deliveryAddress, deliveryAddresses, deliveryAddressAdapter)
+                    } else {
+                        Toast.makeText(this@MainActivity, "Delivery address not found.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                editDeleteDialog.show()
+            }
+        })
     }
+
+    fun showEditDialog(deliveryAddress: DeliveryAddress, deliveryAddresses: MutableList<DeliveryAddress>, deliveryAddressAdapter: DeliveryAddressAdapter) {
+        val editDialogView = layoutInflater.inflate(R.layout.edit_delivery_address_dialog, null)
+        val editNameDeliveryET = editDialogView.findViewById<EditText>(R.id.nameDeliveryET)
+        val editPhoneDeliveryET = editDialogView.findViewById<EditText>(R.id.phoneDeliveryET)
+        val editRegionET = editDialogView.findViewById<EditText>(R.id.regionET)
+        val editBarangayET = editDialogView.findViewById<EditText>(R.id.barangayET)
+        val editStreetNameET = editDialogView.findViewById<EditText>(R.id.streetNameET)
+        val editPostalCodeET = editDialogView.findViewById<EditText>(R.id.postalCodeET)
+        val editCheckBox = editDialogView.findViewById<CheckBox>(R.id.editCheckBox)
+        val firestore = FirebaseFirestore.getInstance()
+
+        // Populate the EditText fields with current delivery address details
+        editNameDeliveryET.setText(deliveryAddress.name)
+        editPhoneDeliveryET.setText(deliveryAddress.phone)
+        editRegionET.setText(deliveryAddress.region)
+        editBarangayET.setText(deliveryAddress.barangay)
+        editStreetNameET.setText(deliveryAddress.streetName)
+        editPostalCodeET.setText(deliveryAddress.postalCode)
+        editCheckBox.isChecked = deliveryAddress.isChecked
+
+        val editDialog = AlertDialog.Builder(this@MainActivity)
+            .setView(editDialogView)
+            .setPositiveButton("Save", null)
+            .setNegativeButton("Cancel") { _, _ -> }
+            .create()
+
+        editDialog.setOnShowListener { dialog ->
+            val saveButton = (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
+            saveButton.setOnClickListener {
+                val newName = editNameDeliveryET.text?.toString()?.trim()
+                val newPhone = editPhoneDeliveryET.text?.toString()?.trim()
+                val newRegion = editRegionET.text?.toString()?.trim()
+                val newBarangay = editBarangayET.text?.toString()?.trim()
+                val newStreetName = editStreetNameET.text?.toString()?.trim()
+                val newPostalCode = editPostalCodeET.text?.toString()?.trim()
+                val newIsChecked = editCheckBox.isChecked
+
+                // Validation: Check if any field is empty
+                if (newName.isNullOrEmpty() || newPhone.isNullOrEmpty() || newRegion.isNullOrEmpty() ||
+                    newBarangay.isNullOrEmpty() || newStreetName.isNullOrEmpty() || newPostalCode.isNullOrEmpty()) {
+                    Toast.makeText(this@MainActivity, "Please fill in all fields.", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                // Validation: Check if phone number is valid
+                if (!validatePhoneNumber(newPhone)) {
+                    Toast.makeText(this@MainActivity, "Please enter a valid phone number.", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                // Check if more than one address is marked as default
+                if (newIsChecked && deliveryAddresses.filter { it.isChecked }.size > 1) {
+                    Toast.makeText(this@MainActivity, "Only one delivery address can be marked as default.", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                val email = SessionManager.getUserEmail(this)
+                if (email != null) {
+                    firestore.collection("users")
+                        .whereEqualTo("email", email)
+                        .get()
+                        .addOnSuccessListener { querySnapshot ->
+                            for (document in querySnapshot.documents) {
+                                val userRef = document.reference
+                                userRef.get()
+                                    .addOnSuccessListener { userDocument ->
+                                        val deliveryAddressList = userDocument.get("deliveryAddresses") as? List<Map<String, Any>>
+                                        if (deliveryAddressList != null) {
+                                            val updatedDeliveryAddressList = deliveryAddressList.toMutableList().apply {
+                                                val index = indexOfFirst { it["name"] == deliveryAddress.name && it["phone"] == deliveryAddress.phone }
+                                                if (index != -1) {
+                                                    this[index] = mapOf(
+                                                        "name" to newName,
+                                                        "phone" to newPhone,
+                                                        "region" to newRegion,
+                                                        "barangay" to newBarangay,
+                                                        "streetName" to newStreetName,
+                                                        "postalCode" to newPostalCode,
+                                                        "isChecked" to newIsChecked
+                                                    )
+                                                }
+                                            }
+                                            userRef.update("deliveryAddresses", updatedDeliveryAddressList)
+                                                .addOnSuccessListener {
+                                                    // Update the delivery address in the local list
+                                                    deliveryAddress.apply {
+                                                        name = newName
+                                                        phone = newPhone
+                                                        region = newRegion
+                                                        barangay = newBarangay
+                                                        streetName = newStreetName
+                                                        postalCode = newPostalCode
+                                                        isChecked = newIsChecked
+                                                    }
+                                                    // Notify adapter that the data has changed
+                                                    deliveryAddressAdapter.notifyDataSetChanged()
+                                                    Toast.makeText(this@MainActivity, "Delivery address updated successfully.", Toast.LENGTH_SHORT).show()
+                                                    dialog.dismiss()
+                                                }
+                                                .addOnFailureListener { e ->
+                                                    Toast.makeText(this@MainActivity, "Failed to update delivery address: ${e.message}", Toast.LENGTH_SHORT).show()
+                                                }
+                                        } else {
+                                            Toast.makeText(this@MainActivity, "No matching delivery address found.", Toast.LENGTH_SHORT).show()
+                                        }
+                                    }
+                                    .addOnFailureListener { e ->
+                                        Toast.makeText(this@MainActivity, "Error retrieving document: ${e.message}", Toast.LENGTH_SHORT).show()
+                                    }
+                            }
+                        }
+                        .addOnFailureListener { e ->
+                            Toast.makeText(this@MainActivity, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                } else {
+                    Log.e("YourActivity", "Invalid email: $email")
+                }
+            }
+        }
+
+        editDialog.show()
+    }
+
+
+
+    fun deleteDeliveryAddress(deliveryAddress: DeliveryAddress, deliveryAddresses: MutableList<DeliveryAddress>, deliveryAddressAdapter: DeliveryAddressAdapter) {
+        val firestore = FirebaseFirestore.getInstance()
+        val email = SessionManager.getUserEmail(this)
+
+        if (email != null) {
+            firestore.collection("users")
+                .whereEqualTo("email", email)
+                .get()
+                .addOnSuccessListener { querySnapshot ->
+                    for (document in querySnapshot.documents) {
+                        val userRef = document.reference
+                        userRef.get()
+                            .addOnSuccessListener { userDocument ->
+                                val deliveryAddressList = userDocument.get("deliveryAddresses") as? List<Map<String, Any>>
+                                if (deliveryAddressList != null) {
+                                    val updatedDeliveryAddressList = deliveryAddressList.toMutableList().apply {
+                                        val index = indexOfFirst {
+                                            it["name"] == deliveryAddress.name &&
+                                                    it["phone"] == deliveryAddress.phone &&
+                                                    it["region"] == deliveryAddress.region &&
+                                                    it["barangay"] == deliveryAddress.barangay &&
+                                                    it["streetName"] == deliveryAddress.streetName &&
+                                                    it["postalCode"] == deliveryAddress.postalCode
+                                        }
+                                        if (index != -1) {
+                                            removeAt(index)
+                                        }
+                                    }
+                                    userRef.update("deliveryAddresses", updatedDeliveryAddressList)
+                                        .addOnSuccessListener {
+                                            // Remove the delivery address from the local list
+                                            deliveryAddresses.remove(deliveryAddress)
+                                            // Notify adapter that the data has changed
+                                            deliveryAddressAdapter.notifyDataSetChanged()
+                                            Toast.makeText(this@MainActivity, "Delivery address deleted successfully.", Toast.LENGTH_SHORT).show()
+                                        }
+                                        .addOnFailureListener { e ->
+                                            Toast.makeText(this@MainActivity, "Failed to delete delivery address: ${e.message}", Toast.LENGTH_SHORT).show()
+                                        }
+                                } else {
+                                    Toast.makeText(this@MainActivity, "No matching delivery address found.", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                            .addOnFailureListener { e ->
+                                Toast.makeText(this@MainActivity, "Error retrieving document: ${e.message}", Toast.LENGTH_SHORT).show()
+                            }
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(this@MainActivity, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+        } else {
+            Log.e("YourActivity", "Invalid email: $email")
+        }
+    }
+
+
 
     fun initToPayPage() {
 
@@ -838,7 +1264,7 @@ class MainActivity : AppCompatActivity() {
             activePage = (R.layout.activity_change_password)
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_change_password, null) as RelativeLayout)
-            initAboutPage()
+            initChangePassPage()
         }
         rateUsButton.setOnClickListener {
             try {
@@ -848,13 +1274,67 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+    fun initChangePassPage() {
+        val backButton: ImageButton = findViewById(R.id.backButton)
+
+        backButton.setOnClickListener {
+            val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
+            pageContainer.removeAllViews()
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_settings, null) as RelativeLayout)
+            initSettingsPage()
+        }
+
+        val editCurrentPass: EditText = findViewById(R.id.editCurrentPass)
+        val viewPasswordButton: ImageButton = findViewById(R.id.viewPasswordButton)
+        var isPasswordVisible = false
+
+        val editNewPassword: EditText = findViewById(R.id.editNewPassword)
+        val viewPasswordButton1: ImageButton = findViewById(R.id.viewPasswordButton1)
+        var isNewPasswordVisible = false
+
+        val editConfirmNewPassword: EditText = findViewById(R.id.logoutLabel)
+        val viewPasswordButton2: ImageButton = findViewById(R.id.viewPasswordButton2)
+        var isConfirmPasswordVisible = false
+
+        viewPasswordButton.setOnClickListener {
+            togglePasswordVisibility(editCurrentPass, viewPasswordButton, isPasswordVisible)
+            isPasswordVisible = !isPasswordVisible
+        }
+
+        viewPasswordButton1.setOnClickListener {
+            togglePasswordVisibility(editNewPassword, viewPasswordButton1, isNewPasswordVisible)
+            isNewPasswordVisible = !isNewPasswordVisible
+        }
+
+        viewPasswordButton2.setOnClickListener {
+            togglePasswordVisibility(editConfirmNewPassword, viewPasswordButton2, isConfirmPasswordVisible)
+            isConfirmPasswordVisible = !isConfirmPasswordVisible
+        }
+    }
+
+    private fun togglePasswordVisibility(editText: EditText, button: ImageButton, isVisible: Boolean) {
+        if (isVisible) {
+            // Hide the password
+            editText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            button.setBackgroundResource(R.drawable.close_eye_icon)
+        } else {
+            // Show the password
+            editText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            button.setBackgroundResource(R.drawable.open_eye_icon)
+        }
+        // Move cursor to the end of the text
+        editText.setSelection(editText.text.length)
+    }
+
     fun clearCache() {
         try {
             val dir: File = cacheDir
             if (deleteDir(dir)) {
                 println("Cache cleared successfully")
+                Toast.makeText(this, "Cache cleared successfully", Toast.LENGTH_SHORT).show()
             } else {
                 println("Cache clearing failed")
+                Toast.makeText(this, "Cache clearing failed", Toast.LENGTH_SHORT).show()
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -878,11 +1358,22 @@ class MainActivity : AppCompatActivity() {
     }
     fun initAboutPage(){
         val backButton: ImageButton = findViewById(R.id.backButton)
+        val clearCacheButton: Button = findViewById(R.id.clearCacheButton)
+        val verUpdateButton: Button = findViewById(R.id.verUpdateButton)
+
         backButton.setOnClickListener {
             val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_settings, null) as RelativeLayout)
             initSettingsPage()
+        }
+
+        clearCacheButton.setOnClickListener {
+            clearCache()
+        }
+
+        verUpdateButton.setOnClickListener {
+            Toast.makeText(this, "No Updates Available!", Toast.LENGTH_SHORT).show()
         }
 
     }
@@ -1166,6 +1657,17 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        val editButton: ImageButton = findViewById(R.id.editButton)
+
+        editButton.setOnClickListener(){
+            if (email != null) {
+                showImageSelectionDialog(email)
+            } else {
+                Log.e("GetUser", "Invalid email: $email")
+            }
+        }
+
+
 
     }
 
@@ -1332,20 +1834,17 @@ class MainActivity : AppCompatActivity() {
 
 
     fun initPaymentMethodsPage() {
+        val cashLayout = findViewById<RelativeLayout>(R.id.cashLayout)
         val paypalLayout = findViewById<RelativeLayout>(R.id.paypalLayout)
+        val masterCardLayout = findViewById<RelativeLayout>(R.id.masterCardLayout)
+        val gcashLayout = findViewById<RelativeLayout>(R.id.gcashLayout)
+
 
         paypalLayout.setOnLongClickListener {
             paypalEditDialog()
             true
         }
 
-        // Retrieve the saved email from SharedPreferences
-        val sharedPreferences = getSharedPreferences("paypal", Context.MODE_PRIVATE)
-        val savedEmail = sharedPreferences.getString("paypalEmail", "Set Now")
-
-        // Set the saved email in the emailPaypalTextView
-        val emailTextView = findViewById<TextView>(R.id.emailPaypalTextView)
-        emailTextView.text = savedEmail
     }
 
     fun paypalEditDialog() {
@@ -1397,35 +1896,39 @@ class MainActivity : AppCompatActivity() {
                 val newName = editNameET.text.toString() // Get the updated name from the EditText
                 val firestore = FirebaseFirestore.getInstance()
 
-                val userData = hashMapOf(
-                    "name" to newName
-                )
+                if (newName.isNullOrEmpty() || newName.length > 100) {
+                    Toast.makeText(this, "Please enter a valid name (1-100 characters).", Toast.LENGTH_SHORT).show()
+                } else {
+                    val userData = hashMapOf(
+                        "name" to newName
+                    )
 
-                firestore.collection("users")
-                    .whereEqualTo("email", email)
-                    .get()
-                    .addOnSuccessListener { querySnapshot ->
-                        for (document in querySnapshot.documents) {
-                            document.reference.update(userData as Map<String, Any>)
-                                .addOnSuccessListener {
-                                    if (newName != document.getString("name")) {
-                                        Toast.makeText(this, "Name updated successfully.", Toast.LENGTH_SHORT).show()
-                                        val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
-                                        pageContainer.removeAllViews()
-                                        pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_account, null) as RelativeLayout)
-                                        initProfileEditPage()
-                                    } else {
-                                        Toast.makeText(this, "No new changes to the name.", Toast.LENGTH_SHORT).show()
+                    firestore.collection("users")
+                        .whereEqualTo("email", email)
+                        .get()
+                        .addOnSuccessListener { querySnapshot ->
+                            for (document in querySnapshot.documents) {
+                                document.reference.update(userData as Map<String, Any>)
+                                    .addOnSuccessListener {
+                                        if (newName != document.getString("name")) {
+                                            Toast.makeText(this, "Name updated successfully.", Toast.LENGTH_SHORT).show()
+                                            val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
+                                            pageContainer.removeAllViews()
+                                            pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_account, null) as RelativeLayout)
+                                            initProfileEditPage()
+                                        } else {
+                                            Toast.makeText(this, "No new changes to the name.", Toast.LENGTH_SHORT).show()
+                                        }
                                     }
-                                }
-                                .addOnFailureListener { e ->
-                                    Toast.makeText(this, "Failed to update name: ${e.message}", Toast.LENGTH_SHORT).show()
-                                }
+                                    .addOnFailureListener { e ->
+                                        Toast.makeText(this, "Failed to update name: ${e.message}", Toast.LENGTH_SHORT).show()
+                                    }
+                            }
                         }
-                    }
-                    .addOnFailureListener { e ->
-                        Toast.makeText(this, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
-                    }
+                        .addOnFailureListener { e ->
+                            Toast.makeText(this, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                }
             }
         } else {
             Log.e("GetUser", "Invalid email: $email")
@@ -1443,42 +1946,53 @@ class MainActivity : AppCompatActivity() {
             changeEmailButton.setOnClickListener {
                 val newEmail = editEmailET.text.toString().trim() // Get the updated email from the TextView and remove leading/trailing whitespaces
 
-                if (isEmailValid(newEmail)) {
-                    if (newEmail != email) {
-                        val firestore = FirebaseFirestore.getInstance()
-
-                        val userData = hashMapOf(
-                            "email" to newEmail
-                        )
-
-                        firestore.collection("users")
-                            .whereEqualTo("email", email)
-                            .get()
-                            .addOnSuccessListener { querySnapshot ->
-                                for (document in querySnapshot.documents) {
-                                    document.reference.update(userData as Map<String, Any>)
-                                        .addOnSuccessListener {
-                                            Toast.makeText(this, "Email updated successfully.", Toast.LENGTH_SHORT).show()
-                                            // Update the email in the session manager
-                                            SessionManager.setUserEmail(this, newEmail)
-                                            val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
-                                            pageContainer.removeAllViews()
-                                            pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_account, null) as RelativeLayout)
-                                            initProfileEditPage()
-                                        }
-                                        .addOnFailureListener { e ->
-                                            Toast.makeText(this, "Failed to update email: ${e.message}", Toast.LENGTH_SHORT).show()
-                                        }
-                                }
-                            }
-                            .addOnFailureListener { e ->
-                                Toast.makeText(this, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
-                            }
-                    } else {
-                        Toast.makeText(this, "No new changes to the email.", Toast.LENGTH_SHORT).show()
-                    }
-                } else {
+                if (newEmail.isNullOrEmpty() || !isEmailValid(newEmail)) {
                     Toast.makeText(this, "Invalid email format. Please enter a valid email.", Toast.LENGTH_SHORT).show()
+                } else if (newEmail != email) {
+                    val firestore = FirebaseFirestore.getInstance()
+
+                    // Check if the new email is already used in another account
+                    firestore.collection("users")
+                        .whereEqualTo("email", newEmail)
+                        .get()
+                        .addOnSuccessListener { querySnapshot ->
+                            if (querySnapshot.isEmpty) {
+                                val userData = hashMapOf(
+                                    "email" to newEmail
+                                )
+
+                                firestore.collection("users")
+                                    .whereEqualTo("email", email)
+                                    .get()
+                                    .addOnSuccessListener { querySnapshot ->
+                                        for (document in querySnapshot.documents) {
+                                            document.reference.update(userData as Map<String, Any>)
+                                                .addOnSuccessListener {
+                                                    Toast.makeText(this, "Email updated successfully.", Toast.LENGTH_SHORT).show()
+                                                    // Update the email in the session manager
+                                                    SessionManager.setUserEmail(this, newEmail)
+                                                    val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
+                                                    pageContainer.removeAllViews()
+                                                    pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_account, null) as RelativeLayout)
+                                                    initProfileEditPage()
+                                                }
+                                                .addOnFailureListener { e ->
+                                                    Toast.makeText(this, "Failed to update email: ${e.message}", Toast.LENGTH_SHORT).show()
+                                                }
+                                        }
+                                    }
+                                    .addOnFailureListener { e ->
+                                        Toast.makeText(this, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
+                                    }
+                            } else {
+                                Toast.makeText(this, "Email is already used in another account.", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                        .addOnFailureListener { e ->
+                            Toast.makeText(this, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                } else {
+                    Toast.makeText(this, "No new changes to the email.", Toast.LENGTH_SHORT).show()
                 }
             }
         } else {
@@ -1514,28 +2028,43 @@ class MainActivity : AppCompatActivity() {
                             val newPhoneNumber = editPhoneET.text.toString().trim() // Get the updated phone number from the EditText
                             val isValidPhoneNumber = validatePhoneNumber(newPhoneNumber)
 
-                            if (isValidPhoneNumber) {
-                                if (newPhoneNumber != phoneNum) {
-                                    val userData = hashMapOf(
-                                        "phoneNumber" to newPhoneNumber
-                                    )
-
-                                    document.reference.update(userData as Map<String, Any>)
-                                        .addOnSuccessListener {
-                                            Toast.makeText(this, "Phone number updated successfully.", Toast.LENGTH_SHORT).show()
-                                            val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
-                                            pageContainer.removeAllViews()
-                                            pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_account, null) as RelativeLayout)
-                                            initProfileEditPage()
-                                        }
-                                        .addOnFailureListener { e ->
-                                            Toast.makeText(this, "Failed to update phone number: ${e.message}", Toast.LENGTH_SHORT).show()
-                                        }
-                                } else {
-                                    Toast.makeText(this, "No new changes to the phone number.", Toast.LENGTH_SHORT).show()
-                                }
-                            } else {
+                            if (newPhoneNumber.isNullOrEmpty()) {
+                                Toast.makeText(this, "Phone number cannot be empty.", Toast.LENGTH_SHORT).show()
+                            } else if (!isValidPhoneNumber) {
                                 Toast.makeText(this, "Invalid phone number format. Please enter a valid phone number.", Toast.LENGTH_SHORT).show()
+                            } else if (newPhoneNumber != phoneNum) {
+                                val firestore = FirebaseFirestore.getInstance()
+
+                                // Check if the new phone number is already used in another account
+                                firestore.collection("users")
+                                    .whereEqualTo("phoneNumber", newPhoneNumber)
+                                    .get()
+                                    .addOnSuccessListener { querySnapshot ->
+                                        if (querySnapshot.isEmpty) {
+                                            val userData = hashMapOf(
+                                                "phoneNumber" to newPhoneNumber
+                                            )
+
+                                            document.reference.update(userData as Map<String, Any>)
+                                                .addOnSuccessListener {
+                                                    Toast.makeText(this, "Phone number updated successfully.", Toast.LENGTH_SHORT).show()
+                                                    val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
+                                                    pageContainer.removeAllViews()
+                                                    pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_account, null) as RelativeLayout)
+                                                    initProfileEditPage()
+                                                }
+                                                .addOnFailureListener { e ->
+                                                    Toast.makeText(this, "Failed to update phone number: ${e.message}", Toast.LENGTH_SHORT).show()
+                                                }
+                                        } else {
+                                            Toast.makeText(this, "Phone number is already used in another account.", Toast.LENGTH_SHORT).show()
+                                        }
+                                    }
+                                    .addOnFailureListener { e ->
+                                        Toast.makeText(this, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
+                                    }
+                            } else {
+                                Toast.makeText(this, "No new changes to the phone number.", Toast.LENGTH_SHORT).show()
                             }
                         }
                     } else {
@@ -1549,6 +2078,7 @@ class MainActivity : AppCompatActivity() {
             Log.e("GetUser", "Invalid email: $email")
         }
     }
+
     private fun validatePhoneNumber(phoneNumber: String): Boolean {
         val phonePattern = Regex("[0-9]{10}") // Assumes a 10-digit phone number format
         return phonePattern.matches(phoneNumber)

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#F4F4F4">
@@ -14,19 +13,20 @@
         android:background="#F4F4F4">
 
         <EditText
-            android:id="@+id/nameDeliveryET"
+            android:id="@+id/addNameDeliveryET"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/corder_radius_for_edit_text"
             android:fontFamily="@font/montserrat"
             android:hint="Enter name"
-            android:inputType="text"
-            android:padding="10dp"
+            android:textSize="15sp"
             android:textColor="#595959"
-            android:textSize="15sp" />
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginEnd="20dp"
+            android:inputType="text"
+            android:singleLine="true"
+            android:padding="10dp"
+            android:background="@drawable/corder_radius_for_edit_text"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -36,7 +36,8 @@
             android:layout_marginStart="20dp"
             android:layout_marginBottom="10dp"
             android:layout_marginEnd="20dp"
-            android:background="@drawable/corder_radius_for_edit_text">
+            android:background="@drawable/corder_radius_for_edit_text"
+            >
             <TextView
                 android:id="@+id/PH63"
                 android:layout_width="wrap_content"
@@ -44,74 +45,73 @@
                 android:text="(+63)"
                 android:textColor="#737373"
                 android:textSize="15sp"
-                android:padding="10dp"
-                android:background="@color/cardview_light_background"/>
+                android:padding="10dp" />
             <EditText
-                android:id="@+id/phoneDeliveryET"
+                android:id="@+id/addPhoneDeliveryET"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat"
                 android:hint="Enter phone number"
                 android:textColor="#737373"
                 android:textSize="15sp"
-                android:inputType="number"
-                tools:ignore="TextFields"
+                android:singleLine="true"
                 android:padding="10dp"
-                android:background="@color/cardview_light_background"/>
+                android:background="@drawable/corder_radius_for_edit_text"
+                />
         </LinearLayout>
         <EditText
-            android:id="@+id/regionET"
+            android:id="@+id/addRegionET"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/montserrat"
             android:hint="Enter region"
             android:textSize="15sp"
             android:textColor="#595959"
-            android:inputType="text"
             android:layout_marginStart="20dp"
             android:layout_marginBottom="10dp"
+            android:singleLine="true"
             android:layout_marginEnd="20dp"
             android:padding="10dp"
             android:background="@drawable/corder_radius_for_edit_text"/>
         <EditText
-            android:id="@+id/barangayET"
+            android:id="@+id/addBarangayET"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Enter barangay"
             android:textSize="15sp"
             android:textColor="#595959"
-            android:inputType="text"
             android:layout_marginStart="20dp"
             android:layout_marginBottom="10dp"
             android:fontFamily="@font/montserrat"
+            android:singleLine="true"
             android:layout_marginEnd="20dp"
             android:padding="10dp"
             android:background="@drawable/corder_radius_for_edit_text"/>
         <EditText
-            android:id="@+id/streetNameET"
+            android:id="@+id/addStreetNameET"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/montserrat"
             android:hint="Enter street name"
             android:textSize="15sp"
             android:textColor="#595959"
-            android:inputType="text"
             android:layout_marginStart="20dp"
             android:layout_marginBottom="10dp"
+            android:singleLine="true"
             android:layout_marginEnd="20dp"
             android:padding="10dp"
             android:background="@drawable/corder_radius_for_edit_text"/>
 
         <EditText
-            android:id="@+id/postalCodeET"
+            android:id="@+id/addPostalCodeET"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
             android:hint="Enter postal code"
             android:textColor="#595959"
-            android:inputType="number"
             android:fontFamily="@font/montserrat"
+            android:singleLine="true"
             android:textSize="15sp"
             android:padding="10dp"
             android:background="@drawable/corder_radius_for_edit_text"/>

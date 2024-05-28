@@ -172,7 +172,8 @@ class LoginRegistrationActivity : AppCompatActivity() {
                         showLoadingPopup(false)
                         if (success) {
                             showToast("Registration successful! Logging in...")
-                            startMainActivity(null)
+                            SessionManager.saveUserEmail(this, emailInput.text.toString())
+                            startMainActivity(Bundle().apply { putString("email", emailInput.text.toString()) })
                         } else {
                             showToast("Registration failed. Please try again.")
                         }

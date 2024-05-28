@@ -22,14 +22,14 @@
                 android:id="@+id/logo_section"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="20dp"
+                android:layout_margin="15dp"
                 app:cardBackgroundColor="@color/furni_green_light2"
                 app:cardCornerRadius="25dp"
                 >
                 <ImageView
                     android:id="@+id/shop_logo"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
+                    android:layout_width="110dp"
+                    android:layout_height="110dp"
                     android:scaleType="fitXY"
                     android:background="@color/white"
                     />
@@ -38,7 +38,7 @@
                 android:id="@+id/shop_info"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="10dp"
+                android:padding="7dp"
                 android:background="@color/white"
                 android:orientation="vertical">
                 <TextView
@@ -46,7 +46,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/sample"
-                    android:textSize="20sp"
+                    android:textSize="17sp"
                     android:textStyle="bold"
                     />
                 <TextView
@@ -54,8 +54,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/sample"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
+                    android:textSize="12sp"
                     />
                 <TextView
                     android:id="@+id/shop_slogan"
@@ -63,19 +62,20 @@
                     android:layout_height="0dp"
                     android:layout_marginVertical="10dp"
                     android:text="@string/sample"
-                    android:textSize="15sp"
+                    android:textSize="12sp"
                     android:layout_weight="1"
                     android:ellipsize="end"
                     />
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    >
 
                     <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
                         android:src="@drawable/star_icon"/>
                     <TextView
                         android:id="@+id/shop_review"
@@ -84,7 +84,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginHorizontal="10dp"
                         android:text="4.5"
-                        android:textSize="15sp"
+                        android:textSize="12sp"
                         />
                     <TextView
                         android:id="@+id/shop_views"
@@ -93,7 +93,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginHorizontal="10dp"
                         android:text="100 views"
-                        android:textSize="15sp"
+                        android:textSize="12sp"
                         />
                 </LinearLayout>
             </LinearLayout>

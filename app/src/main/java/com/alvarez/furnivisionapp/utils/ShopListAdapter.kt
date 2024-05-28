@@ -16,7 +16,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 
-class ShopListAdapter(private val dataset: List<Shop>) :
+class ShopListAdapter(private var dataset: List<Shop>) :
     RecyclerView.Adapter<ShopListAdapter.ViewHolder>() {
 
 
@@ -75,5 +75,15 @@ class ShopListAdapter(private val dataset: List<Shop>) :
         }
     }
     override fun getItemCount() = dataset.size
+    fun filter(query: String): List<Shop> {
+        return dataset.filter { shop ->
+            shop.name?.contains(query, ignoreCase = true) ?: false
+        }
+    }
 
+    // Update the adapter with new filtered list
+    fun updateList(newList: List<Shop>) {
+        dataset = newList.toList()
+        notifyDataSetChanged()
+    }
 }
