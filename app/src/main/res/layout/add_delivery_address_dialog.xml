@@ -2,13 +2,15 @@
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="#F4F4F4">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:padding="20dp"
+        android:background="#F4F4F4">
 
         <EditText
             android:id="@+id/addNameDeliveryET"
@@ -22,7 +24,9 @@
             android:layout_marginBottom="10dp"
             android:layout_marginEnd="20dp"
             android:inputType="text"
-            android:singleLine="true"/>
+            android:singleLine="true"
+            android:padding="10dp"
+            android:background="@drawable/corder_radius_for_edit_text"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -31,14 +35,17 @@
             android:fontFamily="@font/montserrat"
             android:layout_marginStart="20dp"
             android:layout_marginBottom="10dp"
-            android:layout_marginEnd="20dp">
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/corder_radius_for_edit_text"
+            >
             <TextView
                 android:id="@+id/PH63"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="(+63)"
                 android:textColor="#737373"
-                android:textSize="15sp" />
+                android:textSize="15sp"
+                android:padding="10dp" />
             <EditText
                 android:id="@+id/addPhoneDeliveryET"
                 android:layout_width="match_parent"
@@ -48,7 +55,9 @@
                 android:textColor="#737373"
                 android:textSize="15sp"
                 android:singleLine="true"
-                android:layout_marginStart="10dp" />
+                android:padding="10dp"
+                android:background="@drawable/corder_radius_for_edit_text"
+                />
         </LinearLayout>
         <EditText
             android:id="@+id/addRegionET"
@@ -61,7 +70,9 @@
             android:layout_marginStart="20dp"
             android:layout_marginBottom="10dp"
             android:singleLine="true"
-            android:layout_marginEnd="20dp"/>
+            android:layout_marginEnd="20dp"
+            android:padding="10dp"
+            android:background="@drawable/corder_radius_for_edit_text"/>
         <EditText
             android:id="@+id/addBarangayET"
             android:layout_width="match_parent"
@@ -73,7 +84,9 @@
             android:layout_marginBottom="10dp"
             android:fontFamily="@font/montserrat"
             android:singleLine="true"
-            android:layout_marginEnd="20dp"/>
+            android:layout_marginEnd="20dp"
+            android:padding="10dp"
+            android:background="@drawable/corder_radius_for_edit_text"/>
         <EditText
             android:id="@+id/addStreetNameET"
             android:layout_width="match_parent"
@@ -85,7 +98,9 @@
             android:layout_marginStart="20dp"
             android:layout_marginBottom="10dp"
             android:singleLine="true"
-            android:layout_marginEnd="20dp"/>
+            android:layout_marginEnd="20dp"
+            android:padding="10dp"
+            android:background="@drawable/corder_radius_for_edit_text"/>
 
         <EditText
             android:id="@+id/addPostalCodeET"
@@ -97,23 +112,27 @@
             android:textColor="#595959"
             android:fontFamily="@font/montserrat"
             android:singleLine="true"
-            android:textSize="15sp" />
-        <LinearLayout
-            android:layout_width="wrap_content"
+            android:textSize="15sp"
+            android:padding="10dp"
+            android:background="@drawable/corder_radius_for_edit_text"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginEnd="20dp">
             <TextView
                 android:id="@+id/defaultTitle"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
                 android:text="Make this default?"
                 android:fontFamily="@font/montserrat"
                 android:textStyle="bold"
                 android:textColor="@color/black"
-                android:textSize="15sp" />
+                android:textSize="15sp"
+                android:layout_centerVertical="true"/>
             <CheckBox
                 android:id="@+id/editCheckBox"
                 android:layout_width="wrap_content"
@@ -121,10 +140,9 @@
                 android:checked="false"
                 android:textColor="@color/primary_darker"
                 android:textSize="15sp"
-                android:textStyle="bold"
-                android:layout_marginStart="20dp"
-                android:paddingTop="10dp" />
-        </LinearLayout>
+                android:layout_alignParentEnd="true"
+                android:textStyle="bold" />
+        </RelativeLayout>
 
     </LinearLayout>
 </ScrollView>
