@@ -1372,10 +1372,11 @@ class MainActivity : AppCompatActivity() {
         val email = SessionManager.getUserEmail(this)
 
         if (email != null) {
+            val censoredEmail = censorEmail(email)
             AuthUtility.getUserName(email,
                 onSuccess = { name ->
                     nameTV.text = name
-                    emailTV.text = email
+                    emailTV.text = censoredEmail
                 },
                 onFailure = {
                     Log.e("GetUser", "Failed to retrieve user name")
@@ -1384,6 +1385,7 @@ class MainActivity : AppCompatActivity() {
         } else {
             Log.e("GetUser", "Invalid email: $email")
         }
+
         initBackButton()
         changeNameButton.setOnClickListener {
             activePage = (R.layout.activity_edit_name)
@@ -1488,7 +1490,7 @@ class MainActivity : AppCompatActivity() {
                 Log.e("GetUser", "Invalid email: $email")
             }
 
-            // Build the dialog
+
             val dialog = AlertDialog.Builder(this)
                 .setView(dialogView)
                 .setPositiveButton("Confirm") { dialogInterface, which ->
@@ -1580,7 +1582,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     val phoneNum = document.getString("phoneNumber")
                     if (phoneNum != null) {
-                        phoneTV.text = "0$phoneNum" // Display the phone number in the phoneTV TextView
+                        phoneTV.text = censorPhoneNumber(phoneNum)
                     }
                     val gender = document.getString("gender")
                     if (gender != null) {
@@ -1627,6 +1629,17 @@ class MainActivity : AppCompatActivity() {
 
 
 
+    }
+    fun censorEmail(email: String): String {
+        if (email.length <= 6) return email // Email too short to censor
+        val atIndex = email.indexOf('@')
+        if (atIndex == -1 || atIndex <= 2) return email // Invalid email format
+
+        val firstLetter = email.first()
+        val lastLetter = email[atIndex - 1]
+        val domain = email.substring(atIndex)
+
+        return "$firstLetter*****$lastLetter$domain"
     }
 
     fun refreshProfile(){
@@ -2036,6 +2049,17 @@ class MainActivity : AppCompatActivity() {
             Log.e("GetUser", "Invalid email: $email")
         }
     }
+    // Function to censor phone number
+    fun censorPhoneNumber(phoneNumber: String): String {
+        return if (phoneNumber.length > 3) {
+            val visiblePart = phoneNumber.takeLast(3)
+            val censoredPart = "*".repeat(phoneNumber.length - 3)
+            "$censoredPart$visiblePart"
+        } else {
+            phoneNumber // If the phone number is too short to censor, return as is.
+        }
+    }
+
 
     private fun validatePhoneNumber(phoneNumber: String): Boolean {
         val phonePattern = Regex("[0-9]{10}") // Assumes a 10-digit phone number format
