@@ -769,72 +769,33 @@ class MainActivity : AppCompatActivity() {
                         val email = SessionManager.getUserEmail(this)
                         // Update the delivery addresses field within the user's document
                         if (email != null) {
+                            val deliveryAddressData = mapOf(
+                                "name" to newDeliveryAddress.name,
+                                "phone" to newDeliveryAddress.phone,
+                                "region" to newDeliveryAddress.region,
+                                "barangay" to newDeliveryAddress.barangay,
+                                "streetName" to newDeliveryAddress.streetName,
+                                "postalCode" to newDeliveryAddress.postalCode,
+                                "isChecked" to newDeliveryAddress.isChecked
+                            )
+
                             firestore.collection("users")
                                 .whereEqualTo("email", email)
                                 .get()
                                 .addOnSuccessListener { querySnapshot ->
                                     for (document in querySnapshot.documents) {
-                                        val deliveryAddresses = document.get("deliveryAddresses") as? MutableList<Map<String, Any>> ?: mutableListOf()
-                                        val hasCheckedAddress = deliveryAddresses.any { it["isChecked"] == true }
-
-                                        if (hasCheckedAddress && isChecked) {
-                                            Toast.makeText(this, "Only one default address is allowed.", Toast.LENGTH_SHORT).show()
-                                        } else {
-                                            if (isChecked) {
-                                                // Update the existing checked address to unchecked
-                                                val updatedAddresses = deliveryAddresses.map {
-                                                    if (it["isChecked"] == true) it.toMutableMap().apply { this["isChecked"] = false } else it
-                                                }.toMutableList()
-
-                                                // Insert the new checked address at index 0
-                                                val deliveryAddressData = mapOf(
-                                                    "name" to newDeliveryAddress.name,
-                                                    "phone" to newDeliveryAddress.phone,
-                                                    "region" to newDeliveryAddress.region,
-                                                    "barangay" to newDeliveryAddress.barangay,
-                                                    "streetName" to newDeliveryAddress.streetName,
-                                                    "postalCode" to newDeliveryAddress.postalCode,
-                                                    "isChecked" to newDeliveryAddress.isChecked
-                                                )
-                                                updatedAddresses.add(0, deliveryAddressData)
-
-                                                // Update the database with the reordered list
-                                                document.reference.update("deliveryAddresses", updatedAddresses)
-                                                    .addOnSuccessListener {
-                                                        // Fetch the updated delivery addresses from Firestore
-                                                        initRefreshDeliveryAddress()
-                                                        Toast.makeText(this, "Delivery address added successfully.", Toast.LENGTH_SHORT).show()
-                                                        addDialog.dismiss()
-                                                        initDeliveryAddressPage()
-                                                    }
-                                                    .addOnFailureListener { e ->
-                                                        Toast.makeText(this, "Failed to add delivery address: ${e.message}", Toast.LENGTH_SHORT).show()
-                                                    }
-                                            } else {
-                                                // Add the new unchecked address to the end of the list
-                                                val deliveryAddressData = mapOf(
-                                                    "name" to newDeliveryAddress.name,
-                                                    "phone" to newDeliveryAddress.phone,
-                                                    "region" to newDeliveryAddress.region,
-                                                    "barangay" to newDeliveryAddress.barangay,
-                                                    "streetName" to newDeliveryAddress.streetName,
-                                                    "postalCode" to newDeliveryAddress.postalCode,
-                                                    "isChecked" to newDeliveryAddress.isChecked
-                                                )
-
-                                                document.reference.update("deliveryAddresses", FieldValue.arrayUnion(deliveryAddressData))
-                                                    .addOnSuccessListener {
-                                                        // Fetch the updated delivery addresses from Firestore
-                                                        initRefreshDeliveryAddress()
-                                                        Toast.makeText(this, "Delivery address added successfully.", Toast.LENGTH_SHORT).show()
-                                                        addDialog.dismiss()
-                                                        initDeliveryAddressPage()
-                                                    }
-                                                    .addOnFailureListener { e ->
-                                                        Toast.makeText(this, "Failed to add delivery address: ${e.message}", Toast.LENGTH_SHORT).show()
-                                                    }
+                                        document.reference
+                                            .update("deliveryAddresses", FieldValue.arrayUnion(deliveryAddressData))
+                                            .addOnSuccessListener {
+                                                // Fetch the updated delivery addresses from Firestore
+                                                initRefreshDeliveryAddress()
+                                                Toast.makeText(this, "Delivery address added successfully.", Toast.LENGTH_SHORT).show()
+                                                addDialog.dismiss()
+                                                initDeliveryAddressPage()
                                             }
-                                        }
+                                            .addOnFailureListener { e ->
+                                                Toast.makeText(this, "Failed to add delivery address: ${e.message}", Toast.LENGTH_SHORT).show()
+                                            }
                                     }
                                 }
                                 .addOnFailureListener { e ->
@@ -845,8 +806,7 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 }
-
-        }
+            }
 
             addDialog.show()
         }
@@ -1030,6 +990,8 @@ class MainActivity : AppCompatActivity() {
                                                     deliveryAddressAdapter.notifyDataSetChanged()
                                                     Toast.makeText(this@MainActivity, "Delivery address updated successfully.", Toast.LENGTH_SHORT).show()
                                                     alertDialog.dismiss()
+                                                    // Refresh the page to view the changes
+                                                    initDeliveryAddressPage()
                                                 }
                                                 .addOnFailureListener { e ->
                                                     Toast.makeText(this@MainActivity, "Failed to update delivery address: ${e.message}", Toast.LENGTH_SHORT).show()
@@ -1052,6 +1014,7 @@ class MainActivity : AppCompatActivity() {
                                                     deliveryAddressAdapter.notifyDataSetChanged()
                                                     Toast.makeText(this@MainActivity, "Delivery address updated successfully.", Toast.LENGTH_SHORT).show()
                                                     alertDialog.dismiss()
+                                                    // Refresh the page to view the changes
                                                     initDeliveryAddressPage()
                                                 }
                                                 .addOnFailureListener { e ->
@@ -1064,14 +1027,12 @@ class MainActivity : AppCompatActivity() {
                                     }
                             }
                         }
-
                         .addOnFailureListener { e ->
                             Toast.makeText(this@MainActivity, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
                         }
                 } else {
                     Log.e("YourActivity", "Invalid email: $email")
                 }
-
             }
 
         val deleteButton = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE)
