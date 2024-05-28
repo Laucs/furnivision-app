@@ -549,6 +549,7 @@ class MainActivity : AppCompatActivity() {
             activePage = R.layout.activity_cart
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_cart, null) as RelativeLayout)
+            initCartPage()
         }
 
         settingsButton.setOnClickListener {
@@ -782,7 +783,12 @@ class MainActivity : AppCompatActivity() {
 
                 deleteButton.setOnClickListener {
                     editDeleteDialog.dismiss()
-                    deleteDeliveryAddress(deliveryAddress)
+                    val index = deliveryAddresses.indexOf(deliveryAddress)
+                    if (index != -1) {
+                        deleteDeliveryAddress(deliveryAddress, deliveryAddresses, deliveryAddressAdapter)
+                    } else {
+                        Toast.makeText(this@MainActivity, "Delivery address not found.", Toast.LENGTH_SHORT).show()
+                    }
                 }
 
                 editDeleteDialog.show()
@@ -812,7 +818,13 @@ class MainActivity : AppCompatActivity() {
 
         val editDialog = AlertDialog.Builder(this@MainActivity)
             .setView(editDialogView)
-            .setPositiveButton("Save") { _, _ ->
+            .setPositiveButton("Save", null)
+            .setNegativeButton("Cancel") { _, _ -> }
+            .create()
+
+        editDialog.setOnShowListener { dialog ->
+            val saveButton = (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
+            saveButton.setOnClickListener {
                 val newName = editNameDeliveryET.text?.toString()?.trim()
                 val newPhone = editPhoneDeliveryET.text?.toString()?.trim()
                 val newRegion = editRegionET.text?.toString()?.trim()
@@ -821,45 +833,38 @@ class MainActivity : AppCompatActivity() {
                 val newPostalCode = editPostalCodeET.text?.toString()?.trim()
                 val newIsChecked = editCheckBox.isChecked
 
+                // Validation: Check if any field is empty
                 if (newName.isNullOrEmpty() || newPhone.isNullOrEmpty() || newRegion.isNullOrEmpty() ||
                     newBarangay.isNullOrEmpty() || newStreetName.isNullOrEmpty() || newPostalCode.isNullOrEmpty()) {
                     Toast.makeText(this@MainActivity, "Please fill in all fields.", Toast.LENGTH_SHORT).show()
-                } else {
-                    // Update the delivery address in the list
-                    deliveryAddress.apply {
-                        name = newName
-                        phone = newPhone
-                        region = newRegion
-                        barangay = newBarangay
-                        streetName = newStreetName
-                        postalCode = newPostalCode
-                        isChecked = newIsChecked
-                    }
+                    return@setOnClickListener
+                }
 
-                    // Notify adapter that the data has changed
-                    deliveryAddressAdapter.notifyDataSetChanged()
+                // Validation: Check if phone number is valid
+                if (!validatePhoneNumber(newPhone)) {
+                    Toast.makeText(this@MainActivity, "Please enter a valid phone number.", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
 
-                    val email = SessionManager.getUserEmail(this)
-                    if (email != null) {
-                        // Update the delivery address in the database
-                        firestore.collection("users")
-                            .whereEqualTo("email", email)
-                            .get()
-                            .addOnSuccessListener { querySnapshot ->
-                                for (document in querySnapshot.documents) {
-                                    document.reference
-                                        .collection("deliveryAddresses")
-                                        .whereEqualTo("name", deliveryAddress.name)
-                                        .whereEqualTo("phone", deliveryAddress.phone)
-                                        .whereEqualTo("region", deliveryAddress.region)
-                                        .whereEqualTo("barangay", deliveryAddress.barangay)
-                                        .whereEqualTo("streetName", deliveryAddress.streetName)
-                                        .whereEqualTo("postalCode", deliveryAddress.postalCode)
-                                        .get()
-                                        .addOnSuccessListener { querySnapshot ->
-                                            for (document in querySnapshot.documents) {
-                                                document.reference.update(
-                                                    mapOf(
+
+                // Validation: Check if other custom validations are needed
+
+                val email = SessionManager.getUserEmail(this)
+                if (email != null) {
+                    firestore.collection("users")
+                        .whereEqualTo("email", email)
+                        .get()
+                        .addOnSuccessListener { querySnapshot ->
+                            for (document in querySnapshot.documents) {
+                                val userRef = document.reference
+                                userRef.get()
+                                    .addOnSuccessListener { userDocument ->
+                                        val deliveryAddressList = userDocument.get("deliveryAddresses") as? List<Map<String, Any>>
+                                        if (deliveryAddressList != null) {
+                                            val updatedDeliveryAddressList = deliveryAddressList.toMutableList().apply {
+                                                val index = indexOfFirst { it["name"] == deliveryAddress.name && it["phone"] == deliveryAddress.phone }
+                                                if (index != -1) {
+                                                    this[index] = mapOf(
                                                         "name" to newName,
                                                         "phone" to newPhone,
                                                         "region" to newRegion,
@@ -868,53 +873,34 @@ class MainActivity : AppCompatActivity() {
                                                         "postalCode" to newPostalCode,
                                                         "isChecked" to newIsChecked
                                                     )
-                                                )
+                                                }
                                             }
-                                        }
-                                        .addOnFailureListener { e ->
-                                            Toast.makeText(this@MainActivity, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
-                                        }
-                                }
-                            }
-                            .addOnFailureListener { e ->
-                                Toast.makeText(this@MainActivity, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
-                            }
-                    } else {
-                        Log.e("YourActivity", "Invalid email: $email")
-                    }
-                }
-            }
-            .setNegativeButton("Cancel") { _, _ -> }
-            .setNeutralButton("Delete") { _, _ ->
-                val email = SessionManager.getUserEmail(this)
-                if (email != null) {
-                    firestore.collection("users")
-                        .whereEqualTo("email", email)
-                        .get()
-                        .addOnSuccessListener { querySnapshot ->
-                            for (document in querySnapshot.documents) {
-                                document.reference
-                                    .collection("deliveryAddresses")
-                                    .whereEqualTo("name", deliveryAddress.name)
-                                    .whereEqualTo("phone", deliveryAddress.phone)
-                                    .whereEqualTo("region", deliveryAddress.region)
-                                    .whereEqualTo("barangay", deliveryAddress.barangay)
-                                    .whereEqualTo("streetName", deliveryAddress.streetName)
-                                    .whereEqualTo("postalCode", deliveryAddress.postalCode)
-                                    .get()
-                                    .addOnSuccessListener { querySnapshot ->
-                                        for (document in querySnapshot.documents) {
-                                            document.reference.delete()
+                                            userRef.update("deliveryAddresses", updatedDeliveryAddressList)
                                                 .addOnSuccessListener {
-                                                    Toast.makeText(this@MainActivity, "Delivery address deleted successfully.", Toast.LENGTH_SHORT).show()
+                                                    // Update the delivery address in the local list
+                                                    deliveryAddress.apply {
+                                                        name = newName
+                                                        phone = newPhone
+                                                        region = newRegion
+                                                        barangay = newBarangay
+                                                        streetName = newStreetName
+                                                        postalCode = newPostalCode
+                                                        isChecked = newIsChecked
+                                                    }
+                                                    // Notify adapter that the data has changed
+                                                    deliveryAddressAdapter.notifyDataSetChanged()
+                                                    Toast.makeText(this@MainActivity, "Delivery address updated successfully.", Toast.LENGTH_SHORT).show()
+                                                    dialog.dismiss()
                                                 }
                                                 .addOnFailureListener { e ->
-                                                    Toast.makeText(this@MainActivity, "Failed to delete delivery address: ${e.message}", Toast.LENGTH_SHORT).show()
+                                                    Toast.makeText(this@MainActivity, "Failed to update delivery address: ${e.message}", Toast.LENGTH_SHORT).show()
                                                 }
+                                        } else {
+                                            Toast.makeText(this@MainActivity, "No matching delivery address found.", Toast.LENGTH_SHORT).show()
                                         }
                                     }
                                     .addOnFailureListener { e ->
-                                        Toast.makeText(this@MainActivity, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(this@MainActivity, "Error retrieving document: ${e.message}", Toast.LENGTH_SHORT).show()
                                     }
                             }
                         }
@@ -925,49 +911,58 @@ class MainActivity : AppCompatActivity() {
                     Log.e("YourActivity", "Invalid email: $email")
                 }
             }
-            .create()
+        }
 
         editDialog.show()
     }
 
 
-    fun deleteDeliveryAddress(deliveryAddress: DeliveryAddress) {
-        initRefreshDeliveryAddress()
-        val deliveryAddresses = mutableListOf<DeliveryAddress>()
+
+    fun deleteDeliveryAddress(deliveryAddress: DeliveryAddress, deliveryAddresses: MutableList<DeliveryAddress>, deliveryAddressAdapter: DeliveryAddressAdapter) {
         val firestore = FirebaseFirestore.getInstance()
         val email = SessionManager.getUserEmail(this)
-        val deliveryAddressRecyclerView = findViewById<RecyclerView>(R.id.deliveryAddressRecyclerView)
-        deliveryAddressRecyclerView.layoutManager = LinearLayoutManager(this)
 
-        val deliveryAddressAdapter = DeliveryAddressAdapter(deliveryAddresses)
-        deliveryAddressRecyclerView.adapter = deliveryAddressAdapter
-
-        // Remove the delivery address from the list
-        deliveryAddresses.remove(deliveryAddress)
-
-        // Notify adapter that an item is removed
-        deliveryAddressAdapter.notifyDataSetChanged()
-
-        // Delete the delivery address from the database
         if (email != null) {
             firestore.collection("users")
-                .document(email)
-                .collection("deliveryAddresses")
-                .whereEqualTo("name", deliveryAddress.name)
-                .whereEqualTo("phone", deliveryAddress.phone)
-                .whereEqualTo("region", deliveryAddress.region)
-                .whereEqualTo("barangay", deliveryAddress.barangay)
-                .whereEqualTo("streetName", deliveryAddress.streetName)
-                .whereEqualTo("postalCode", deliveryAddress.postalCode)
+                .whereEqualTo("email", email)
                 .get()
                 .addOnSuccessListener { querySnapshot ->
                     for (document in querySnapshot.documents) {
-                        document.reference.delete()
-                            .addOnSuccessListener {
-                                Toast.makeText(this@MainActivity, "Delivery address deleted successfully.", Toast.LENGTH_SHORT).show()
+                        val userRef = document.reference
+                        userRef.get()
+                            .addOnSuccessListener { userDocument ->
+                                val deliveryAddressList = userDocument.get("deliveryAddresses") as? List<Map<String, Any>>
+                                if (deliveryAddressList != null) {
+                                    val updatedDeliveryAddressList = deliveryAddressList.toMutableList().apply {
+                                        val index = indexOfFirst {
+                                            it["name"] == deliveryAddress.name &&
+                                                    it["phone"] == deliveryAddress.phone &&
+                                                    it["region"] == deliveryAddress.region &&
+                                                    it["barangay"] == deliveryAddress.barangay &&
+                                                    it["streetName"] == deliveryAddress.streetName &&
+                                                    it["postalCode"] == deliveryAddress.postalCode
+                                        }
+                                        if (index != -1) {
+                                            removeAt(index)
+                                        }
+                                    }
+                                    userRef.update("deliveryAddresses", updatedDeliveryAddressList)
+                                        .addOnSuccessListener {
+                                            // Remove the delivery address from the local list
+                                            deliveryAddresses.remove(deliveryAddress)
+                                            // Notify adapter that the data has changed
+                                            deliveryAddressAdapter.notifyDataSetChanged()
+                                            Toast.makeText(this@MainActivity, "Delivery address deleted successfully.", Toast.LENGTH_SHORT).show()
+                                        }
+                                        .addOnFailureListener { e ->
+                                            Toast.makeText(this@MainActivity, "Failed to delete delivery address: ${e.message}", Toast.LENGTH_SHORT).show()
+                                        }
+                                } else {
+                                    Toast.makeText(this@MainActivity, "No matching delivery address found.", Toast.LENGTH_SHORT).show()
+                                }
                             }
                             .addOnFailureListener { e ->
-                                Toast.makeText(this@MainActivity, "Failed to delete delivery address: ${e.message}", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(this@MainActivity, "Error retrieving document: ${e.message}", Toast.LENGTH_SHORT).show()
                             }
                     }
                 }
