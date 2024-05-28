@@ -1181,13 +1181,36 @@ class MainActivity : AppCompatActivity() {
         initBackButton()
         // Navigation Logic
         val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
+        val confirmLogoutDialogView = layoutInflater.inflate(R.layout.confirm_logout_dialog, null)
+        val cancelButton = confirmLogoutDialogView.findViewById<Button>(R.id.cancelButton)
+        val confirmLogoutButton = confirmLogoutDialogView.findViewById<Button>(R.id.confirmLogoutButton)
 
         logoutButton.setOnClickListener {
-            AuthUtility.signOut(this)
-            val intent = Intent(this, LoginRegistrationActivity::class.java)
-            startActivity(intent)
-            finish()
+
+            val confirmLogoutDialogView = layoutInflater.inflate(R.layout.confirm_logout_dialog, null)
+            val cancelButton = confirmLogoutDialogView.findViewById<Button>(R.id.cancelButton)
+            val confirmLogoutButton = confirmLogoutDialogView.findViewById<Button>(R.id.confirmLogoutButton)
+
+            val confirmLogoutDialog = AlertDialog.Builder(this@MainActivity)
+                .setView(confirmLogoutDialogView)
+                .create()
+
+            cancelButton.setOnClickListener {
+                confirmLogoutDialog.dismiss()
+            }
+
+            confirmLogoutButton.setOnClickListener {
+                confirmLogoutDialog.dismiss()
+                AuthUtility.signOut(this@MainActivity)
+                val intent = Intent(this@MainActivity, LoginRegistrationActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
+
+            confirmLogoutDialog.show()
         }
+
+
         aboutButton.setOnClickListener {
             activePage = (R.layout.activity_about)
             pageContainer.removeAllViews()
