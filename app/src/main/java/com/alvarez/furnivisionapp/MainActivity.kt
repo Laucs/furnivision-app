@@ -503,7 +503,13 @@ class MainActivity : AppCompatActivity() {
     private fun initProfilePage() {
         val emailTextView: TextView = findViewById(R.id.email)
         val email = SessionManager.getUserEmail(this)
-        emailTextView.text = email
+        if (email != null) {
+            val censoredEmail = censorEmail(email)
+            emailTextView.text = censoredEmail
+        } else {
+            // Handle the case where email is null
+            Log.e("GetUserEmail", "Email is null")
+        }
         val nameTextView: TextView = findViewById(R.id.name)
 
         val settingsButton: ImageButton = findViewById(R.id.settingsButton)
@@ -1912,7 +1918,8 @@ class MainActivity : AppCompatActivity() {
         val changeEmailButton: Button = findViewById(R.id.changeEmailButton)
 
         if (email != null) {
-            editEmailET.text = email
+//            check if email is fetched by displaying in edit text
+//            editEmailET.text = email
 
             changeEmailButton.setOnClickListener {
                 val newEmail = editEmailET.text.toString().trim() // Get the updated email from the TextView and remove leading/trailing whitespaces
@@ -1963,7 +1970,7 @@ class MainActivity : AppCompatActivity() {
                             Toast.makeText(this, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
                         }
                 } else {
-                    Toast.makeText(this, "No new changes to the email.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Input email is same current email.", Toast.LENGTH_SHORT).show()
                 }
             }
         } else {
@@ -1992,7 +1999,7 @@ class MainActivity : AppCompatActivity() {
                         val document = querySnapshot.documents.first()
                         val phoneNum = document.getString("phoneNumber")
                         if (phoneNum != null) {
-                            editPhoneET.setText(phoneNum)
+//                            editPhoneET.setText(phoneNum)
                         }
 
                         changePhoneButton.setOnClickListener {
@@ -2035,7 +2042,7 @@ class MainActivity : AppCompatActivity() {
                                         Toast.makeText(this, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
                                     }
                             } else {
-                                Toast.makeText(this, "No new changes to the phone number.", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(this, "Input phone number is same current phone number.", Toast.LENGTH_SHORT).show()
                             }
                         }
                     } else {
