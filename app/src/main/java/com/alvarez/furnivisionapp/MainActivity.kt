@@ -1707,20 +1707,17 @@ class MainActivity : AppCompatActivity() {
 
 
     fun initPaymentMethodsPage() {
+        val cashLayout = findViewById<RelativeLayout>(R.id.cashLayout)
         val paypalLayout = findViewById<RelativeLayout>(R.id.paypalLayout)
+        val masterCardLayout = findViewById<RelativeLayout>(R.id.masterCardLayout)
+        val gcashLayout = findViewById<RelativeLayout>(R.id.gcashLayout)
+
 
         paypalLayout.setOnLongClickListener {
             paypalEditDialog()
             true
         }
 
-        // Retrieve the saved email from SharedPreferences
-        val sharedPreferences = getSharedPreferences("paypal", Context.MODE_PRIVATE)
-        val savedEmail = sharedPreferences.getString("paypalEmail", "Set Now")
-
-        // Set the saved email in the emailPaypalTextView
-        val emailTextView = findViewById<TextView>(R.id.emailPaypalTextView)
-        emailTextView.text = savedEmail
     }
 
     fun paypalEditDialog() {
