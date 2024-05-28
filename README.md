@@ -1,7 +1,7 @@
 TO DO:
 
 *****IMPORTANT*****
-- Signup auth
+- Signup auth ✔
 *******************
 
 Navigation
@@ -9,14 +9,14 @@ Navigation
   
 Dashboard
 - category 
-- clickable furnitures
+- clickable Shops ✔
 - clickable heart icons
-- search functionality (least priority)
+- search functionality (least priority) ✔
 
 Shop
 - Buy button for the viewing of furniture should go directly to orders page
 - fix furniture selection ui ✔
-- search functionality 
+- search functionality ✔
 
 Cart
 - should not allow users to checkout when cart is null ✔
