@@ -167,8 +167,27 @@ class LoginRegistrationActivity : AppCompatActivity() {
         val bgImage: ImageView = findViewById(R.id.bg_image)
         val nameInput: EditText = findViewById(R.id.reg_nameEditText)
         val emailInput: EditText = findViewById(R.id.reg_emailEditText)
+
+
+        //trigger view button for password visibility
         val passwordInput: EditText = findViewById(R.id.reg_passwordEditText)
+        val viewPasswordButton1: ImageButton = findViewById(R.id.viewSignupPassword1)
+        var isPasswordVisible = false
+
+        viewPasswordButton1.setOnClickListener {
+            isPasswordVisible = !isPasswordVisible
+            togglePasswordVisibility(passwordInput, viewPasswordButton1, isPasswordVisible)
+        }
+
         val confirmPasswordInput: EditText = findViewById(R.id.reg_confirmPassEditText)
+        val viewPasswordButton2: ImageButton = findViewById(R.id.viewSignupPassword2)
+        var isConfirmPasswordVisible = false
+
+        viewPasswordButton2.setOnClickListener {
+            isConfirmPasswordVisible = !isConfirmPasswordVisible
+            togglePasswordVisibility(confirmPasswordInput, viewPasswordButton2, isConfirmPasswordVisible)
+        }
+
 
         findViewById<RelativeLayout>(R.id.register_Btn).setOnClickListener {
             toggleViews(loginPage, registrationPage)
