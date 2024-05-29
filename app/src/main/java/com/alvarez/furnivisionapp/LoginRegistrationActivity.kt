@@ -172,7 +172,7 @@ class LoginRegistrationActivity : AppCompatActivity() {
 
         findViewById<RelativeLayout>(R.id.register_Btn).setOnClickListener {
             toggleViews(loginPage, registrationPage)
-            adjustBackgroundImageMargin(bgImage, -100f)
+            adjustBackgroundImageMargin(bgImage, 0f)
         }
 
         findViewById<Button>(R.id.reg_signupButton).setOnClickListener {
