@@ -106,7 +106,7 @@ class LoginRegistrationActivity : AppCompatActivity() {
         findViewById<ImageView>(R.id.google_signin_button).setOnClickListener {
             AuthUtility.signInWithGoogle(this, googleSignInClient, RC_SIGN_IN)
         }
-        findViewById<ImageView>(R.id.google_login_button).setOnClickListener {
+        findViewById<LinearLayout>(R.id.google_login_button).setOnClickListener {
             AuthUtility.signInWithGoogle(this, googleSignInClient, RC_SIGN_IN)
         }
     }

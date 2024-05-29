@@ -81,16 +81,22 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="18dp"
                 android:fontFamily="@font/glacial_indifference_regular"
-                android:letterSpacing="0.3"
-                android:text="@string/login"
+                android:text="Welcome back"
                 android:textAlignment="center"
-                android:textAllCaps="true"
                 android:textColor="@color/light_gray"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
-
-            <androidx.cardview.widget.CardView
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Log in to your account"
+                android:fontFamily="@font/montserrat_semibold"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:paddingHorizontal="20dp"
+                android:paddingVertical="20dp"/>
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
@@ -102,22 +108,28 @@
                     android:id="@+id/login_emailEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#CFD8DF"
-                    android:drawableEnd="@drawable/email_logo"
+                    android:background="@drawable/button_radius_bg"
+                    android:backgroundTint="#CFD8DF"
                     android:fontFamily="@font/montserrat"
                     android:hint="@string/email"
                     android:textColor="#545454"
                     android:textColorHint="#545454"
                     android:importantForAutofill="no"
                     android:inputType="textEmailAddress"
-                    android:paddingLeft="20dp"
-                    android:paddingTop="8dp"
-                    android:paddingRight="20dp"
-                    android:paddingBottom="8dp"
+                    android:paddingHorizontal="20dp"
+                    android:paddingVertical="10dp"
                     android:textSize="14sp" />
-            </androidx.cardview.widget.CardView>
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="15dp"
+                    android:background="@drawable/email_icon" />
 
-            <androidx.cardview.widget.CardView
+            </RelativeLayout>
+
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
@@ -128,20 +140,26 @@
                     android:id="@+id/login_passwordEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#CFD8DF"
-                    android:drawableEnd="@drawable/lock_logo"
+                    android:background="@drawable/button_radius_bg"
+                    android:backgroundTint="#CFD8DF"
                     android:fontFamily="@font/montserrat"
                     android:hint="@string/password"
                     android:importantForAutofill="no"
                     android:inputType="textPassword"
-                    android:paddingLeft="20dp"
-                    android:paddingTop="8dp"
-                    android:paddingRight="20dp"
-                    android:paddingBottom="8dp"
+                    android:paddingHorizontal="20dp"
+                    android:paddingVertical="10dp"
                     android:textColor="#545454"
                     android:textColorHint="#545454"
                     android:textSize="14sp" />
-            </androidx.cardview.widget.CardView>
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="15dp"
+                        android:background="@drawable/open_eye_icon" />
+
+            </RelativeLayout>
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -160,8 +178,7 @@
                     android:layout_toEndOf="@id/checkbox"
                     android:layout_centerVertical="true"
                     android:fontFamily="@font/montserrat"
-                    android:textSize="11sp">
-                </TextView>
+                    android:textSize="11sp"/>
             </RelativeLayout>
             <Button
                 android:id="@+id/login_loginButton"
@@ -216,6 +233,7 @@
                     android:layout_centerVertical="true"/>
             </RelativeLayout>
             <LinearLayout
+                android:id="@+id/google_login_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -228,7 +246,6 @@
                 android:layout_marginRight="20dp">
 
                 <ImageView
-                    android:id="@+id/google_login_button"
                     android:src="@drawable/google_logo"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
