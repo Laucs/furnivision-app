@@ -117,9 +117,9 @@
                     android:importantForAutofill="no"
                     android:inputType="textEmailAddress"
                     android:paddingHorizontal="20dp"
-                    android:paddingVertical="10dp"
+                    android:paddingVertical="15dp"
                     android:textSize="14sp" />
-                <ImageView
+                <ImageButton
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_centerVertical="true"
@@ -147,11 +147,12 @@
                     android:importantForAutofill="no"
                     android:inputType="textPassword"
                     android:paddingHorizontal="20dp"
-                    android:paddingVertical="10dp"
+                    android:paddingVertical="15dp"
                     android:textColor="#545454"
                     android:textColorHint="#545454"
                     android:textSize="14sp" />
-                    <ImageView
+                    <ImageButton
+                        android:id="@+id/viewPasswordButton"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_centerVertical="true"
