@@ -2,9 +2,11 @@ package com.alvarez.furnivisionapp
 
 import android.content.Context
 import android.content.Intent
+import android.text.method.PasswordTransformationMethod
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
+import android.text.InputType
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
@@ -103,10 +105,10 @@ class LoginRegistrationActivity : AppCompatActivity() {
             .build()
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
-        findViewById<ImageView>(R.id.google_signin_button).setOnClickListener {
+        findViewById<LinearLayout>(R.id.google_signin_button).setOnClickListener {
             AuthUtility.signInWithGoogle(this, googleSignInClient, RC_SIGN_IN)
         }
-        findViewById<ImageView>(R.id.google_login_button).setOnClickListener {
+        findViewById<LinearLayout>(R.id.google_login_button).setOnClickListener {
             AuthUtility.signInWithGoogle(this, googleSignInClient, RC_SIGN_IN)
         }
     }
@@ -115,12 +117,26 @@ class LoginRegistrationActivity : AppCompatActivity() {
         loginPage = findViewById(R.id.login_panel)
 
         val emailEditText: EditText = findViewById(R.id.login_emailEditText)
-        val passwordEditText: EditText = findViewById(R.id.login_passwordEditText)
         val loginBtn: Button = findViewById(R.id.login_loginButton)
+
+        // Trigger view button for password visibility
+        val passwordEditText: EditText = findViewById(R.id.login_passwordEditText)
+        val viewPasswordButton: ImageButton = findViewById(R.id.viewPasswordButton)
+        var isPasswordVisible = false
+
+        viewPasswordButton.setOnClickListener {
+            isPasswordVisible = !isPasswordVisible
+            togglePasswordVisibility(passwordEditText, viewPasswordButton, isPasswordVisible)
+        }
 
         loginBtn.setOnClickListener {
             val email = emailEditText.text.toString()
             val password = passwordEditText.text.toString()
+
+            if (email.isEmpty() || password.isEmpty()) {
+                showToast("Please enter both email and password")
+                return@setOnClickListener
+            }
 
             showLoadingPopup(true)
             AuthUtility.signInWithEmail(this, email, password) { success ->
@@ -130,11 +146,24 @@ class LoginRegistrationActivity : AppCompatActivity() {
                     startMainActivity(Bundle().apply { putString("email", email) })
                     finishAffinity()
                 } else {
-                    emailEditText.error = "Invalid Email or Password!"
+
                     showToast("Sign in failed. Please check your credentials.")
                 }
             }
         }
+    }
+    private fun togglePasswordVisibility(editText: EditText, button: ImageButton, isVisible: Boolean) {
+        if (isVisible) {
+            // Show the password
+            editText.transformationMethod = null
+            button.setBackgroundResource(R.drawable.open_eye_icon)
+        } else {
+            // Hide the password
+            editText.transformationMethod = PasswordTransformationMethod.getInstance()
+            button.setBackgroundResource(R.drawable.close_eye_icon)
+        }
+        // Move cursor to the end of the text
+        editText.setSelection(editText.text.length)
     }
 
     private fun setupRegistrationViews() {
@@ -142,12 +171,31 @@ class LoginRegistrationActivity : AppCompatActivity() {
         val bgImage: ImageView = findViewById(R.id.bg_image)
         val nameInput: EditText = findViewById(R.id.reg_nameEditText)
         val emailInput: EditText = findViewById(R.id.reg_emailEditText)
+
+
+        //trigger view button for password visibility
         val passwordInput: EditText = findViewById(R.id.reg_passwordEditText)
+        val viewPasswordButton1: ImageButton = findViewById(R.id.viewSignupPassword1)
+        var isPasswordVisible = false
+
+        viewPasswordButton1.setOnClickListener {
+            isPasswordVisible = !isPasswordVisible
+            togglePasswordVisibility(passwordInput, viewPasswordButton1, isPasswordVisible)
+        }
+
         val confirmPasswordInput: EditText = findViewById(R.id.reg_confirmPassEditText)
+        val viewPasswordButton2: ImageButton = findViewById(R.id.viewSignupPassword2)
+        var isConfirmPasswordVisible = false
+
+        viewPasswordButton2.setOnClickListener {
+            isConfirmPasswordVisible = !isConfirmPasswordVisible
+            togglePasswordVisibility(confirmPasswordInput, viewPasswordButton2, isConfirmPasswordVisible)
+        }
+
 
         findViewById<RelativeLayout>(R.id.register_Btn).setOnClickListener {
             toggleViews(loginPage, registrationPage)
-            adjustBackgroundImageMargin(bgImage, -100f)
+            adjustBackgroundImageMargin(bgImage, 0f)
         }
 
         findViewById<Button>(R.id.reg_signupButton).setOnClickListener {
@@ -182,7 +230,7 @@ class LoginRegistrationActivity : AppCompatActivity() {
             }
         }
 
-        findViewById<Button>(R.id.reg_loginButton).setOnClickListener {
+        findViewById<RelativeLayout>(R.id.reg_loginButton).setOnClickListener {
             toggleViews(registrationPage, loginPage)
             adjustBackgroundImageMargin(bgImage, 0f)
         }
