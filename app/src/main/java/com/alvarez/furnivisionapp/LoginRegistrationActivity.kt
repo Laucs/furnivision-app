@@ -105,7 +105,7 @@ class LoginRegistrationActivity : AppCompatActivity() {
             .build()
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
-        findViewById<ImageView>(R.id.google_signin_button).setOnClickListener {
+        findViewById<LinearLayout>(R.id.google_signin_button).setOnClickListener {
             AuthUtility.signInWithGoogle(this, googleSignInClient, RC_SIGN_IN)
         }
         findViewById<LinearLayout>(R.id.google_login_button).setOnClickListener {
@@ -207,7 +207,7 @@ class LoginRegistrationActivity : AppCompatActivity() {
             }
         }
 
-        findViewById<Button>(R.id.reg_loginButton).setOnClickListener {
+        findViewById<RelativeLayout>(R.id.reg_loginButton).setOnClickListener {
             toggleViews(registrationPage, loginPage)
             adjustBackgroundImageMargin(bgImage, 0f)
         }
