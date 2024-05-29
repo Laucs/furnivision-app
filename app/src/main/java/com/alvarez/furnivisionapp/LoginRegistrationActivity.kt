@@ -119,7 +119,7 @@ class LoginRegistrationActivity : AppCompatActivity() {
         val emailEditText: EditText = findViewById(R.id.login_emailEditText)
         val loginBtn: Button = findViewById(R.id.login_loginButton)
 
-        //trigger view button for password visibility
+        // Trigger view button for password visibility
         val passwordEditText: EditText = findViewById(R.id.login_passwordEditText)
         val viewPasswordButton: ImageButton = findViewById(R.id.viewPasswordButton)
         var isPasswordVisible = false
@@ -133,6 +133,11 @@ class LoginRegistrationActivity : AppCompatActivity() {
             val email = emailEditText.text.toString()
             val password = passwordEditText.text.toString()
 
+            if (email.isEmpty() || password.isEmpty()) {
+                showToast("Please enter both email and password")
+                return@setOnClickListener
+            }
+
             showLoadingPopup(true)
             AuthUtility.signInWithEmail(this, email, password) { success ->
                 showLoadingPopup(false)
@@ -141,13 +146,12 @@ class LoginRegistrationActivity : AppCompatActivity() {
                     startMainActivity(Bundle().apply { putString("email", email) })
                     finishAffinity()
                 } else {
-                    emailEditText.error = "Invalid Email or Password!"
+
                     showToast("Sign in failed. Please check your credentials.")
                 }
             }
         }
     }
-
     private fun togglePasswordVisibility(editText: EditText, button: ImageButton, isVisible: Boolean) {
         if (isVisible) {
             // Show the password
