@@ -2,6 +2,7 @@ package com.alvarez.furnivisionapp
 
 import android.content.Context
 import android.content.Intent
+import android.text.method.PasswordTransformationMethod
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
@@ -124,8 +125,8 @@ class LoginRegistrationActivity : AppCompatActivity() {
         var isPasswordVisible = false
 
         viewPasswordButton.setOnClickListener {
-            togglePasswordVisibility(passwordEditText, viewPasswordButton, isPasswordVisible)
             isPasswordVisible = !isPasswordVisible
+            togglePasswordVisibility(passwordEditText, viewPasswordButton, isPasswordVisible)
         }
 
         loginBtn.setOnClickListener {
@@ -146,19 +147,21 @@ class LoginRegistrationActivity : AppCompatActivity() {
             }
         }
     }
+
     private fun togglePasswordVisibility(editText: EditText, button: ImageButton, isVisible: Boolean) {
         if (isVisible) {
-            // Hide the password
-            editText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-            button.setBackgroundResource(R.drawable.close_eye_icon)
-        } else {
             // Show the password
-            editText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            editText.transformationMethod = null
             button.setBackgroundResource(R.drawable.open_eye_icon)
+        } else {
+            // Hide the password
+            editText.transformationMethod = PasswordTransformationMethod.getInstance()
+            button.setBackgroundResource(R.drawable.close_eye_icon)
         }
         // Move cursor to the end of the text
         editText.setSelection(editText.text.length)
     }
+
     private fun setupRegistrationViews() {
         registrationPage = findViewById(R.id.reg_panel)
         val bgImage: ImageView = findViewById(R.id.bg_image)
