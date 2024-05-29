@@ -9,9 +9,9 @@ Navigation
   
 Dashboard
 - category 
-- clickable Shops ✔
+- clickable furnitures 
 - clickable heart icons
-- search functionality (least priority) ✔
+- search functionality (least priority) 
 
 Shop
 - Buy button for the viewing of furniture should go directly to orders page
@@ -32,8 +32,7 @@ Profile
 - Default functionality of payment method 
 - Connect payment method in the database/or use payment api instead 
 - default functionality of default address ✔
-- checkbox duplicates when adding new address
-- edit dialog should close after performing delete item
+- edit dialog should close after performing delete item ✔
 - to Pay page should accept the furniture that has been checked out
 - censor email phone in account  ✔
 - set minimum and maximum date for birthday ✔
