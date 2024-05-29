@@ -205,34 +205,6 @@
                 android:textSize="15sp"
                 android:padding="10dp"
                 android:background="@drawable/corder_radius_for_edit_text"/>
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginEnd="20dp">
-                <TextView
-                    android:id="@+id/defaultTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Make this default?"
-                    android:fontFamily="@font/montserrat"
-                    android:textStyle="bold"
-                    android:textColor="@color/primary_darker"
-                    android:textSize="15sp"
-                    android:layout_centerVertical="true"/>
-                <CheckBox
-                    android:id="@+id/editCheckBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="false"
-                    android:textColor="@color/primary_darker"
-                    android:textSize="15sp"
-                    android:layout_alignParentEnd="true"
-                    android:textStyle="bold" />
-            </RelativeLayout>
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>
