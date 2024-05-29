@@ -145,7 +145,7 @@ class LoginRegistrationActivity : AppCompatActivity() {
         val passwordInput: EditText = findViewById(R.id.reg_passwordEditText)
         val confirmPasswordInput: EditText = findViewById(R.id.reg_confirmPassEditText)
 
-        findViewById<Button>(R.id.register_Btn).setOnClickListener {
+        findViewById<RelativeLayout>(R.id.register_Btn).setOnClickListener {
             toggleViews(loginPage, registrationPage)
             adjustBackgroundImageMargin(bgImage, -100f)
         }

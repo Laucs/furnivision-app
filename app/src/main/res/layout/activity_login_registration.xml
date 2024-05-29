@@ -21,27 +21,28 @@
 
     </ImageView>
 
-
+    <!--Login Page -->
     <androidx.cardview.widget.CardView
         android:id="@+id/login_panel"
         android:layout_width="match_parent"
-        android:layout_height="430dp"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="40dp"
-        android:layout_marginTop="225dp"
         android:layout_marginRight="40dp"
+        android:layout_centerVertical="true"
         android:backgroundTint="@android:color/white"
         android:paddingLeft="25dp"
         android:paddingRight="25dp"
-        android:layout_centerInParent="true"
         app:cardCornerRadius="20dp"
         tools:context=".LoginActivity"
-        android:visibility="gone">
+        >
 
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="20dp"
+            >
 
             <TextView
                 android:layout_width="match_parent"
@@ -121,7 +122,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
-                android:layout_marginBottom="10dp"
                 app:cardCornerRadius="7dp">
 
                 <EditText
@@ -142,7 +142,27 @@
                     android:textColorHint="#545454"
                     android:textSize="14sp" />
             </androidx.cardview.widget.CardView>
-
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="10dp">
+                <CheckBox
+                    android:id="@+id/checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/primary_darker">
+                </CheckBox>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Keep me signed in"
+                    android:layout_toEndOf="@id/checkbox"
+                    android:layout_centerVertical="true"
+                    android:fontFamily="@font/montserrat"
+                    android:textSize="11sp">
+                </TextView>
+            </RelativeLayout>
             <Button
                 android:id="@+id/login_loginButton"
                 android:layout_width="match_parent"
@@ -150,7 +170,8 @@
                 android:layout_marginHorizontal="20dp"
                 android:background="@drawable/button_default_style"
                 android:backgroundTint="@color/primary_darker"
-                android:fontFamily="@font/spartan_extrabold"
+                android:fontFamily="@font/montserrat"
+                android:textStyle="bold"
                 android:gravity="center"
                 android:padding="10dp"
                 android:text="@string/login"
@@ -161,39 +182,50 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center">
-
-
-                <Button
-                    android:id="@+id/register_Btn"
+                android:gravity="center"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginVertical="20dp"
+                android:layout_marginTop="10dp">
+                <TextView
+                    android:id="@+id/line0"
+                    android:layout_toStartOf="@+id/login_or_textview"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="#d9d9d9"
+                    android:layout_centerVertical="true"/>
+                <TextView
+                    android:id="@+id/login_or_textview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="-20dp"
-                    android:background="@color/white"
-                    android:text="@string/create_an_account"
-                    android:textColor="@android:color/darker_gray" />
+                    android:layout_centerHorizontal="true"
+                    android:fontFamily="@font/montserrat_light"
+                    android:text="or log in with"
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="11sp"
+                    android:textAlignment="center"
+                    android:layout_gravity="center"
+                    />
+                <TextView
+                    android:id="@+id/line"
+                    android:layout_toEndOf="@+id/login_or_textview"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_marginStart="10dp"
+                    android:background="#d9d9d9"
+                    android:layout_centerVertical="true"/>
             </RelativeLayout>
-
-            <TextView
-                android:id="@+id/login_or_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/montserrat_light"
-                android:text="@string/or"
-                android:textColor="@android:color/darker_gray"
-                android:textSize="11sp"
-                android:textAllCaps="true"
-                android:textAlignment="center"
-                android:layout_gravity="center"
-                />
-
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:background="@drawable/button_radius_bg"
+                android:backgroundTint="#f2f2f2"
+                android:paddingVertical="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp">
 
                 <ImageView
                     android:id="@+id/google_login_button"
@@ -204,32 +236,59 @@
                     android:adjustViewBounds="true"
                     android:contentDescription="@string/google"
                     android:scaleType="fitCenter" />
-
-                <ImageView
-                    android:id="@+id/login_fbLogoView"
-                    android:src="@drawable/facebook_logo"
-                    android:layout_width="29dp"
-                    android:layout_height="29dp"
-                    android:layout_marginHorizontal="8dp"
-                    android:adjustViewBounds="true"
-                    android:contentDescription="@string/facebook"
-                    android:scaleType="centerInside"
-                    android:layout_gravity="center_vertical"/>
-
-                <ImageView
-                    android:id="@+id/login_phoneLogoView"
-                    android:src="@drawable/phone_circle"
-                    android:layout_width="26dp"
-                    android:layout_height="26dp"
-                    android:adjustViewBounds="true"
-                    android:contentDescription="@string/phone"
-                    android:scaleType="fitCenter"
-                    android:layout_gravity="center_vertical"/>
-
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Continue with"
+                    android:layout_marginStart="15dp"
+                    android:fontFamily="@font/montserrat"
+                    android:textSize="11sp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Google"
+                    android:textStyle="bold"
+                    android:layout_marginStart="3dp"
+                    android:fontFamily="@font/montserrat"
+                    android:textSize="11sp">
+                </TextView>
             </LinearLayout>
+            <RelativeLayout
+                android:id="@+id/register_Btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginTop="20dp">
+
+                <TextView
+                    android:id="@+id/donthaveAccountText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/spartan_medium"
+                    android:text="Don't have an account?"
+                    android:textSize="11sp"
+                    android:textColor="#545454"
+                    android:padding="1dp"
+                    android:background="@drawable/button_white_border"
+                    android:backgroundTint="@color/white"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:fontFamily="@font/spartan_medium"
+                    android:layout_toEndOf="@id/donthaveAccountText"
+                    android:text="Sign up"
+                    android:textStyle="bold"
+                    android:textSize="12sp"
+                    android:textColor="@color/primary_darker"
+                    android:padding="1dp"
+                    android:background="@drawable/button_white_border"
+                    android:backgroundTint="@color/white"/>
+            </RelativeLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
+    <!--Sign up page -->
     <androidx.cardview.widget.CardView
         android:id="@+id/reg_panel"
         android:layout_width="match_parent"
@@ -243,12 +302,14 @@
         android:paddingLeft="25dp"
         android:paddingRight="25dp"
         app:cardCornerRadius="20dp"
-        android:visibility="gone">
+        android:visibility="gone"
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            >
 
             <TextView
                 android:layout_width="match_parent"
@@ -285,6 +346,7 @@
                 android:fontFamily="@font/glacial_indifference_regular"
                 android:text="@string/create_an_account"
                 android:textAlignment="center"
+                android:layout_marginHorizontal="20dp"
                 android:textAllCaps="true"
                 android:textColor="#C8C8C8"
                 android:textSize="18sp"
@@ -304,6 +366,7 @@
                     android:layout_height="wrap_content"
                     android:background="#CFD6DD"
                     android:fontFamily="@font/montserrat"
+                    android:drawableEnd="@drawable/user_logo"
                     android:hint="@string/name"
                     android:importantForAutofill="no"
                     android:inputType="text"
@@ -509,6 +572,7 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
+    <!-- start page-->
     <androidx.cardview.widget.CardView
         android:id="@+id/start_page"
         android:layout_width="300dp"
@@ -517,7 +581,7 @@
         android:backgroundTint="#386057"
         android:layout_centerInParent="true"
         app:cardCornerRadius="20dp"
-        android:visibility="visible" >
+        android:visibility="gone" >
 
         <LinearLayout
             android:layout_width="300dp"
