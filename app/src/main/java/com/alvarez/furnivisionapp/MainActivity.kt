@@ -354,6 +354,7 @@ class MainActivity : AppCompatActivity() {
                 var nameTextView: TextView = findViewById(R.id.furnitureName)
                 var descTextView: TextView = findViewById(R.id.furnitureDesc)
                 var priceTextView: TextView = findViewById(R.id.furniturePrice)
+                val rateTextView: TextView = findViewById(R.id.rateTV)
                 var dimensionsTextView: TextView = findViewById(R.id.furnitureDimensions)
                 var stocksTextView: TextView = findViewById(R.id.furnitureStocks)
 
@@ -370,8 +371,9 @@ class MainActivity : AppCompatActivity() {
                     imageView.setImageBitmap(bitmap)
                 }
                 nameTextView.text = furnitures[index].name
+                rateTextView.text = furnitures[index].rating.toString()
                 descTextView.text = furnitures[index].description
-                priceTextView.text = "$ " + PRICE_FORMAT.format(furnitures[index].price)
+                priceTextView.text = "P " + PRICE_FORMAT.format(furnitures[index].price)
                 dimensionsTextView.text = furnitures[index].dimensions
                 stocksTextView.text = getString(R.string.stock) + " " + furnitures[index].stocks.toString()
 
@@ -392,9 +394,10 @@ class MainActivity : AppCompatActivity() {
 
                         val price = furnitures[index].price?.toDouble() ?: 0.0
                         nameTextView.text = furnitures[index].name
+                        rateTextView.text = furnitures[index].rating.toString()
                         descTextView.text = furnitures[index].description
-                        priceTextView.text = "$ " + PRICE_FORMAT.format(price)
-                        dimensionsTextView.text = getString(R.string.dimensions) + " " + furnitures[index].dimensions
+                        priceTextView.text = "P " + PRICE_FORMAT.format(price)
+                        dimensionsTextView.text =  furnitures[index].dimensions
                         stocksTextView.text = getString(R.string.stock) + " " + furnitures[index].stocks.toString()
                     }
                 }
@@ -414,9 +417,10 @@ class MainActivity : AppCompatActivity() {
 
                         val price = furnitures[index].price?.toDouble() ?: 0.0
                         nameTextView.text = furnitures[index].name
+                        rateTextView.text = furnitures[index].rating.toString()
                         descTextView.text = furnitures[index].description
-                        priceTextView.text = "$ " + PRICE_FORMAT.format(price)
-                        dimensionsTextView.text = getString(R.string.dimensions) + " " + furnitures[index].dimensions
+                        priceTextView.text = "P " + PRICE_FORMAT.format(price)
+                        dimensionsTextView.text = furnitures[index].dimensions
                         stocksTextView.text = getString(R.string.stock) + " " + furnitures[index].stocks.toString()
                     }
                 }
