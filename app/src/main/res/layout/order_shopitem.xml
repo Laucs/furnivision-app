@@ -43,7 +43,7 @@
         android:textColor="@color/black"
         android:textAllCaps="true"
         android:textStyle="bold"
-        android:textSize="14sp"
+        android:textSize="12sp"
         android:text="Lorem Ipsum"
         />
     <TextView
@@ -78,6 +78,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/order_furniture_desc"
         android:layout_alignParentEnd="true"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal"
         >
         <ImageButton

@@ -98,37 +98,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/header"
-        android:layout_marginTop="1dp"
+        android:layout_marginTop="20dp"
         >
 
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/ordersIcon"
-            android:layout_centerHorizontal="true"
-            android:layout_marginStart="40dp"
-            android:layout_marginTop="10dp"
-            android:fontFamily="@font/spartan_medium"
-            android:text="No Orders Yet"
-            android:textSize="20sp"
-            android:textStyle="bold" />
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/order_recycler_view"
             android:layout_marginTop="30dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             />
-        <ImageView
-            android:id="@+id/ordersIcon"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="250dp"
-            android:contentDescription="Back"
-            android:src="@drawable/no_orders_icon" />
-
-
     </RelativeLayout>
 
 </RelativeLayout>

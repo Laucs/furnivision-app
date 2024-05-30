@@ -59,7 +59,7 @@
                android:layout_width="match_parent"
                android:layout_height="match_parent"
                android:layout_below="@id/header"
-               android:paddingHorizontal="15dp"
+               android:paddingHorizontal="10dp"
                android:layout_marginBottom="150dp"
                android:background="#f4f4f4"
                />
@@ -98,7 +98,7 @@
                 android:layout_below="@id/total_textview"
                 android:layout_marginVertical="2dp"
                 android:fontFamily="@font/montserrat"
-                android:text="@string/dollar"
+                android:text="₱"
                 android:textColor="@color/primary"
                 android:textSize="17sp"
                 android:textStyle="bold" />
@@ -126,11 +126,12 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:paddingHorizontal="15dp"
+                android:textAllCaps="false"
                 android:background="@drawable/button_darker_style"
                 android:drawablePadding="5dp"
                 android:drawableRight="@drawable/arrow_right_icon"
-                android:fontFamily="@font/montserrat_semibold"
-                android:text="@string/check_out"
+                android:fontFamily="@font/montserrat"
+                android:text="Check out"
                 android:textColor="@color/white"
                 android:textSize="15sp"
                 />

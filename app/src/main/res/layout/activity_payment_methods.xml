@@ -78,26 +78,15 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="CASH PAYMENT"
-                android:textSize="20sp"
+                android:text="Cash Payment"
+                android:layout_centerVertical="true"
+                android:textSize="15sp"
                 android:textStyle="bold"
                 android:fontFamily="@font/montserrat"
                 android:textColor="#737373"
                 android:layout_toEndOf="@id/cashImage"
                 android:layout_marginStart="20dp"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Default Method"
-                android:textColor="#737373"
-                android:textSize="15sp"
-                android:layout_marginTop="20dp"
-                android:paddingTop="10dp"
-                android:fontFamily="@font/montserrat_light"
-                android:textStyle="bold"
-                android:layout_marginStart="20dp"
-                android:layout_toEndOf="@id/cashImage"/>
 
         </RelativeLayout>
 

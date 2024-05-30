@@ -56,32 +56,10 @@
                 android:textColor="@color/white"
                 android:textStyle="bold"
                 android:textAllCaps="true"
-                android:textSize="18sp"
+                android:textSize="15sp"
                 android:text="@string/sun_gold"
                 tools:ignore="InvalidId" />
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                app:cardBackgroundColor="@color/primary_darker"
-                app:contentPadding="2dp"
-                app:cardCornerRadius="25dp"
-                >
-                <androidx.cardview.widget.CardView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@color/primary_darker"
-                    app:cardCornerRadius="25dp"
-                    >
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:src="@drawable/message_icon"
-                        />
-                </androidx.cardview.widget.CardView>
-            </androidx.cardview.widget.CardView>
         </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"

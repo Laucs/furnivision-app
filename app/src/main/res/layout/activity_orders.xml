@@ -108,7 +108,7 @@
                             android:paddingVertical="2dp"
                             android:text="@string/shipping_address"
                             android:textColor="@color/white"
-                            android:textSize="15sp"
+                            android:textSize="12sp"
                             android:textStyle="bold" />
                         <ImageButton
                             android:id="@+id/show_shipping_add_button"
@@ -126,7 +126,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="5dp"
+                        android:paddingVertical="5dp"
                         android:background="@color/white"
                         android:orientation="vertical"
                         android:layout_below="@id/shipping_address_header">
@@ -134,14 +134,12 @@
                         <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/montserrat"
-                            android:layout_marginStart="20dp"
                             android:layout_marginEnd="20dp">
                             <TextView
                                 android:id="@+id/nameDeliveryTV"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginEnd="20dp"
+                                android:layout_marginStart="20dp"
                                 android:enabled="false"
                                 android:fontFamily="@font/montserrat"
                                 android:text="Name"
@@ -149,20 +147,6 @@
                                 android:textSize="12sp"
                                 android:textStyle="bold" />
 
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:gravity="end"
-                                android:layout_alignParentEnd="true">
-                                <TextView
-                                    android:id="@+id/PH63"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="(+63)"
-                                    android:textColor="@color/primary"
-                                    android:textSize="12sp"
-                                    android:fontFamily="@font/montserrat"/>
                                 <TextView
                                     android:id="@+id/phoneDeliveryTV"
                                     android:layout_width="match_parent"
@@ -171,52 +155,57 @@
                                     android:text="phone number"
                                     android:textColor="@color/primary"
                                     android:textSize="12sp"
-                                    android:layout_marginStart="5dp" />
-                            </LinearLayout>
+                                    android:gravity="end"/>
                         </RelativeLayout>
-
-
-                        <TextView
-                            android:id="@+id/regionTV"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="20dp"
-                            android:enabled="false"
-                            android:fontFamily="@font/montserrat"
-                            android:text="Region"
-                            android:textColor="@color/primary"
-                            android:textSize="12sp" />
-
-                        <TextView
-                            android:id="@+id/barangayTV"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="20dp"
-                            android:fontFamily="@font/montserrat"
-                            android:text="Barangay"
-                            android:textColor="@color/primary"
-                            android:textSize="12sp" />
-
-                        <TextView
-                            android:id="@+id/streetNameTV"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="20dp"
-                            android:enabled="false"
-                            android:fontFamily="@font/montserrat"
-                            android:text="Street"
-                            android:textColor="@color/primary"
-                            android:textSize="12sp" />
 
                         <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal">
+                            android:layout_marginEnd="20dp">
                             <TextView
-                                android:id="@+id/postalCodeTV"
+                                android:id="@+id/regionTV"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="20dp"
+                                android:enabled="false"
+                                android:fontFamily="@font/montserrat"
+                                android:text="Region"
+                                android:textColor="@color/primary"
+                                android:textSize="12sp" />
+
+                            <TextView
+                                android:id="@+id/barangayTV"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
+                                android:fontFamily="@font/montserrat"
+                                android:text="Barangay"
+                                android:textColor="@color/primary"
+                                android:textSize="12sp" />
+                        </RelativeLayout>
+
+
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginEnd="20dp">
+                            <TextView
+                                android:id="@+id/streetNameTV"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="20dp"
+                                android:enabled="false"
+                                android:fontFamily="@font/montserrat"
+                                android:text="Street"
+                                android:textColor="@color/primary"
+                                android:textSize="12sp" />
+                            <TextView
+                                android:id="@+id/postalCodeTV"
+                                android:layout_alignParentEnd="true"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
                                 android:enabled="false"
                                 android:fontFamily="@font/montserrat"
                                 android:text="Postal Code"
@@ -264,7 +253,7 @@
                         android:layout_marginVertical="10dp"
                         android:text="@string/shipping_method"
                         android:textColor="@color/white"
-                        android:textSize="15sp"
+                        android:textSize="12sp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -277,7 +266,7 @@
                         android:fontFamily="@font/montserrat"
                         android:text="@string/pick_up_option"
                         android:textColor="@color/primary_lighter2"
-                        android:textSize="12sp"
+                        android:textSize="11sp"
                         android:textStyle="bold"
                         tools:ignore="HardcodedText,RelativeOverlap,SmallSp" />
 
@@ -373,9 +362,9 @@
                             android:paddingStart="60dp"
                             android:paddingEnd="15dp"
                             android:layout_marginVertical="15dp"
-                            android:text="@string/payment_method"
+                            android:text="Payment Details"
                             android:textColor="@color/white"
-                            android:textSize="15sp"
+                            android:textSize="12sp"
                             android:textStyle="bold" />
                     </RelativeLayout>
 
@@ -395,8 +384,7 @@
                             android:fontFamily="@font/questrial"
                             android:text="@string/merchandise_subtotal"
                             android:textColor="@color/primary"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
+                            android:textSize="11sp" />
 
                         <TextView
                             android:id="@+id/merch_subtotal_value"
@@ -406,7 +394,7 @@
                             android:fontFamily="@font/questrial"
                             android:text="@string/sample_merch_subtotal_value"
                             android:textColor="@color/primary"
-                            android:textSize="14sp"
+                            android:textSize="11sp"
                             android:textStyle="bold"
                             tools:ignore="RelativeOverlap" />
 
@@ -419,8 +407,7 @@
                             android:fontFamily="@font/questrial"
                             android:text="@string/product_protection_subtotal"
                             android:textColor="@color/primary"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
+                            android:textSize="11sp" />
 
                         <TextView
                             android:id="@+id/prod_protect_subtotal_value"
@@ -431,7 +418,7 @@
                             android:fontFamily="@font/questrial"
                             android:text="@string/prod_protect_subtotal_value"
                             android:textColor="@color/primary"
-                            android:textSize="14sp"
+                            android:textSize="11sp"
                             android:textStyle="bold" />
 
                         <TextView
@@ -442,8 +429,7 @@
                             android:fontFamily="@font/questrial"
                             android:text="@string/shipping_subtotal"
                             android:textColor="@color/primary"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
+                            android:textSize="11sp" />
 
                         <TextView
                             android:id="@+id/ship_subtotal_value"
@@ -454,7 +440,7 @@
                             android:fontFamily="@font/questrial"
                             android:text="@string/sample_shipping_subtotal_value"
                             android:textColor="@color/primary"
-                            android:textSize="14sp"
+                            android:textSize="11sp"
                             android:textStyle="bold" />
 
                         <TextView
@@ -466,7 +452,7 @@
                             android:fontFamily="@font/questrial"
                             android:textColor="@color/primary"
                             android:textStyle="bold"
-                            android:textSize="17sp"
+                            android:textSize="12sp"
                             android:text="@string/total_payment"
                             />
 
@@ -479,7 +465,7 @@
                             android:fontFamily="@font/questrial"
                             android:textColor="@color/primary"
                             android:textStyle="bold"
-                            android:textSize="17sp"
+                            android:textSize="12sp"
                             android:text="@string/sample_total_payment_value"
                             />
 
@@ -516,7 +502,7 @@
                     android:layout_alignParentEnd="true"
                     android:fontFamily="@font/questrial"
                     android:textColor="@color/primary"
-                    android:textStyle="bold"
+
                     android:textSize="15sp"
                     android:text="@string/total_payment"
                     />
@@ -545,7 +531,7 @@
                 android:background="@color/primary_darker"
                 android:fontFamily="@font/assistant_bold"
                 android:textColor="@color/white"
-                android:textAllCaps="true"
+                android:textAllCaps="false"
                 android:text="@string/place_order"
                 />
         </RelativeLayout>
