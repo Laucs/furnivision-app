@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/primary">
+
+    <RelativeLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageButton
+            android:id="@+id/backButton"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerVertical="true"
+            android:layout_marginVertical="20dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="15dp"
+            android:background="@drawable/exit_icon_white"
+            android:contentDescription="Back" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/header"
+        android:layout_marginTop="20dp">
+       <LinearLayout
+           android:id="@+id/title"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:gravity="center">
+           <ImageButton
+               android:id="@+id/exclamationIcon"
+               android:layout_width="30dp"
+               android:layout_height="30dp"
+               android:layout_toStartOf="@id/title"
+
+               android:layout_marginEnd="15dp"
+               android:background="@drawable/exlamation_icon"
+               android:contentDescription="Back" />
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:fontFamily="@font/montserrat"
+               android:text="Pending Payment"
+               android:textColor="@color/white"
+               android:textSize="20sp" />
+       </LinearLayout>
+        <TextView
+            android:id="@+id/paragraph"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/title"
+            android:fontFamily="@font/montserrat"
+            android:text="Go to My Purchases for more info."
+            android:textColor="@color/white"
+            android:layout_marginTop="20dp"
+            android:textSize="12sp" />
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:orientation="horizontal"
+           android:layout_below="@id/paragraph"
+           android:gravity="center"
+
+           android:layout_marginTop="40dp"
+           android:paddingHorizontal="15dp">
+           <Button
+               android:id="@+id/homeButton"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_weight="1"
+               android:background="@drawable/white_border_with_green_bg"
+               android:fontFamily="@font/montserrat"
+               android:padding="10dp"
+               android:text="Home"
+               android:textAllCaps="false"
+               android:textColor="@color/white"
+               android:textSize="16sp" />
+           <Button
+               android:id="@+id/myPurchasesButton"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_marginStart="20dp"
+               android:layout_weight="1"
+               android:background="@drawable/white_border_with_green_bg"
+               android:fontFamily="@font/montserrat"
+               android:padding="10dp"
+               android:text="My Purchases"
+               android:textAllCaps="false"
+               android:textColor="@color/white"
+               android:textSize="16sp" />
+       </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/content"
+        android:layout_marginTop="55dp"
+        android:paddingVertical="5dp">
+
+        <ImageView
+            android:id="@+id/bg_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/furniture"
+            android:scaleType="fitXY"
+            android:src="@drawable/ads_img" />
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -90,7 +90,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:paddingTop="20dp"
+            android:paddingHorizontal="20dp"
+            android:paddingBottom="5dp">
 
             <ScrollView
                 android:layout_width="match_parent"
@@ -150,7 +152,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
-                            android:fontFamily="@font/glacial_indifference_regular"
+                            android:fontFamily="@font/montserrat"
                             android:textSize="13sp"
                             android:text="Dimensions"
                             />
@@ -165,7 +167,7 @@
                           android:id="@+id/furnitureStocks"
                           android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
-                          android:fontFamily="@font/glacial_indifference_regular"
+                          android:fontFamily="@font/montserrat"
                           android:textSize="13sp"
                           android:text="@string/stock"/>
 
@@ -175,7 +177,7 @@
                           android:layout_height="wrap_content"
                           android:layout_toStartOf="@id/colors"
                           android:layout_marginEnd="10dp"
-                          android:fontFamily="@font/glacial_indifference_regular"
+                          android:fontFamily="@font/montserrat"
                           android:textSize="13sp"
                           android:text="Colors" />
                       <RelativeLayout
@@ -211,7 +213,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/stocksNcolors"
                         android:layout_marginTop="15dp"
-                        android:fontFamily="@font/glacial_indifference_regular"
+                        android:fontFamily="@font/montserrat"
                         android:textSize="14sp"
                         android:textStyle="bold"
                         android:text="Description"/>

@@ -384,8 +384,7 @@
                             android:fontFamily="@font/questrial"
                             android:text="@string/merchandise_subtotal"
                             android:textColor="@color/primary"
-                            android:textSize="11sp"
-                            android:textStyle="bold" />
+                            android:textSize="11sp" />
 
                         <TextView
                             android:id="@+id/merch_subtotal_value"
@@ -408,8 +407,7 @@
                             android:fontFamily="@font/questrial"
                             android:text="@string/product_protection_subtotal"
                             android:textColor="@color/primary"
-                            android:textSize="11sp"
-                            android:textStyle="bold" />
+                            android:textSize="11sp" />
 
                         <TextView
                             android:id="@+id/prod_protect_subtotal_value"
@@ -431,8 +429,7 @@
                             android:fontFamily="@font/questrial"
                             android:text="@string/shipping_subtotal"
                             android:textColor="@color/primary"
-                            android:textSize="11sp"
-                            android:textStyle="bold" />
+                            android:textSize="11sp" />
 
                         <TextView
                             android:id="@+id/ship_subtotal_value"
@@ -505,7 +502,7 @@
                     android:layout_alignParentEnd="true"
                     android:fontFamily="@font/questrial"
                     android:textColor="@color/primary"
-                    android:textStyle="bold"
+
                     android:textSize="15sp"
                     android:text="@string/total_payment"
                     />
@@ -534,7 +531,7 @@
                 android:background="@color/primary_darker"
                 android:fontFamily="@font/assistant_bold"
                 android:textColor="@color/white"
-                android:textAllCaps="true"
+                android:textAllCaps="false"
                 android:text="@string/place_order"
                 />
         </RelativeLayout>

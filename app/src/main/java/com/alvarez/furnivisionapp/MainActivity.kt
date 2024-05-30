@@ -361,6 +361,8 @@ class MainActivity : AppCompatActivity() {
                 val dimensionsTextView: TextView = findViewById(R.id.furnitureDimensions)
                 val stocksTextView: TextView = findViewById(R.id.furnitureStocks)
 
+
+
                 //for colors
                 val color1TextView: TextView = findViewById(R.id.color1)
                 val color2TextView: TextView = findViewById(R.id.color2)
@@ -393,7 +395,7 @@ class MainActivity : AppCompatActivity() {
                     nameTextView.text = furnitures[index].name
                     rateTextView.text = furnitures[index].rating.toString()
                     descTextView.text = furnitures[index].description
-                    priceTextView.text = "P " + PRICE_FORMAT.format(furnitures[index].price)
+                    priceTextView.text = "₱ " + PRICE_FORMAT.format(furnitures[index].price)
                     dimensionsTextView.text = furnitures[index].dimensions
                     stocksTextView.text = getString(R.string.stock) + " " + furnitures[index].stocks.toString()
 
@@ -406,6 +408,23 @@ class MainActivity : AppCompatActivity() {
 
                     prevBtn.visibility = if (index == 0) View.GONE else View.VISIBLE
                     nextBtn.visibility = if (index == furnitures.size - 1) View.GONE else View.VISIBLE
+
+                    val addBtn: ImageButton = findViewById(R.id.addBtn)
+                    // Retrieve the image URL of the furniture the user is currently viewing
+                    val currentFurnitureImageURL = furnitures[index].img
+
+
+                    //for add button to direct int he camerapage
+                    // Set click listener for the add button
+
+                    addBtn.setOnClickListener {
+                        // Navigate to the camera page and pass the image URL of the current furniture
+                        val inflatedPage: RelativeLayout = layoutInflater.inflate(R.layout.activity_camera, null) as RelativeLayout
+                        pageContainer.removeAllViews()
+                        pageContainer.addView(inflatedPage)
+                        initCameraPage()
+                        Toast.makeText(this@MainActivity, "Trying Furniture In AR Camera....", Toast.LENGTH_SHORT).show()
+                    }
                 }
 
                 updateUI()
@@ -446,6 +465,8 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this, "Furniture is added to Cart", Toast.LENGTH_SHORT).show()
                 }
             }
+
+
 
         val backBtn: ImageButton = findViewById(R.id.backBtn)
 
@@ -497,6 +518,7 @@ class MainActivity : AppCompatActivity() {
         val galleryNextBtn: Button = findViewById(R.id.nextButton)
         val textureView: TextureView = findViewById(R.id.textureView)
         val cameraManager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
+
 
         cameraFunctions = CameraFunctions(
             cameraLayout,
@@ -593,8 +615,8 @@ class MainActivity : AppCompatActivity() {
         val placeOrderButton: Button = findViewById(R.id.place_order_button)
         placeOrderButton.setOnClickListener {
 
+            // Retrieve furniture IDs from the cart
             val furnitureIds = mutableListOf<String>()
-            val today = Date()
             cartList?.forEach { shopCart ->
                 shopCart.items.forEach { cartItem ->
                     repeat(cartItem.quantity) {
@@ -603,41 +625,84 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            var order = hashMapOf (
-                "timestamp" to today,
-                "furnitures" to furnitureIds
-            )
+            // Get current timestamp
+            val today = Date()
 
+            // Get the user's email
             val email = SessionManager.getUserEmail(this)
+
+            // Query the database to get the user document based on email
             database.collection("users")
                 .whereEqualTo("email", email)
                 .get()
                 .addOnSuccessListener { result: QuerySnapshot ->
-                    val document = result.documents.first()
-                    val userId = document.id
-                    order["userID"] = userId
+                    val document = result.documents.firstOrNull()
+                    if (document != null) {
+                        val userId = document.id
+
+                        // Create a hashmap to store order details including user ID
+                        val order = hashMapOf(
+                            "timestamp" to today,
+                            "furnitures" to furnitureIds,
+                            "userID" to userId
+                        )
+
+                        // Add the order to the "orders" collection along with the user ID
+                        database.collection("orders")
+                            .add(order)
+                            .addOnSuccessListener {
+                                Toast.makeText(this, "Order is successful", Toast.LENGTH_SHORT).show()
+                            }
+                            .addOnFailureListener{
+                                Toast.makeText(this, "Order isn't successful", Toast.LENGTH_SHORT).show()
+                            }
+
+                        // Clear the cart after placing the order
+                        cartList = mutableListOf()
+
+                        // Navigate to the dashboard or any other desired page after placing the order
+                        pageContainer.removeAllViews()
+                        val inflatedPage = layoutInflater.inflate(R.layout.activity_after_checkout_page, null) as RelativeLayout
+                        pageContainer.addView(inflatedPage)
+                        initAfterCheckOutPage()
+                    } else {
+                        // Handle case where user document is not found
+                        Log.e(TAG, "User document not found for email: $email")
+                        Toast.makeText(this, "User not found. Please try again.", Toast.LENGTH_SHORT).show()
+                    }
                 }
                 .addOnFailureListener { e: Exception ->
-                    Log.w(TAG, "Error getting phone number", e)
+                    Log.w(TAG, "Error getting user document", e)
+                    Toast.makeText(this, "Failed to place order. Please try again.", Toast.LENGTH_SHORT).show()
                 }
-
-            database.collection("orders")
-                .add(order)
-                .addOnSuccessListener {
-                    Toast.makeText(this, "Order is successful", Toast.LENGTH_SHORT).show()
-                }
-                .addOnFailureListener{
-                    Toast.makeText(this, "Order isn't successful", Toast.LENGTH_SHORT).show()
-                }
-            cartList = mutableListOf()
-
-            activePage = R.layout.activity_dashboard
-            pageContainer.removeAllViews()
-            val inflatedPage = layoutInflater.inflate(R.layout.activity_dashboard, null) as RelativeLayout
-            pageContainer.addView(inflatedPage)
-            initHomePage(inflatedPage, pageContainer)
         }
 
+    }
+
+    fun initAfterCheckOutPage(){
+
+        val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
+        val homeButton: Button = findViewById(R.id.homeButton)
+        homeButton.setOnClickListener {
+
+            val inflatedPage: RelativeLayout = layoutInflater.inflate(R.layout.activity_dashboard, null) as RelativeLayout
+            activePage = R.layout.activity_dashboard
+            pageContainer.removeAllViews()
+            pageContainer.addView(inflatedPage)
+            initHomePage(inflatedPage, pageContainer)
+
+        }
+
+        val myPurchasesButton: Button = findViewById(R.id.myPurchasesButton)
+        myPurchasesButton.setOnClickListener {
+
+            val inflatedPage: RelativeLayout = layoutInflater.inflate(R.layout.activity_to_pay, null) as RelativeLayout
+            activePage = R.layout.activity_to_pay
+            pageContainer.removeAllViews()
+            pageContainer.addView(inflatedPage)
+            initHomePage(inflatedPage, pageContainer)
+            initToPayPage()
+        }
     }
     fun fetchAndDisplayDeliveryAddress() {
         val firestore = FirebaseFirestore.getInstance()
