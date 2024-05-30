@@ -90,9 +90,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:paddingTop="20dp"
+            android:paddingTop="15dp"
             android:paddingHorizontal="20dp"
-            android:paddingBottom="10dp">
+            android:paddingBottom="20dp">
 
             <ScrollView
                 android:layout_width="match_parent"
@@ -110,7 +110,7 @@
                         android:id="@+id/furnitureName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/montserrat_semibold"
+                        android:fontFamily="@font/spartan_extrabold"
                         android:textColor="@color/blue"
                         android:textStyle="bold"
                         android:textSize="20sp"

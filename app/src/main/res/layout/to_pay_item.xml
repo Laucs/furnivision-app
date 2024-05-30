@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/order_furniture_section"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/order_header"
+    android:layout_marginTop="10dp"
+    android:paddingVertical="20dp">
+    <androidx.cardview.widget.CardView
+        android:id="@+id/order_furniture_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="15dp"
+        app:contentPadding="2dp"
+        app:cardBackgroundColor="@color/primary_darker"
+        app:cardCornerRadius="12dp"
+        >
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="11dp"
+            >
+            <ImageView
+                android:id="@+id/order_furniture_img"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:scaleType="fitXY"
+                />
+
+        </androidx.cardview.widget.CardView>
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/order_furniture_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_toEndOf="@id/order_furniture_logo"
+        android:fontFamily="@font/spartan_extrabold"
+        android:textColor="@color/black"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        android:textSize="12sp"
+        android:text="Lorem Ipsum"
+        />
+    <TextView
+        android:id="@+id/order_furniture_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_below="@id/order_furniture_title"
+        android:layout_toEndOf="@id/order_furniture_logo"
+        android:fontFamily="@font/montserrat_light"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        android:text="@string/sample_text_8_words"
+        />
+
+    <TextView
+        android:id="@+id/order_furniture_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/order_furniture_desc"
+        android:layout_alignParentEnd="true"
+        android:fontFamily="@font/spartan_medium"
+        android:textColor="@color/black"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        android:text="sdasdas"
+        android:textSize="12sp"
+        />
+
+
+
+
+</RelativeLayout>
