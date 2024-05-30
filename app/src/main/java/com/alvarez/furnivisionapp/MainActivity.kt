@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.hardware.camera2.CameraManager
 import android.icu.text.DecimalFormat
 import android.media.Image
@@ -360,6 +361,10 @@ class MainActivity : AppCompatActivity() {
                 val dimensionsTextView: TextView = findViewById(R.id.furnitureDimensions)
                 val stocksTextView: TextView = findViewById(R.id.furnitureStocks)
 
+                //for colors
+                val color1TextView: TextView = findViewById(R.id.color1)
+                val color2TextView: TextView = findViewById(R.id.color2)
+
                 fun updateUI() {
                     val storageReference = furnitures[index].img.let { it?.let { it1 ->
                         Firebase.storage.getReferenceFromUrl(
@@ -391,6 +396,13 @@ class MainActivity : AppCompatActivity() {
                     priceTextView.text = "P " + PRICE_FORMAT.format(furnitures[index].price)
                     dimensionsTextView.text = furnitures[index].dimensions
                     stocksTextView.text = getString(R.string.stock) + " " + furnitures[index].stocks.toString()
+
+                    // Set the colors
+                    val colors = furnitures[index].colors
+                    if (colors != null && colors.size >= 2) {
+                        color1TextView.setBackgroundColor(Color.parseColor(colors[0]))
+                        color2TextView.setBackgroundColor(Color.parseColor(colors[1]))
+                    }
 
                     prevBtn.visibility = if (index == 0) View.GONE else View.VISIBLE
                     nextBtn.visibility = if (index == furnitures.size - 1) View.GONE else View.VISIBLE
