@@ -347,7 +347,6 @@ class MainActivity : AppCompatActivity() {
                 Log.d("Open Cart", cartList.toString())
 
                 var addToCartBtn: Button = findViewById(R.id.addToCartButton)
-                var buyButton: Button = findViewById(R.id.addButton)
                 var nextBtn: ImageButton = findViewById(R.id.nextBtn)
                 var prevBtn: ImageButton = findViewById(R.id.previousBtn)
 
@@ -422,28 +421,6 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
 
-                // if buy button is clicked
-                buyButton.setOnClickListener {
-//                    val shopID = furnitures[index].shopID
-//                    if (shopID != null) {
-//                        database.collection("shops").document(shopID).get()
-//                            .addOnSuccessListener { result: DocumentSnapshot? ->
-//                                if (result != null && result.exists()) {
-//                                    val shop = result.toObject(Shop::class.java)
-//                                    if (shop != null) {
-//                                        shop.id = result.id
-//                                        addItemToCart(shop, furnitures[index])
-//                                    }
-//                                }
-//                            }
-//                            .addOnFailureListener { exception ->
-//                                // Handle the failure
-//                                Log.e("ERRO", "Error getting document", exception)
-//                            }
-//                    }
-//
-//                    Toast.makeText(this, "Furniture is added to Cart", Toast.LENGTH_SHORT).show()
-                }
                 addToCartBtn.setOnClickListener {
                     val shopID = furnitures[index].shopID
                     if (shopID != null) {

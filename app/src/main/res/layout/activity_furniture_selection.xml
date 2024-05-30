@@ -32,20 +32,6 @@
             android:scaleType="fitXY"
             android:src="@drawable/white_back_button"
             android:contentDescription="@string/back_button"/>
-
-        <ImageButton
-            android:id="@+id/addBtn"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentEnd="true"
-            android:padding="0dp"
-            android:layout_marginHorizontal="15dp"
-            android:layout_marginVertical="20dp"
-            android:backgroundTint="#00FFFFFF"
-            android:scaleType="fitXY"
-            android:src="@drawable/add_btn"
-            android:contentDescription="@string/add_button"/>
-
     </RelativeLayout>
 
 
@@ -71,7 +57,7 @@
             android:scaleType="fitXY"/>
 
         <androidx.cardview.widget.CardView
-            android:layout_width="250dp"
+            android:layout_width="match_parent"
             android:layout_height="250dp"
             android:layout_toEndOf="@+id/previousBtn"
             android:layout_toStartOf="@+id/nextBtn"
@@ -83,10 +69,14 @@
             <ImageView
                 android:id="@+id/furnitureImage"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
                 android:contentDescription="@string/furniture_selected"
-                android:elevation="3dp"
-                android:scaleType="fitXY" />
+                android:layout_marginTop="0dp"
+                android:scaleType="fitCenter"
+                android:scaleX="-1"
+                android:src="@drawable/chair2"
+                android:padding="0dp"/>
         </androidx.cardview.widget.CardView>
 
         <ImageButton
@@ -108,10 +98,9 @@
         android:id="@+id/furnitureDetails"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginVertical="15dp"
-        android:layout_marginHorizontal="30dp"
+
         android:layout_below="@id/furniture_img_viewer"
-        app:cardCornerRadius="10dp">
+        app:cardCornerRadius="1dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -137,37 +126,50 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/spartan_extrabold"
                         android:textColor="@color/blue"
-                        android:textSize="18dp"
+                        android:textSize="18sp"
                         android:text="Chair"/>
-
-                    <TextView
-                        android:id="@+id/furnitureDesc"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/furnitureName"
-                        android:layout_marginTop="5dp"
-                        android:fontFamily="@font/glacial_indifference_regular"
-                        android:textSize="15sp"
-                        android:text="Description"/>
 
                     <TextView
                         android:id="@+id/furniturePrice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/furnitureDesc"
-                        android:layout_marginVertical="10dp"
+                        android:layout_below="@id/furnitureName"
+                        android:layout_marginTop="10dp"
                         android:fontFamily="@font/spartan_extrabold"
                         android:textStyle="bold"
                         android:textSize="17sp"
                         android:text="P 10,000"/>
 
+                    <LinearLayout
+                        android:id="@+id/rate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/furniturePrice"
+                        android:paddingVertical="10dp">
+                        <ImageButton
+                            android:id="@+id/rateImage"
+                            android:layout_width="11dp"
+                            android:layout_height="11dp"
+                            android:gravity="center"
+                            android:background="@drawable/rate_icon"/>
+                        <TextView
+                            android:id="@+id/rateTV"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/glacial_indifference_regular"
+                            android:textSize="10sp"
+                            android:gravity="center"
+                            android:layout_marginStart="5dp"
+                            android:text="4.8"/>
+                    </LinearLayout>
+
                     <TextView
                         android:id="@+id/furnitureDimensions"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/furniturePrice"
+                        android:layout_below="@id/rate"
                         android:fontFamily="@font/glacial_indifference_regular"
-                        android:textSize="15sp"
+                        android:textSize="12sp"
                         android:text="@string/dimensions"/>
 
                     <TextView
@@ -176,7 +178,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/furnitureDimensions"
                         android:fontFamily="@font/glacial_indifference_regular"
-                        android:textSize="15sp"
+                        android:textSize="12sp"
                         android:text="@string/stock"/>
 
                     <TextView
@@ -185,8 +187,18 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/furnitureStocks"
                         android:fontFamily="@font/glacial_indifference_regular"
-                        android:textSize="15sp"
+                        android:textSize="12sp"
                         android:text="@string/colors" />
+
+                    <TextView
+                        android:id="@+id/furnitureDesc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/furniAvailColors"
+                        android:layout_marginTop="5dp"
+                        android:fontFamily="@font/glacial_indifference_regular"
+                        android:textSize="12sp"
+                        android:text="Description"/>
 
                 </RelativeLayout>
 
@@ -199,29 +211,32 @@
                 android:orientation="horizontal"
                 android:layout_alignParentBottom="true"
                 android:background="@color/transparent"
-                android:gravity="center"
+                android:gravity="end"
                 >
-
-                <Button
-                    android:id="@+id/addButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
-                    android:text="BUY"
-                    android:textStyle="bold"
-                    android:textColor="@color/white"
-                    android:background="@drawable/button_default_style"/>
-
+                <ImageButton
+                    android:id="@+id/addBtn"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:padding="0dp"
+                    android:backgroundTint="#00FFFFFF"
+                    android:scaleType="fitXY"
+                    android:layout_gravity="center"
+                    android:src="@drawable/add_with_bg"
+                    android:contentDescription="@string/add_button"/>
                 <Button
                     android:id="@+id/addToCartButton"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingHorizontal="20dp"
-                    android:layout_marginStart="5dp"
-                    android:text="@string/add_to_cart"
-                    android:textStyle="bold"
-                    android:textColor="@color/primary_darker"
-                    android:background="@drawable/btn_hollow"/>
+                    android:layout_marginStart="20dp"
+                    android:background="@drawable/button_default_style"
+                    android:backgroundTint="@color/primary_darker"
+                    android:fontFamily="@font/montserrat"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:text="Add to cart"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
 
             </LinearLayout>
 
