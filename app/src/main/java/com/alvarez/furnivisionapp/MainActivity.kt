@@ -700,7 +700,6 @@ class MainActivity : AppCompatActivity() {
             activePage = R.layout.activity_to_pay
             pageContainer.removeAllViews()
             pageContainer.addView(inflatedPage)
-            initHomePage(inflatedPage, pageContainer)
             initToPayPage()
         }
     }

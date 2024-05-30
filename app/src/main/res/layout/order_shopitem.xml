@@ -38,7 +38,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:layout_toEndOf="@id/order_furniture_logo"
-        android:layout_toStartOf="@id/order_furniture_price"
         android:fontFamily="@font/spartan_extrabold"
         android:textColor="@color/black"
         android:textAllCaps="true"
@@ -47,11 +46,25 @@
         android:text="Lorem Ipsum"
         />
     <TextView
+        android:id="@+id/order_furniture_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_toEndOf="@id/order_furniture_logo"
+        android:layout_below="@id/order_furniture_title"
+        android:fontFamily="@font/spartan_medium"
+        android:textColor="@color/black"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        android:text="sdasdas"
+        android:textSize="12sp"
+        />
+    <TextView
         android:id="@+id/order_furniture_desc"
         android:layout_width="170dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:layout_below="@id/order_furniture_title"
+        android:layout_below="@id/order_furniture_price"
         android:layout_toEndOf="@id/order_furniture_logo"
         android:fontFamily="@font/montserrat_light"
         android:textColor="@color/black"
@@ -60,18 +73,6 @@
         />
 
 
-    <TextView
-        android:id="@+id/order_furniture_price"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:layout_alignParentEnd="true"
-        android:fontFamily="@font/spartan_extrabold"
-        android:textColor="@color/black"
-        android:textAllCaps="true"
-        android:textStyle="bold"
-        android:textSize="12sp"
-        />
 
     <LinearLayout
         android:layout_width="wrap_content"
