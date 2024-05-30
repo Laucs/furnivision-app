@@ -177,7 +177,7 @@
                           android:layout_marginEnd="10dp"
                           android:fontFamily="@font/glacial_indifference_regular"
                           android:textSize="13sp"
-                          android:text="@string/colors" />
+                          android:text="Colors" />
                       <RelativeLayout
                           android:id="@+id/colors"
                           android:layout_width="wrap_content"

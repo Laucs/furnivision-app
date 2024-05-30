@@ -664,7 +664,7 @@ class MainActivity : AppCompatActivity() {
 
                             val name = deliveryAddressData["name"] as? String
                             val phone = deliveryAddressData["phone"] as? String
-                            val region = deliveryAddressData["region"] as? String
+                            val region = "(+63)" + " " + deliveryAddressData["region"] as? String
                             val barangay = deliveryAddressData["barangay"] as? String
                             val streetName = deliveryAddressData["streetName"] as? String
                             val postalCode = deliveryAddressData["postalCode"] as? String
