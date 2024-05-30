@@ -42,13 +42,13 @@
     <RelativeLayout
         android:id="@+id/furniture_img_viewer"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="280dp"
         android:layout_below="@id/header_selection"
         >
             <ImageView
                 android:id="@+id/furnitureImage"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
+                android:layout_height="280dp"
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/furniture_selected"
                 android:scaleType="fitXY"
@@ -90,9 +90,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:paddingTop="20dp"
+            android:paddingTop="15dp"
             android:paddingHorizontal="20dp"
-            android:paddingBottom="5dp">
+            android:paddingBottom="20dp">
 
             <ScrollView
                 android:layout_width="match_parent"
@@ -112,19 +112,20 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/spartan_extrabold"
                         android:textColor="@color/blue"
-                        android:textSize="18sp"
-                        android:text="Chair"/>
+                        android:textStyle="bold"
+                        android:textSize="20sp"
+                        android:text=""/>
 
                     <TextView
                         android:id="@+id/furniturePrice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/furnitureName"
-                        android:layout_marginTop="10dp"
-                        android:fontFamily="@font/spartan_extrabold"
+                        android:layout_marginTop="5dp"
+                        android:fontFamily="@font/montserrat_semibold"
                         android:textStyle="bold"
                         android:textSize="17sp"
-                        android:text="P 10,000"/>
+                        android:text=""/>
 
                     <RelativeLayout
                         android:id="@+id/rate"
@@ -134,8 +135,8 @@
                         android:paddingVertical="10dp">
                         <ImageButton
                             android:id="@+id/rateImage"
-                            android:layout_width="13dp"
-                            android:layout_height="13dp"
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
                             android:gravity="center"
                             android:background="@drawable/rate_icon"/>
                         <TextView
@@ -143,10 +144,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/glacial_indifference_regular"
-                            android:textSize="13sp"
+                            android:textSize="14sp"
                             android:layout_toEndOf="@id/rateImage"
                             android:layout_marginStart="5dp"
-                            android:text="4.8"/>
+                            android:text="Rate"/>
                         <TextView
                             android:id="@+id/furnitureDimensions"
                             android:layout_width="wrap_content"
@@ -162,7 +163,8 @@
                       android:id="@+id/stocksNcolors"
                       android:layout_width="match_parent"
                       android:layout_below="@id/rate"
-                      android:layout_height="wrap_content">
+                      android:layout_height="wrap_content"
+                      android:layout_marginTop="5dp">
                       <TextView
                           android:id="@+id/furnitureStocks"
                           android:layout_width="wrap_content"
@@ -212,7 +214,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/stocksNcolors"
-                        android:layout_marginTop="15dp"
+                        android:layout_marginTop="20dp"
                         android:fontFamily="@font/montserrat"
                         android:textSize="14sp"
                         android:textStyle="bold"
@@ -222,7 +224,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/descTitle"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="8dp"
                         android:fontFamily="@font/glacial_indifference_regular"
                         android:textSize="13sp"
                         android:text="Description"/>
