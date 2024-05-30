@@ -140,7 +140,7 @@
                         android:textSize="17sp"
                         android:text="P 10,000"/>
 
-                    <LinearLayout
+                    <RelativeLayout
                         android:id="@+id/rate"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -148,8 +148,8 @@
                         android:paddingVertical="10dp">
                         <ImageButton
                             android:id="@+id/rateImage"
-                            android:layout_width="11dp"
-                            android:layout_height="11dp"
+                            android:layout_width="13dp"
+                            android:layout_height="13dp"
                             android:gravity="center"
                             android:background="@drawable/rate_icon"/>
                         <TextView
@@ -157,47 +157,62 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/glacial_indifference_regular"
-                            android:textSize="10sp"
-                            android:gravity="center"
+                            android:textSize="13sp"
+                            android:layout_toEndOf="@id/rateImage"
                             android:layout_marginStart="5dp"
                             android:text="4.8"/>
-                    </LinearLayout>
+                        <TextView
+                            android:id="@+id/furnitureDimensions"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:fontFamily="@font/glacial_indifference_regular"
+                            android:textSize="13sp"
+                            android:text="Dimensions"
+                            />
+                    </RelativeLayout>
+
+                  <RelativeLayout
+                      android:id="@+id/stocksNcolors"
+                      android:layout_width="match_parent"
+                      android:layout_below="@id/rate"
+                      android:layout_height="wrap_content">
+                      <TextView
+                          android:id="@+id/furnitureStocks"
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:fontFamily="@font/glacial_indifference_regular"
+                          android:textSize="13sp"
+                          android:text="@string/stock"/>
+
+                      <TextView
+                          android:id="@+id/furniAvailColors"
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:layout_alignParentEnd="true"
+                          android:fontFamily="@font/glacial_indifference_regular"
+                          android:textSize="13sp"
+                          android:text="@string/colors" />
+                  </RelativeLayout>
 
                     <TextView
-                        android:id="@+id/furnitureDimensions"
+                        android:id="@+id/descTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/rate"
+                        android:layout_below="@id/stocksNcolors"
+                        android:layout_marginTop="15dp"
                         android:fontFamily="@font/glacial_indifference_regular"
-                        android:textSize="12sp"
-                        android:text="@string/dimensions"/>
-
-                    <TextView
-                        android:id="@+id/furnitureStocks"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/furnitureDimensions"
-                        android:fontFamily="@font/glacial_indifference_regular"
-                        android:textSize="12sp"
-                        android:text="@string/stock"/>
-
-                    <TextView
-                        android:id="@+id/furniAvailColors"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/furnitureStocks"
-                        android:fontFamily="@font/glacial_indifference_regular"
-                        android:textSize="12sp"
-                        android:text="@string/colors" />
-
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:text="Description"/>
                     <TextView
                         android:id="@+id/furnitureDesc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/furniAvailColors"
-                        android:layout_marginTop="5dp"
+                        android:layout_below="@id/descTitle"
+                        android:layout_marginTop="10dp"
                         android:fontFamily="@font/glacial_indifference_regular"
-                        android:textSize="12sp"
+                        android:textSize="13sp"
                         android:text="Description"/>
 
                 </RelativeLayout>

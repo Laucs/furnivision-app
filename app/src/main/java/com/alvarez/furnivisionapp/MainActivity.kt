@@ -372,7 +372,7 @@ class MainActivity : AppCompatActivity() {
                 nameTextView.text = furnitures[index].name
                 descTextView.text = furnitures[index].description
                 priceTextView.text = "$ " + PRICE_FORMAT.format(furnitures[index].price)
-                dimensionsTextView.text = getString(R.string.dimensions) + " " + furnitures[index].dimensions
+                dimensionsTextView.text = furnitures[index].dimensions
                 stocksTextView.text = getString(R.string.stock) + " " + furnitures[index].stocks.toString()
 
 
