@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F4F4F4">
+    android:background="#FFF">
 
     <RelativeLayout
         android:id="@+id/header_selection"
@@ -52,7 +52,7 @@
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/furniture_selected"
                 android:scaleType="fitXY"
-                android:src="@drawable/chair2" />
+                android:src="@drawable/loading_img" />
         <ImageButton
             android:id="@+id/previousBtn"
             android:layout_width="40dp"
@@ -173,10 +173,36 @@
                           android:id="@+id/furniAvailColors"
                           android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
-                          android:layout_alignParentEnd="true"
+                          android:layout_toStartOf="@id/colors"
+                          android:layout_marginEnd="10dp"
                           android:fontFamily="@font/glacial_indifference_regular"
                           android:textSize="13sp"
                           android:text="@string/colors" />
+                      <RelativeLayout
+                          android:id="@+id/colors"
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:layout_alignParentEnd="true"
+                          android:layout_centerVertical="true">
+                          <TextView
+                              android:id="@+id/color1"
+                              android:layout_width="20dp"
+                              android:layout_height="20dp"
+                              android:fontFamily="@font/glacial_indifference_regular"
+                              android:textSize="13sp"
+                              android:background="@drawable/circle_bg"
+                              />
+                          <TextView
+                              android:id="@+id/color2"
+                              android:layout_width="20dp"
+                              android:layout_height="20dp"
+                              android:layout_marginStart="5dp"
+                              android:layout_toEndOf="@id/color1"
+                              android:fontFamily="@font/glacial_indifference_regular"
+                              android:textSize="13sp"
+                              android:background="@drawable/circle_bg"
+                              />
+                      </RelativeLayout>
                   </RelativeLayout>
 
                     <TextView
