@@ -23,7 +23,7 @@
             android:contentDescription="Back" />
 
         <TextView
-            android:id="@+id/furnitureTitle"
+            android:id="@+id/shopName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -31,7 +31,7 @@
             android:layout_toEndOf="@id/backBtn"
             android:background="#396057"
             android:fontFamily="@font/spartan_medium"
-            android:text="Furniture Details"
+            android:text="Shop Name"
             android:textColor="@color/white"
             android:textSize="20sp" />
 

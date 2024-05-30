@@ -61,6 +61,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import org.w3c.dom.Text
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.util.Calendar
@@ -332,7 +333,7 @@ class MainActivity : AppCompatActivity() {
 
 
     @SuppressLint("SetTextI18n", "DefaultLocale", "CommitPrefEdits", "InflateParams")
-    private fun initFurniSelectPage(shopID: String, pageContainer: ViewGroup){
+    private fun initFurniSelectPage(shopID: String, pageContainer: ViewGroup) {
         var index: Int = 0
         database = FirebaseFirestore.getInstance()
 
@@ -346,82 +347,68 @@ class MainActivity : AppCompatActivity() {
 
                 Log.d("Open Cart", cartList.toString())
 
-                var addToCartBtn: Button = findViewById(R.id.addToCartButton)
-                var nextBtn: ImageButton = findViewById(R.id.nextBtn)
-                var prevBtn: ImageButton = findViewById(R.id.previousBtn)
+                val shopName: TextView = findViewById(R.id.shopName)
+                val addToCartBtn: Button = findViewById(R.id.addToCartButton)
+                val nextBtn: ImageButton = findViewById(R.id.nextBtn)
+                val prevBtn: ImageButton = findViewById(R.id.previousBtn)
 
-                var imageView: ImageView = findViewById(R.id.furnitureImage)
-                var nameTextView: TextView = findViewById(R.id.furnitureName)
-                var descTextView: TextView = findViewById(R.id.furnitureDesc)
-                var priceTextView: TextView = findViewById(R.id.furniturePrice)
+                val imageView: ImageView = findViewById(R.id.furnitureImage)
+                val nameTextView: TextView = findViewById(R.id.furnitureName)
+                val descTextView: TextView = findViewById(R.id.furnitureDesc)
+                val priceTextView: TextView = findViewById(R.id.furniturePrice)
                 val rateTextView: TextView = findViewById(R.id.rateTV)
-                var dimensionsTextView: TextView = findViewById(R.id.furnitureDimensions)
-                var stocksTextView: TextView = findViewById(R.id.furnitureStocks)
+                val dimensionsTextView: TextView = findViewById(R.id.furnitureDimensions)
+                val stocksTextView: TextView = findViewById(R.id.furnitureStocks)
 
+                fun updateUI() {
+                    val storageReference = furnitures[index].img.let { it?.let { it1 ->
+                        Firebase.storage.getReferenceFromUrl(
+                            it1
+                        )
+                    } }
 
+                    storageReference?.getBytes(ONE_MEGABYTE)?.addOnSuccessListener { bytes ->
+                        val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+                        imageView.setImageBitmap(bitmap)
+                    }
+                    database.collection("shops").document(shopID).get()
+                        .addOnSuccessListener { shopDocument ->
+                            if (shopDocument.exists()) {
+                                val shop = shopDocument.toObject(Shop::class.java)
+                                shop?.id = shopDocument.id
 
-                val storageReference = furnitures[index].img.let { it?.let { it1 ->
-                    Firebase.storage.getReferenceFromUrl(
-                        it1
-                    )
-                } }
+                                shopName.text = shop?.name ?: "Unknown Shop"
 
-                storageReference?.getBytes(ONE_MEGABYTE)?.addOnSuccessListener { bytes ->
-                    val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-                    imageView.setImageBitmap(bitmap)
+                            }
+                        }
+                        .addOnFailureListener { exception ->
+                            // Handle the failure
+                            Log.e("ERROR", "Error getting shop document", exception)
+                        }
+                    nameTextView.text = furnitures[index].name
+                    rateTextView.text = furnitures[index].rating.toString()
+                    descTextView.text = furnitures[index].description
+                    priceTextView.text = "P " + PRICE_FORMAT.format(furnitures[index].price)
+                    dimensionsTextView.text = furnitures[index].dimensions
+                    stocksTextView.text = getString(R.string.stock) + " " + furnitures[index].stocks.toString()
+
+                    prevBtn.visibility = if (index == 0) View.GONE else View.VISIBLE
+                    nextBtn.visibility = if (index == furnitures.size - 1) View.GONE else View.VISIBLE
                 }
-                nameTextView.text = furnitures[index].name
-                rateTextView.text = furnitures[index].rating.toString()
-                descTextView.text = furnitures[index].description
-                priceTextView.text = "P " + PRICE_FORMAT.format(furnitures[index].price)
-                dimensionsTextView.text = furnitures[index].dimensions
-                stocksTextView.text = getString(R.string.stock) + " " + furnitures[index].stocks.toString()
 
+                updateUI()
 
                 nextBtn.setOnClickListener {
-                    if (index != furnitures.size-1) {
+                    if (index < furnitures.size - 1) {
                         index++
-                        val storageRef = furnitures[index].img.let { it?.let { it1 ->
-                            Firebase.storage.getReferenceFromUrl(
-                                it1
-                            )
-                        } }
-
-                        storageRef?.getBytes(ONE_MEGABYTE)?.addOnSuccessListener { bytes ->
-                            val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-                            imageView.setImageBitmap(bitmap)
-                        }
-
-                        val price = furnitures[index].price?.toDouble() ?: 0.0
-                        nameTextView.text = furnitures[index].name
-                        rateTextView.text = furnitures[index].rating.toString()
-                        descTextView.text = furnitures[index].description
-                        priceTextView.text = "P " + PRICE_FORMAT.format(price)
-                        dimensionsTextView.text =  furnitures[index].dimensions
-                        stocksTextView.text = getString(R.string.stock) + " " + furnitures[index].stocks.toString()
+                        updateUI()
                     }
                 }
+
                 prevBtn.setOnClickListener {
                     if (index > 0) {
                         index--
-                        val storageRef1 = furnitures[index].img.let { it?.let { it1 ->
-                            Firebase.storage.getReferenceFromUrl(
-                                it1
-                            )
-                        } }
-
-                        storageRef1?.getBytes(ONE_MEGABYTE)?.addOnSuccessListener { bytes ->
-                            val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-                            imageView.setImageBitmap(bitmap)
-                        }
-
-                        val price = furnitures[index].price?.toDouble() ?: 0.0
-                        nameTextView.text = furnitures[index].name
-                        rateTextView.text = furnitures[index].rating.toString()
-                        descTextView.text = furnitures[index].description
-                        priceTextView.text = "P " + PRICE_FORMAT.format(price)
-                        dimensionsTextView.text = furnitures[index].dimensions
-                        stocksTextView.text = getString(R.string.stock) + " " + furnitures[index].stocks.toString()
+                        updateUI()
                     }
                 }
 
@@ -440,7 +427,7 @@ class MainActivity : AppCompatActivity() {
                             }
                             .addOnFailureListener { exception ->
                                 // Handle the failure
-                                Log.e("ERRO", "Error getting document", exception)
+                                Log.e("ERROR", "Error getting document", exception)
                             }
                     }
 
@@ -450,13 +437,14 @@ class MainActivity : AppCompatActivity() {
 
         val backBtn: ImageButton = findViewById(R.id.backBtn)
 
-        backBtn.setOnClickListener{
+        backBtn.setOnClickListener {
             pageContainer.removeAllViews()
             val inflatedPage: RelativeLayout = layoutInflater.inflate(R.layout.activity_shop, null) as RelativeLayout
             pageContainer.addView(inflatedPage)
             initShopPage(pageContainer)
         }
     }
+
     private fun addItemToCart(selectedShop: Shop, selectedFurniture: Furniture) {
         // Find the ShopCart in the list
         val shopCart = cartList?.find { it.shop.id == selectedShop.id }
