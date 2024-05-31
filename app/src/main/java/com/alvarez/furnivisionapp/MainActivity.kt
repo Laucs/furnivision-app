@@ -56,6 +56,7 @@ import com.alvarez.furnivisionapp.data.SessionManager
 import com.alvarez.furnivisionapp.data.ShopCart
 import com.alvarez.furnivisionapp.utils.SearchListAdapter
 import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -2237,9 +2238,6 @@ class MainActivity : AppCompatActivity() {
         val changeEmailButton: Button = findViewById(R.id.changeEmailButton)
 
         if (email != null) {
-//            check if email is fetched by displaying in edit text
-//            editEmailET.text = email
-
             changeEmailButton.setOnClickListener {
                 val newEmail = editEmailET.text.toString().trim() // Get the updated email from the TextView and remove leading/trailing whitespaces
 
@@ -2254,48 +2252,57 @@ class MainActivity : AppCompatActivity() {
                         .get()
                         .addOnSuccessListener { querySnapshot ->
                             if (querySnapshot.isEmpty) {
-                                val userData = hashMapOf(
-                                    "email" to newEmail
-                                )
+                                // Update email in Firebase Authentication
+                                val user = FirebaseAuth.getInstance().currentUser
+                                user?.updateEmail(newEmail)?.addOnCompleteListener { task ->
+                                    if (task.isSuccessful) {
+                                        val userData = hashMapOf(
+                                            "email" to newEmail
+                                        )
 
-                                firestore.collection("users")
-                                    .whereEqualTo("email", email)
-                                    .get()
-                                    .addOnSuccessListener { querySnapshot ->
-                                        for (document in querySnapshot.documents) {
-                                            document.reference.update(userData as Map<String, Any>)
-                                                .addOnSuccessListener {
-                                                    Toast.makeText(this, "Email updated successfully.", Toast.LENGTH_SHORT).show()
-                                                    // Update the email in the session manager
-                                                    SessionManager.setUserEmail(this, newEmail)
-                                                    val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
-                                                    pageContainer.removeAllViews()
-                                                    pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_account, null) as RelativeLayout)
-                                                    initProfileEditPage()
+                                        firestore.collection("users")
+                                            .whereEqualTo("email", email)
+                                            .get()
+                                            .addOnSuccessListener { querySnapshot ->
+                                                for (document in querySnapshot.documents) {
+                                                    document.reference.update(userData as Map<String, Any>)
+                                                        .addOnSuccessListener {
+                                                            Toast.makeText(this, "Email updated successfully.", Toast.LENGTH_SHORT).show()
+                                                            // Update the email in the session manager
+                                                            SessionManager.setUserEmail(this, newEmail)
+                                                            val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
+                                                            pageContainer.removeAllViews()
+                                                            pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_account, null) as RelativeLayout)
+                                                            initProfileEditPage()
+                                                        }
+                                                        .addOnFailureListener { e ->
+                                                            Toast.makeText(this, "Failed to update email in Firestore: ${e.message}", Toast.LENGTH_SHORT).show()
+                                                        }
                                                 }
-                                                .addOnFailureListener { e ->
-                                                    Toast.makeText(this, "Failed to update email: ${e.message}", Toast.LENGTH_SHORT).show()
-                                                }
-                                        }
+                                            }
+                                            .addOnFailureListener { e ->
+                                                Toast.makeText(this, "Error querying document in Firestore: ${e.message}", Toast.LENGTH_SHORT).show()
+                                            }
+                                    } else {
+                                        Toast.makeText(this, "Failed to update email in Authentication: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                                     }
-                                    .addOnFailureListener { e ->
-                                        Toast.makeText(this, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
-                                    }
+                                }
                             } else {
                                 Toast.makeText(this, "Email is already used in another account.", Toast.LENGTH_SHORT).show()
                             }
                         }
                         .addOnFailureListener { e ->
-                            Toast.makeText(this, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this, "Error querying document in Firestore: ${e.message}", Toast.LENGTH_SHORT).show()
                         }
                 } else {
-                    Toast.makeText(this, "Input email is same current email.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Input email is the same as the current email.", Toast.LENGTH_SHORT).show()
                 }
             }
         } else {
             Log.e("GetUser", "Invalid email: $email")
         }
     }
+
 
     private fun isEmailValid(email: String): Boolean {
         val pattern = Regex("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")
