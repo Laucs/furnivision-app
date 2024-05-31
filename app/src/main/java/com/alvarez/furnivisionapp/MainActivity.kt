@@ -589,15 +589,19 @@ class MainActivity : AppCompatActivity() {
         fetchAndDisplayDeliveryAddress()
 
         backButton.setOnClickListener {
-            val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
+
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_cart, null) as RelativeLayout)
             initCartPage(pageContainer)
         }
         val productProtectSubtotal = 0
         val shipSubtotal = 0
-        var merchSubTotal = cartList?.let { calculateTotalPrice(it) }
-        var totalPayment = productProtectSubtotal + shipSubtotal + merchSubTotal!!
+        val merchSubTotalValue = cartList?.let { calculateTotalPrice(it) } ?: 0.0
+        val merchSubTotal = "₱ " + PRICE_FORMAT.format(merchSubTotalValue)
+
+        val totalPaymentValue = productProtectSubtotal + shipSubtotal + merchSubTotalValue
+        val totalPayment = "₱ " + PRICE_FORMAT.format(totalPaymentValue)
+
 
         orderProductProtectTextView.text = productProtectSubtotal.toString()
         ordershipSubtotalTextView.text = shipSubtotal.toString()
