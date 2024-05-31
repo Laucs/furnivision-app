@@ -163,15 +163,575 @@
                 </HorizontalScrollView>
             </androidx.cardview.widget.CardView>
 
-            <include
-                android:id="@+id/content"
-                app:cardElevation="0dp"
-                android:layout_below="@+id/dashboard_navigation"
-                layout="@layout/dashboard_content"
-                android:layout_height="wrap_content"
+
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_marginVertical="10dp"
-                />
+                android:layout_height="match_parent"
+                android:layout_below="@id/dashboard_navigation"
+                android:background="#F4F4F4"
+                android:paddingStart="20dp">
+
+                <TextView
+                    android:id="@+id/newArrival"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="New Arrival"
+                    android:textColor="@color/primary"
+                    android:fontFamily="@font/montserrat"
+                    android:textSize="20sp"/>
+
+                <HorizontalScrollView
+                    android:id="@+id/favorites_container"
+                    android:layout_marginTop="10sp"
+                    android:layout_below="@+id/newArrival"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="none">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal" >
+
+                        <androidx.cardview.widget.CardView
+
+                            android:layout_width="180dp"
+                            android:layout_height="180dp"
+                            android:layout_margin="10dp"
+                            app:contentPadding="10dp"
+                            app:cardCornerRadius="10sp"
+                            app:cardElevation="5dp"
+                            android:layout_marginEnd="15dp">
+
+                            <RelativeLayout
+                                android:id="@+id/newArrivalItem1"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <ImageButton
+                                    android:id="@+id/fav1"
+                                    android:layout_width="100dp"
+                                    android:layout_height="100dp"
+                                    android:scaleType="fitXY"
+                                    android:layout_centerInParent="true"
+                                    android:background="@drawable/white_background"
+                                    android:contentDescription="@string/item"
+                                    android:src="@drawable/hm_lightbluesofa"
+                                    android:tag="furnitureImage" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Mathis Sofa bed"
+                                    android:layout_margin="5sp"/>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    android:gravity="center_vertical"
+                                    android:layout_alignParentBottom="true">
+
+                                    <ImageButton
+                                        android:id="@+id/fav1_star"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:background="@color/white"
+                                        android:src="@drawable/ic_star_foreground"
+                                        android:contentDescription="@string/rate_icon" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="4.5"/>
+
+                                    <ImageButton
+                                        android:id="@+id/fav1_cart"
+                                        android:layout_width="28dp"
+                                        android:layout_height="25dp"
+                                        android:background="@color/white"
+                                        android:src="@drawable/ic_yellow_cart_foreground"
+                                        android:contentDescription="@string/sold_icon" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="250"/>
+
+                                </LinearLayout>
+
+                                <ImageButton
+                                    android:id="@+id/fav1_open"
+                                    android:tag="openButton"
+                                    android:layout_width="31dp"
+                                    android:layout_height="28dp"
+                                    android:background="@drawable/circle_bg"
+                                    android:src="@drawable/ic_right_foreground"
+                                    android:layout_alignParentBottom="true"
+                                    android:layout_alignParentEnd="true"
+                                    android:layout_margin="5sp"
+                                    android:contentDescription="@string/proceed_button" />
+
+                            </RelativeLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+
+                            android:layout_width="180dp"
+                            android:layout_height="180dp"
+                            android:layout_margin="10dp"
+                            app:contentPadding="10dp"
+                            app:cardCornerRadius="10sp"
+                            app:cardElevation="5dp"
+                            android:layout_marginEnd="15dp">
+
+                            <RelativeLayout
+                                android:id="@+id/newArrivalItem2"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <ImageButton
+                                    android:id="@+id/fav2"
+                                    android:tag="furnitureImage"
+                                    android:layout_width="100dp"
+                                    android:layout_height="100dp"
+                                    android:scaleType="fitXY"
+                                    android:layout_centerInParent="true"
+                                    android:background="@drawable/white_background"
+                                    android:src="@drawable/sg_yellowsofa"
+                                    android:contentDescription="@string/item" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="L-Shape Yellow Sofa"
+                                    android:layout_margin="5sp"/>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    android:gravity="center_vertical"
+                                    android:layout_alignParentBottom="true">
+
+                                    <ImageButton
+                                        android:id="@+id/fav2_star"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:background="@color/white"
+                                        android:src="@drawable/ic_star_foreground"
+                                        android:contentDescription="@string/rate_icon" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="4.6"/>
+
+                                    <ImageButton
+                                        android:id="@+id/fav2_cart"
+                                        android:layout_width="28dp"
+                                        android:layout_height="25dp"
+                                        android:background="@color/white"
+                                        android:src="@drawable/ic_yellow_cart_foreground"
+                                        android:contentDescription="@string/sold_icon" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="250"/>
+
+                                </LinearLayout>
+
+                                <ImageButton
+                                    android:id="@+id/fav2_open"
+                                    android:tag="openButton"
+                                    android:layout_width="31dp"
+                                    android:layout_height="28dp"
+                                    android:background="@drawable/circle_bg"
+                                    android:src="@drawable/ic_right_foreground"
+                                    android:layout_alignParentBottom="true"
+                                    android:layout_alignParentEnd="true"
+                                    android:layout_margin="5sp"
+                                    android:contentDescription="@string/proceed_button" />
+
+                            </RelativeLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+
+                            android:layout_width="180dp"
+                            android:layout_height="180dp"
+                            android:layout_margin="10dp"
+                            app:contentPadding="10dp"
+                            app:cardCornerRadius="10sp"
+                            app:cardElevation="5dp"
+                            android:layout_marginEnd="15dp">
+
+                            <RelativeLayout
+                                android:id="@+id/newArrivalItem3"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <ImageButton
+                                    android:id="@+id/fav3"
+                                    android:tag="furnitureImage"
+                                    android:layout_width="90dp"
+                                    android:layout_height="90dp"
+                                    android:scaleType="fitXY"
+                                    android:layout_centerInParent="true"
+                                    android:background="@drawable/white_background"
+                                    android:src="@drawable/hm_arlingtonsofa"
+                                    android:contentDescription="@string/item" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Arlington Sofa"
+                                    android:layout_margin="5sp"/>
+
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    android:gravity="center_vertical"
+                                    android:layout_alignParentBottom="true">
+
+                                    <ImageButton
+                                        android:id="@+id/fav3_star"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:background="@color/white"
+                                        android:src="@drawable/ic_star_foreground"
+                                        android:contentDescription="@string/rate_icon" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="4.3"/>
+
+                                    <ImageButton
+                                        android:id="@+id/fav3_cart"
+                                        android:layout_width="28dp"
+                                        android:layout_height="25dp"
+                                        android:background="@color/white"
+                                        android:src="@drawable/ic_yellow_cart_foreground"
+                                        android:contentDescription="@string/sold_icon" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="569"/>
+
+                                </LinearLayout>
+
+                                <ImageButton
+                                    android:id="@+id/fav3_open"
+                                    android:tag="openButton"
+                                    android:layout_width="31dp"
+                                    android:layout_height="28dp"
+                                    android:background="@drawable/circle_bg"
+                                    android:src="@drawable/ic_right_foreground"
+                                    android:layout_alignParentBottom="true"
+                                    android:layout_alignParentEnd="true"
+                                    android:layout_margin="5sp"
+                                    android:contentDescription="@string/proceed_button" />
+
+                            </RelativeLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                    </LinearLayout>
+
+                </HorizontalScrollView>
+
+                <TextView
+                    android:id="@+id/popular"
+                    android:layout_width="100sp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/favorites_container"
+                    android:layout_marginTop="20dp"
+                    android:text="Popular"
+                    android:fontFamily="@font/montserrat"
+                    android:textColor="#396057"
+                    android:textSize="20sp"/>
+
+
+                <HorizontalScrollView
+                    android:id="@+id/popular_container"
+                    android:layout_marginTop="10sp"
+                    android:layout_below="@+id/popular"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="none">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <androidx.cardview.widget.CardView
+
+                            android:layout_width="180dp"
+                            android:layout_height="130dp"
+                            android:layout_margin="10dp"
+                            app:contentPadding="10dp"
+                            android:elevation="10dp"
+                            app:cardCornerRadius="10sp"
+                            android:layout_marginEnd="15dp">
+
+                            <RelativeLayout
+                                android:id="@+id/popular_item1"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <ImageButton
+                                    android:id="@+id/pop1"
+                                    android:layout_width="60dp"
+                                    android:layout_height="60dp"
+                                    android:scaleType="centerInside"
+                                    android:layout_centerInParent="true"
+                                    android:background="@drawable/white_background"
+                                    android:contentDescription="@string/item"
+                                    android:src="@drawable/mf_whiteofficechair"
+                                    android:tag="furnitureImage" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Gregor Office Chair"
+                                    android:layout_marginVertical="1sp"
+                                    android:layout_marginHorizontal="5sp"/>
+
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    android:gravity="center_vertical"
+                                    android:layout_alignParentBottom="true">
+
+                                    <ImageButton
+                                        android:id="@+id/pop1_star"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:background="@color/white"
+                                        android:src="@drawable/ic_star_foreground"
+                                        android:contentDescription="@string/rate_icon" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="4.7"/>
+
+                                    <ImageButton
+                                        android:id="@+id/pop1_cart"
+                                        android:layout_width="28dp"
+                                        android:layout_height="25dp"
+                                        android:background="@color/white"
+                                        android:src="@drawable/ic_yellow_cart_foreground"
+                                        android:contentDescription="@string/sold_icon" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="301"/>
+
+                                </LinearLayout>
+
+                                <ImageButton
+                                    android:id="@+id/pop1_open"
+                                    android:tag="openButton"
+                                    android:layout_width="31dp"
+                                    android:layout_height="28dp"
+                                    android:background="@drawable/circle_bg"
+                                    android:src="@drawable/ic_right_foreground"
+                                    android:layout_alignParentBottom="true"
+                                    android:layout_alignParentEnd="true"
+                                    android:layout_margin="5sp"
+                                    android:contentDescription="@string/proceed_button" />
+
+                            </RelativeLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+
+                            android:layout_width="180dp"
+                            android:layout_height="130dp"
+                            android:layout_margin="10dp"
+                            app:contentPadding="10dp"
+                            android:elevation="10dp"
+                            app:cardCornerRadius="10sp"
+                            android:layout_marginEnd="15dp">
+
+                            <RelativeLayout
+                                android:id="@+id/popular_item2"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <ImageButton
+                                    android:id="@+id/pop2"
+                                    android:tag="furnitureImage"
+                                    android:layout_width="80dp"
+                                    android:layout_height="80dp"
+                                    android:scaleType="centerInside"
+                                    android:layout_centerInParent="true"
+                                    android:background="@drawable/white_background"
+                                    android:src="@drawable/hm_lightgray"
+                                    android:contentDescription="@string/item" />
+
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginHorizontal="5sp"
+                                    android:layout_marginVertical="1sp"
+                                    android:text="Brut Chair" />
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    android:gravity="center_vertical"
+                                    android:layout_alignParentBottom="true">
+
+                                    <ImageButton
+                                        android:id="@+id/pop2_star"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:background="@color/white"
+                                        android:src="@drawable/ic_star_foreground"
+                                        android:contentDescription="@string/rate_icon" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="4.4"/>
+
+                                    <ImageButton
+                                        android:id="@+id/pop2_cart"
+                                        android:layout_width="28dp"
+                                        android:layout_height="25dp"
+                                        android:background="@color/white"
+                                        android:src="@drawable/ic_yellow_cart_foreground"
+                                        android:contentDescription="@string/sold_icon" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="289"/>
+
+                                </LinearLayout>
+
+                                <ImageButton
+                                    android:id="@+id/pop2_open"
+                                    android:tag="openButton"
+                                    android:layout_width="31dp"
+                                    android:layout_height="28dp"
+                                    android:background="@drawable/circle_bg"
+                                    android:src="@drawable/ic_right_foreground"
+                                    android:layout_alignParentBottom="true"
+                                    android:layout_alignParentEnd="true"
+                                    android:layout_margin="5sp"
+                                    android:contentDescription="@string/proceed_button" />
+
+                            </RelativeLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+
+                            android:layout_width="180dp"
+                            android:layout_height="130dp"
+                            android:layout_margin="10dp"
+                            app:contentPadding="10dp"
+                            android:elevation="10dp"
+                            app:cardCornerRadius="10sp"
+                            android:layout_marginEnd="15dp">
+
+                            <RelativeLayout
+                                android:id="@+id/popular_item3"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <ImageButton
+                                    android:id="@+id/pop3"
+                                    android:tag="furnitureImage"
+                                    android:layout_width="60dp"
+                                    android:layout_height="60dp"
+                                    android:scaleType="centerInside"
+                                    android:layout_centerInParent="true"
+                                    android:background="@drawable/white_background"
+                                    android:src="@drawable/sg_lightgray"
+                                    android:contentDescription="@string/item" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Light Grey Shell Chair"
+                                    android:layout_marginVertical="1sp"
+                                    android:layout_marginHorizontal="5sp"/>
+
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    android:gravity="center_vertical"
+                                    android:layout_alignParentBottom="true">
+
+                                    <ImageButton
+                                        android:id="@+id/pop3_star"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:background="@color/white"
+                                        android:src="@drawable/ic_star_foreground"
+                                        android:contentDescription="@string/rate_icon" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="4.5"/>
+
+                                    <ImageButton
+                                        android:id="@+id/pop3_cart"
+                                        android:layout_width="28dp"
+                                        android:layout_height="25dp"
+                                        android:background="@color/white"
+                                        android:src="@drawable/ic_yellow_cart_foreground"
+                                        android:contentDescription="@string/sold_icon" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="1618"/>
+
+                                </LinearLayout>
+
+                                <ImageButton
+                                    android:id="@+id/pop3_open"
+                                    android:tag="openButton"
+                                    android:layout_width="31dp"
+                                    android:layout_height="28dp"
+                                    android:background="@drawable/circle_bg"
+                                    android:src="@drawable/ic_right_foreground"
+                                    android:layout_alignParentBottom="true"
+                                    android:layout_alignParentEnd="true"
+                                    android:layout_margin="5sp"
+                                    android:contentDescription="@string/proceed_button" />
+
+                            </RelativeLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                    </LinearLayout>
+
+                </HorizontalScrollView>
+
+            </RelativeLayout>
         </RelativeLayout>
     </ScrollView>
 

@@ -58,6 +58,7 @@ import com.alvarez.furnivisionapp.utils.SearchListAdapter
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
@@ -148,20 +149,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initHomePage(page: RelativeLayout, pageContainer: ViewGroup) {
-        homePageFunctions = HomePageFunctions(page, AppCompatImageButton::class.java, this)
-
-        val dashboardContent = page.findViewById<RelativeLayout>(R.id.content)
-
-        val newArrivalItem1: RelativeLayout = dashboardContent.findViewById(R.id.newArrivalItem1)
-        val newArrivalItem2: CardView = dashboardContent.findViewById(R.id.newArrivalItem2)
-        val newArrivalItem3: CardView = dashboardContent.findViewById(R.id.newArrivalItem3)
+        val newArrivalItem1: RelativeLayout = page.findViewById(R.id.newArrivalItem1)
+        val newArrivalItem2: RelativeLayout = page.findViewById(R.id.newArrivalItem2)
+        val newArrivalItem3: RelativeLayout = page.findViewById(R.id.newArrivalItem3)
 
         newArrivalItem1.setOnClickListener {
             val shopID = "323HM"
             val furnitureID = "HMF4"
             openFurnitureDirectly(shopID, furnitureID, pageContainer)
         }
-
 
         newArrivalItem2.setOnClickListener {
             val shopID = "212SG"
@@ -175,9 +171,9 @@ class MainActivity : AppCompatActivity() {
             openFurnitureDirectly(shopID, furnitureID, pageContainer)
         }
 
-        val popularItem1: CardView = dashboardContent.findViewById(R.id.popular_item1)
-        val popularItem2: CardView = dashboardContent.findViewById(R.id.popular_item2)
-        val popularItem3: CardView = dashboardContent.findViewById(R.id.popular_item3)
+        val popularItem1: RelativeLayout = page.findViewById(R.id.popular_item1)
+        val popularItem2: RelativeLayout = page.findViewById(R.id.popular_item2)
+        val popularItem3: RelativeLayout = page.findViewById(R.id.popular_item3)
 
         popularItem1.setOnClickListener {
             val shopID = "123MF"
@@ -196,29 +192,37 @@ class MainActivity : AppCompatActivity() {
             val furnitureID = "SGF5"
             openFurnitureDirectly(shopID, furnitureID, pageContainer)
         }
-
     }
+
     //open furniture selection page with the Furniture ID
     private fun openFurnitureDirectly(shopID: String, furnitureID: String, pageContainer: ViewGroup) {
         val database = FirebaseFirestore.getInstance()
-        database.collection("shops")
-            .document(shopID)
+
+        // Query the furniture collection to get the specific furniture by ID
+        database.collection("furniture")
+            .whereEqualTo("shopID", shopID)
+            .whereEqualTo(FieldPath.documentId(), furnitureID)
             .get()
-            .addOnSuccessListener { document ->
-                if (document.exists()) {
+            .addOnSuccessListener { result ->
+                if (!result.isEmpty) {
+                    // Furniture found, proceed to display it
                     pageContainer.removeAllViews()
                     val inflatedPage = layoutInflater.inflate(R.layout.activity_furniture_selection, null) as ViewGroup
                     pageContainer.addView(inflatedPage)
+
+                    // Call initFurniSelectPage with the shopID and furnitureID
                     initFurniSelectPage(shopID, pageContainer, furnitureID)
                 } else {
-                    Toast.makeText(this, "Shop not found", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Furniture not found in this shop", Toast.LENGTH_SHORT).show()
                 }
             }
             .addOnFailureListener { exception ->
-                Log.d(TAG, "Error fetching shop document: $exception")
-                Toast.makeText(this, "Error fetching shop document", Toast.LENGTH_SHORT).show()
+                Log.d(TAG, "Error fetching furniture document: $exception")
+                Toast.makeText(this, "Error fetching furniture document", Toast.LENGTH_SHORT).show()
             }
     }
+
+
 
 
 
