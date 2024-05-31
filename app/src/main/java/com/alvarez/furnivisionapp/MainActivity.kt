@@ -149,50 +149,41 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initHomePage(page: RelativeLayout, pageContainer: ViewGroup) {
-        val newArrivalItem1: RelativeLayout = page.findViewById(R.id.newArrivalItem1)
-        val newArrivalItem2: RelativeLayout = page.findViewById(R.id.newArrivalItem2)
-        val newArrivalItem3: RelativeLayout = page.findViewById(R.id.newArrivalItem3)
+        val newArrivalItem1: RelativeLayout = findViewById(R.id.newArrivalItem1)
+        val fav1open: ImageButton = findViewById(R.id.fav1_open)
+        setOnClickListener("323HM", "HMF4", pageContainer, newArrivalItem1, fav1open)
 
-        newArrivalItem1.setOnClickListener {
-            val shopID = "323HM"
-            val furnitureID = "HMF4"
-            openFurnitureDirectly(shopID, furnitureID, pageContainer)
-        }
+        val newArrivalItem2: RelativeLayout = findViewById(R.id.newArrivalItem2)
+        val fav2open: ImageButton = findViewById(R.id.fav2_open)
+        setOnClickListener("212SG", "SGF4", pageContainer, newArrivalItem2, fav2open)
 
-        newArrivalItem2.setOnClickListener {
-            val shopID = "212SG"
-            val furnitureID = "SGF4"
-            openFurnitureDirectly(shopID, furnitureID, pageContainer)
-        }
+        val newArrivalItem3: RelativeLayout = findViewById(R.id.newArrivalItem3)
+        val fav3open: ImageButton = findViewById(R.id.fav3_open)
+        setOnClickListener("123MF", "MFF5", pageContainer, newArrivalItem3, fav3open)
 
-        newArrivalItem3.setOnClickListener {
-            val shopID = "123MF"
-            val furnitureID = "MFF5"
-            openFurnitureDirectly(shopID, furnitureID, pageContainer)
-        }
+        val popularItem1: RelativeLayout = findViewById(R.id.popular_item1)
+        val pop1open: ImageButton = findViewById(R.id.pop1_open)
+        setOnClickListener("123MF", "MFF4", pageContainer, popularItem1, pop1open)
 
-        val popularItem1: RelativeLayout = page.findViewById(R.id.popular_item1)
-        val popularItem2: RelativeLayout = page.findViewById(R.id.popular_item2)
-        val popularItem3: RelativeLayout = page.findViewById(R.id.popular_item3)
+        val popularItem2: RelativeLayout = findViewById(R.id.popular_item2)
+        val pop2open: ImageButton = findViewById(R.id.pop2_open)
+        setOnClickListener("323HM", "HMF5", pageContainer, popularItem2, pop2open)
 
-        popularItem1.setOnClickListener {
-            val shopID = "123MF"
-            val furnitureID = "MFF4"
-            openFurnitureDirectly(shopID, furnitureID, pageContainer)
-        }
+        val popularItem3: RelativeLayout = findViewById(R.id.popular_item3)
+        val pop3open: ImageButton = findViewById(R.id.pop3_open)
+        setOnClickListener("212SG", "SGF5", pageContainer, popularItem3, pop3open)
+    }
 
-        popularItem2.setOnClickListener {
-            val shopID = "323HM"
-            val furnitureID = "HMF5"
-            openFurnitureDirectly(shopID, furnitureID, pageContainer)
-        }
-
-        popularItem3.setOnClickListener {
-            val shopID = "212SG"
-            val furnitureID = "SGF5"
-            openFurnitureDirectly(shopID, furnitureID, pageContainer)
+    private fun setOnClickListener(shopID: String, furnitureID: String, pageContainer: ViewGroup, vararg views: View) {
+        views.forEach { view ->
+            view.setOnClickListener {
+                Toast.makeText(this, "Clicked", Toast.LENGTH_SHORT).show()
+                openFurnitureDirectly(shopID, furnitureID, pageContainer)
+            }
         }
     }
+
+
 
     private fun openFurnitureDirectly(shopID: String, furnitureID: String, pageContainer: ViewGroup) {
         val database = FirebaseFirestore.getInstance()
