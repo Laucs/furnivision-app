@@ -56,7 +56,9 @@ import com.alvarez.furnivisionapp.data.SessionManager
 import com.alvarez.furnivisionapp.data.ShopCart
 import com.alvarez.furnivisionapp.utils.SearchListAdapter
 import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
@@ -109,6 +111,9 @@ class MainActivity : AppCompatActivity() {
         pageContainer.addView(inflatedPage)
         initHomePage(inflatedPage, pageContainer)
 
+        // Refresh dashboard twice
+        refreshDashboard(pageContainer)
+
         homeButton.setOnClickListener {
             activePage = dashboardPage
             pageContainer.removeAllViews()
@@ -146,114 +151,93 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun initHomePage(page: RelativeLayout, pageContainer: ViewGroup) {
-        homePageFunctions = HomePageFunctions(page, AppCompatImageButton::class.java, this)
-
-
-//        // Initialize RecyclerView and adapter
-//        val shopsView: RecyclerView = pageContainer.findViewById(R.id.shop_list)
-//
-//
-//        val database = FirebaseFirestore.getInstance()
-//        database.collection("shops")
-//            .get()
-//            .addOnSuccessListener { result: QuerySnapshot ->
-//                val shopList: List<Shop> = result.documents.mapNotNull { document ->
-//                    document.toObject(Shop::class.java)?.apply {
-//                        id = document.id
-//                    }
-//                }
-//                val adapter = ShopListAdapter(shopList)
-//                shopsView.adapter = adapter
-//                shopsView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-//                adapter.setOnItemClickListener(object : ShopListAdapter.OnItemClickListener {
-//                    override fun onItemClick(shopID: String) {
-//                        pageContainer.removeAllViews()
-//                        val inflatedPage = layoutInflater.inflate(R.layout.activity_furniture_selection, null) as ViewGroup
-//                        pageContainer.addView(inflatedPage)
-//                        initFurniSelectPage(shopID, pageContainer)
-//                    }
-//                })
-//            }
-//            .addOnFailureListener { exception: Exception ->
-//                Log.d(TAG, "Error fetching documents: $exception")
-//                // Handle failure (e.g., show error message)
-//            }
-
-//
-//
-//
-//
-//        val searchBar: androidx.appcompat.widget.SearchView = findViewById(R.id.search_bar)
-//        val contentScroll: ScrollView = findViewById(R.id.content_scroll)
-//        val contentView: View = findViewById(R.id.content)
-//        val searchlistView: ListView = findViewById(R.id.search_list_view)
-//        var furnitureList: List<Furniture> = listOf()
-//
-//        database.collection("furniture").get()
-//            .addOnSuccessListener { result: QuerySnapshot ->
-//                furnitureList = result.documents.mapNotNull { document ->
-//                    document.toObject(Furniture::class.java)?.apply {
-//                        id = document.id
-//                    }
-//                }
-//                Log.d(TAG, "Furniture list loaded with ${furnitureList.size} items")
-//
-//                runOnUiThread {
-//                    val searchAdapter = SearchListAdapter(this, furnitureList)
-//                    searchlistView.adapter = searchAdapter
-//                }
-//
-//                searchBar.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
-//                    override fun onQueryTextSubmit(query: String?): Boolean {
-//                        // Handle search action (optional)
-//                        return false
-//                    }
-//
-//                    override fun onQueryTextChange(newText: String?): Boolean {
-//                        val isSearchEmpty = newText.isNullOrEmpty()
-//                        Log.d(TAG, "Search text changed: $newText")
-//
-//                        contentScroll.visibility = if (isSearchEmpty) View.VISIBLE else View.GONE
-//                        contentView.visibility = if (isSearchEmpty) View.VISIBLE else View.GONE
-//                        searchlistView.visibility = if (isSearchEmpty) View.GONE else View.VISIBLE
-//
-//                        if (!isSearchEmpty) {
-//                            newText?.let {
-//                                val filteredList = furnitureList.filter { furniture ->
-//                                    furniture.name?.contains(it, ignoreCase = true) ?: false
-//                                }
-//                                (searchlistView.adapter as SearchListAdapter).updateList(filteredList)
-//                                Log.d(TAG, "Filtered list updated with ${filteredList.size} items")
-//                            }
-//                        }
-//
-//                        searchlistView.setOnItemClickListener { parent, view, position, id  ->
-//                            // Get the Furniture object corresponding to the clicked item
-//                            val clickedFurniture = furnitureList[position]
-//
-//                            // Now you can use the data from the clicked Furniture object as needed
-//                            val furnitureID = clickedFurniture.id
-//                            val furnitureShopID = clickedFurniture.shopID
-//
-//                            // Perform further actions based on the clicked item's data
-//                            pageContainer.removeAllViews()
-//                            val inflatedPage = layoutInflater.inflate(R.layout.activity_furniture_selection, null) as ViewGroup
-//                            pageContainer.addView(inflatedPage)
-//                            if (furnitureShopID != null) {
-//                                initFurniSelectPage(furnitureShopID, pageContainer)
-//                            }
-//                        }
-//
-//
-//                        return true
-//                    }
-//                })
-//            }
-//            .addOnFailureListener { exception ->
-//                Log.e(TAG, "Error fetching furniture data", exception)
-//            }
+    private fun refreshDashboard(pageContainer: ViewGroup) {
+        pageContainer.removeAllViews()
+        val inflatedPage = layoutInflater.inflate(R.layout.activity_dashboard, null) as RelativeLayout
+        pageContainer.addView(inflatedPage)
+        initHomePage(inflatedPage, pageContainer)
     }
+
+
+    private fun initHomePage(page: RelativeLayout, pageContainer: ViewGroup) {
+        val newArrivalItem1: RelativeLayout = findViewById(R.id.newArrivalItem1)
+        val fav1open: ImageButton = findViewById(R.id.fav1_open)
+        setOnClickListener("323HM", "HMF4", pageContainer, newArrivalItem1, fav1open)
+
+        val newArrivalItem2: RelativeLayout = findViewById(R.id.newArrivalItem2)
+        val fav2open: ImageButton = findViewById(R.id.fav2_open)
+        setOnClickListener("212SG", "SGF4", pageContainer, newArrivalItem2, fav2open)
+
+        val newArrivalItem3: RelativeLayout = findViewById(R.id.newArrivalItem3)
+        val fav3open: ImageButton = findViewById(R.id.fav3_open)
+        setOnClickListener("123MF", "MFF5", pageContainer, newArrivalItem3, fav3open)
+
+        val popularItem1: RelativeLayout = findViewById(R.id.popular_item1)
+        val pop1open: ImageButton = findViewById(R.id.pop1_open)
+        setOnClickListener("123MF", "MFF4", pageContainer, popularItem1, pop1open)
+
+        val popularItem2: RelativeLayout = findViewById(R.id.popular_item2)
+        val pop2open: ImageButton = findViewById(R.id.pop2_open)
+        setOnClickListener("323HM", "HMF5", pageContainer, popularItem2, pop2open)
+
+        val popularItem3: RelativeLayout = findViewById(R.id.popular_item3)
+        val pop3open: ImageButton = findViewById(R.id.pop3_open)
+        setOnClickListener("212SG", "SGF5", pageContainer, popularItem3, pop3open)
+    }
+
+    private fun setOnClickListener(shopID: String, furnitureID: String, pageContainer: ViewGroup, vararg views: View) {
+        views.forEach { view ->
+            view.setOnClickListener {
+                openFurnitureDirectly(shopID, furnitureID, pageContainer)
+            }
+        }
+    }
+
+
+
+    private fun openFurnitureDirectly(shopID: String, furnitureID: String, pageContainer: ViewGroup) {
+        val database = FirebaseFirestore.getInstance()
+
+        // Query the furniture collection to get the specific furniture by ID
+        database.collection("furniture")
+            .whereEqualTo("shopID", shopID)
+            .whereEqualTo(FieldPath.documentId(), furnitureID)
+            .get()
+            .addOnSuccessListener { result ->
+                if (!result.isEmpty) {
+                    var foundFurniture: Furniture? = null
+
+                    for (documentSnapshot in result.documents) {
+                        val furniture = documentSnapshot.toObject(Furniture::class.java)
+                        if (furniture != null && documentSnapshot.id == furnitureID) {
+                            foundFurniture = furniture
+                            break
+                        }
+                    }
+
+                    if (foundFurniture != null) {
+                        // Furniture with the specified ID found, proceed to display it
+                        pageContainer.removeAllViews()
+                        val inflatedPage = layoutInflater.inflate(R.layout.activity_furniture_selection, null) as ViewGroup
+                        pageContainer.addView(inflatedPage)
+
+                        // Pass the shopID and furnitureID to initFurniSelectPage
+                        initFurniSelectPage(shopID, pageContainer, furnitureID)
+                    } else {
+                        Toast.makeText(this, "Furniture with ID $furnitureID not found in this shop", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Toast.makeText(this, "Furniture not found in this shop", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d(TAG, "Error fetching furniture document: $exception")
+                Toast.makeText(this, "Error fetching furniture document", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+
+
 
 
 
@@ -263,16 +247,6 @@ class MainActivity : AppCompatActivity() {
             View.GONE
         } else{
             View.VISIBLE
-        }
-    }
-    fun toggleHeart(heartButton: ImageButton) {
-        val isFilled = heartButton.tag as? Boolean ?: false
-        if (isFilled) {
-            heartButton.setImageResource(R.drawable.heart_empty)
-            heartButton.tag = false
-        } else {
-            heartButton.setImageResource(R.drawable.heart)
-            heartButton.tag = true
         }
     }
 
@@ -289,7 +263,7 @@ class MainActivity : AppCompatActivity() {
                 pageContainer.removeAllViews()
                 val inflatedPage = layoutInflater.inflate(R.layout.activity_furniture_selection, null) as ViewGroup
                 pageContainer.addView(inflatedPage)
-                initFurniSelectPage(shopID, pageContainer)
+                initFurniSelectPage(shopID, pageContainer, furnitureID = null)
             }
         })
 
@@ -334,7 +308,7 @@ class MainActivity : AppCompatActivity() {
 
 
     @SuppressLint("SetTextI18n", "DefaultLocale", "CommitPrefEdits", "InflateParams")
-    private fun initFurniSelectPage(shopID: String, pageContainer: ViewGroup) {
+    private fun initFurniSelectPage(shopID: String, pageContainer: ViewGroup, furnitureID: String? = null) {
         var index: Int = 0
         database = FirebaseFirestore.getInstance()
 
@@ -346,7 +320,16 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
 
+                // Find the index of the furnitureID in the list
+                furnitureID?.let {
+                    val furnitureIndex = furnitures.indexOfFirst { it.id == furnitureID }
+                    if (furnitureIndex != -1) {
+                        index = furnitureIndex
+                    }
+                }
+
                 Log.d("Open Cart", cartList.toString())
+
 
                 val shopName: TextView = findViewById(R.id.shopName)
                 val addToCartBtn: Button = findViewById(R.id.addToCartButton)
@@ -472,7 +455,19 @@ class MainActivity : AppCompatActivity() {
 
         backBtn.setOnClickListener {
             pageContainer.removeAllViews()
+            val inflatedPage: RelativeLayout = layoutInflater.inflate(R.layout.activity_dashboard, null) as RelativeLayout
+            activePage = R.layout.activity_dashboard
+            pageContainer.removeAllViews()
+            pageContainer.addView(inflatedPage)
+            initHomePage(inflatedPage, pageContainer)
+        }
+
+        val shopImg: ImageButton = findViewById(R.id.shopImg)
+        shopImg.setOnClickListener {
+            pageContainer.removeAllViews()
             val inflatedPage: RelativeLayout = layoutInflater.inflate(R.layout.activity_shop, null) as RelativeLayout
+            activePage = R.layout.activity_shop
+            pageContainer.removeAllViews()
             pageContainer.addView(inflatedPage)
             initShopPage(pageContainer)
         }
@@ -2237,9 +2232,6 @@ class MainActivity : AppCompatActivity() {
         val changeEmailButton: Button = findViewById(R.id.changeEmailButton)
 
         if (email != null) {
-//            check if email is fetched by displaying in edit text
-//            editEmailET.text = email
-
             changeEmailButton.setOnClickListener {
                 val newEmail = editEmailET.text.toString().trim() // Get the updated email from the TextView and remove leading/trailing whitespaces
 
@@ -2254,48 +2246,57 @@ class MainActivity : AppCompatActivity() {
                         .get()
                         .addOnSuccessListener { querySnapshot ->
                             if (querySnapshot.isEmpty) {
-                                val userData = hashMapOf(
-                                    "email" to newEmail
-                                )
+                                // Update email in Firebase Authentication
+                                val user = FirebaseAuth.getInstance().currentUser
+                                user?.updateEmail(newEmail)?.addOnCompleteListener { task ->
+                                    if (task.isSuccessful) {
+                                        val userData = hashMapOf(
+                                            "email" to newEmail
+                                        )
 
-                                firestore.collection("users")
-                                    .whereEqualTo("email", email)
-                                    .get()
-                                    .addOnSuccessListener { querySnapshot ->
-                                        for (document in querySnapshot.documents) {
-                                            document.reference.update(userData as Map<String, Any>)
-                                                .addOnSuccessListener {
-                                                    Toast.makeText(this, "Email updated successfully.", Toast.LENGTH_SHORT).show()
-                                                    // Update the email in the session manager
-                                                    SessionManager.setUserEmail(this, newEmail)
-                                                    val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
-                                                    pageContainer.removeAllViews()
-                                                    pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_account, null) as RelativeLayout)
-                                                    initProfileEditPage()
+                                        firestore.collection("users")
+                                            .whereEqualTo("email", email)
+                                            .get()
+                                            .addOnSuccessListener { querySnapshot ->
+                                                for (document in querySnapshot.documents) {
+                                                    document.reference.update(userData as Map<String, Any>)
+                                                        .addOnSuccessListener {
+                                                            Toast.makeText(this, "Email updated successfully.", Toast.LENGTH_SHORT).show()
+                                                            // Update the email in the session manager
+                                                            SessionManager.setUserEmail(this, newEmail)
+                                                            val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
+                                                            pageContainer.removeAllViews()
+                                                            pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_account, null) as RelativeLayout)
+                                                            initProfileEditPage()
+                                                        }
+                                                        .addOnFailureListener { e ->
+                                                            Toast.makeText(this, "Failed to update email in Firestore: ${e.message}", Toast.LENGTH_SHORT).show()
+                                                        }
                                                 }
-                                                .addOnFailureListener { e ->
-                                                    Toast.makeText(this, "Failed to update email: ${e.message}", Toast.LENGTH_SHORT).show()
-                                                }
-                                        }
+                                            }
+                                            .addOnFailureListener { e ->
+                                                Toast.makeText(this, "Error querying document in Firestore: ${e.message}", Toast.LENGTH_SHORT).show()
+                                            }
+                                    } else {
+                                        Toast.makeText(this, "Failed to update email in Authentication: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                                     }
-                                    .addOnFailureListener { e ->
-                                        Toast.makeText(this, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
-                                    }
+                                }
                             } else {
                                 Toast.makeText(this, "Email is already used in another account.", Toast.LENGTH_SHORT).show()
                             }
                         }
                         .addOnFailureListener { e ->
-                            Toast.makeText(this, "Error querying document: ${e.message}", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this, "Error querying document in Firestore: ${e.message}", Toast.LENGTH_SHORT).show()
                         }
                 } else {
-                    Toast.makeText(this, "Input email is same current email.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Input email is the same as the current email.", Toast.LENGTH_SHORT).show()
                 }
             }
         } else {
             Log.e("GetUser", "Invalid email: $email")
         }
     }
+
 
     private fun isEmailValid(email: String): Boolean {
         val pattern = Regex("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")
