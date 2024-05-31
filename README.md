@@ -14,7 +14,6 @@ Dashboard
 - search functionality (least priority) 
 
 Shop
-- Buy button for the viewing of furniture should go directly to orders page
 - fix furniture selection ui ✔
 - search functionality ✔
 
@@ -24,7 +23,7 @@ Cart
 
 Orders Page
 - fetch delivery address in order page ✔
-- Pickup option should display a custom dialog
+- Pickup option should display a drop-down 
 - price wont update price if quantity is changed (ex: increase qty) -> does not increase the price
 
 Profile
