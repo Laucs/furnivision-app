@@ -194,7 +194,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    //open furniture selection page with the Furniture ID
     private fun openFurnitureDirectly(shopID: String, furnitureID: String, pageContainer: ViewGroup) {
         val database = FirebaseFirestore.getInstance()
 
@@ -205,13 +204,27 @@ class MainActivity : AppCompatActivity() {
             .get()
             .addOnSuccessListener { result ->
                 if (!result.isEmpty) {
-                    // Furniture found, proceed to display it
-                    pageContainer.removeAllViews()
-                    val inflatedPage = layoutInflater.inflate(R.layout.activity_furniture_selection, null) as ViewGroup
-                    pageContainer.addView(inflatedPage)
+                    var foundFurniture: Furniture? = null
 
-                    // Call initFurniSelectPage with the shopID and furnitureID
-                    initFurniSelectPage(shopID, pageContainer, furnitureID)
+                    for (documentSnapshot in result.documents) {
+                        val furniture = documentSnapshot.toObject(Furniture::class.java)
+                        if (furniture != null && documentSnapshot.id == furnitureID) {
+                            foundFurniture = furniture
+                            break
+                        }
+                    }
+
+                    if (foundFurniture != null) {
+                        // Furniture with the specified ID found, proceed to display it
+                        pageContainer.removeAllViews()
+                        val inflatedPage = layoutInflater.inflate(R.layout.activity_furniture_selection, null) as ViewGroup
+                        pageContainer.addView(inflatedPage)
+
+                        // Pass the shopID and furnitureID to initFurniSelectPage
+                        initFurniSelectPage(shopID, pageContainer, furnitureID)
+                    } else {
+                        Toast.makeText(this, "Furniture with ID $furnitureID not found in this shop", Toast.LENGTH_SHORT).show()
+                    }
                 } else {
                     Toast.makeText(this, "Furniture not found in this shop", Toast.LENGTH_SHORT).show()
                 }
@@ -303,6 +316,14 @@ class MainActivity : AppCompatActivity() {
                 val furnitures: List<Furniture> = result.documents.mapNotNull { document ->
                     document.toObject(Furniture::class.java)?.apply {
                         id = document.id
+                    }
+                }
+
+                // Find the index of the furnitureID in the list
+                furnitureID?.let {
+                    val furnitureIndex = furnitures.indexOfFirst { it.id == furnitureID }
+                    if (furnitureIndex != -1) {
+                        index = furnitureIndex
                     }
                 }
 
