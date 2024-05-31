@@ -111,6 +111,9 @@ class MainActivity : AppCompatActivity() {
         pageContainer.addView(inflatedPage)
         initHomePage(inflatedPage, pageContainer)
 
+        // Refresh dashboard twice
+        refreshDashboard(pageContainer)
+
         homeButton.setOnClickListener {
             activePage = dashboardPage
             pageContainer.removeAllViews()
@@ -148,6 +151,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun refreshDashboard(pageContainer: ViewGroup) {
+        pageContainer.removeAllViews()
+        val inflatedPage = layoutInflater.inflate(R.layout.activity_dashboard, null) as RelativeLayout
+        pageContainer.addView(inflatedPage)
+        initHomePage(inflatedPage, pageContainer)
+    }
+
+
     private fun initHomePage(page: RelativeLayout, pageContainer: ViewGroup) {
         val newArrivalItem1: RelativeLayout = findViewById(R.id.newArrivalItem1)
         val fav1open: ImageButton = findViewById(R.id.fav1_open)
@@ -177,7 +188,6 @@ class MainActivity : AppCompatActivity() {
     private fun setOnClickListener(shopID: String, furnitureID: String, pageContainer: ViewGroup, vararg views: View) {
         views.forEach { view ->
             view.setOnClickListener {
-                Toast.makeText(this, "Clicked", Toast.LENGTH_SHORT).show()
                 openFurnitureDirectly(shopID, furnitureID, pageContainer)
             }
         }
