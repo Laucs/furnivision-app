@@ -42,7 +42,8 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="15dp"
-            android:background="@drawable/white_back_button"
+            android:scaleType="fitCenter"
+            android:background="@drawable/shop_icon"
             android:contentDescription="Back" />
 
     </RelativeLayout>

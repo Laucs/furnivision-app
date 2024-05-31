@@ -329,6 +329,7 @@ class MainActivity : AppCompatActivity() {
 
                 Log.d("Open Cart", cartList.toString())
 
+
                 val shopName: TextView = findViewById(R.id.shopName)
                 val addToCartBtn: Button = findViewById(R.id.addToCartButton)
                 val nextBtn: ImageButton = findViewById(R.id.nextBtn)
@@ -453,7 +454,19 @@ class MainActivity : AppCompatActivity() {
 
         backBtn.setOnClickListener {
             pageContainer.removeAllViews()
+            val inflatedPage: RelativeLayout = layoutInflater.inflate(R.layout.activity_dashboard, null) as RelativeLayout
+            activePage = R.layout.activity_dashboard
+            pageContainer.removeAllViews()
+            pageContainer.addView(inflatedPage)
+            initHomePage(inflatedPage, pageContainer)
+        }
+
+        val shopImg: ImageButton = findViewById(R.id.shopImg)
+        shopImg.setOnClickListener {
+            pageContainer.removeAllViews()
             val inflatedPage: RelativeLayout = layoutInflater.inflate(R.layout.activity_shop, null) as RelativeLayout
+            activePage = R.layout.activity_shop
+            pageContainer.removeAllViews()
             pageContainer.addView(inflatedPage)
             initShopPage(pageContainer)
         }
