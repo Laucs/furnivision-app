@@ -9,8 +9,7 @@ Navigation
   
 Dashboard
 - category 
-- clickable furnitures 
-- clickable heart icons
+- clickable furnitures ✔
 - search functionality (least priority) 
 
 Shop
@@ -24,16 +23,17 @@ Cart
 Orders Page
 - fetch delivery address in order page ✔
 - Pickup option should display a drop-down 
-- price wont update price if quantity is changed (ex: increase qty) -> does not increase the price
+- price update price if quantity is changed (ex: increase qty) -> does not increase the price
 
 Profile
 
 - Default functionality of payment method 
-- Connect payment method in the database/or use payment api instead 
+- Connect payment method in the database/or use payment api instead [REQUIRED]
 - default functionality of default address ✔
 - edit dialog should close after performing delete item ✔
 - to Pay page should accept the furniture that has been checked out
 - censor email phone in account  ✔
 - set minimum and maximum date for birthday ✔
-- handle change password
+- handle change password (optional)
 - censor phone number or email in payment methods
+- Find a way to allow permision to change email using authentication
