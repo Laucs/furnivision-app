@@ -40,6 +40,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.SearchView
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -95,7 +96,12 @@ class MainActivity : AppCompatActivity() {
         val cartButton: LinearLayout = findViewById(R.id.cart_menu)
         val profileButton: LinearLayout = findViewById(R.id.profile_menu)
 
-        activeButton = homeButton
+        // Icons and TextViews
+        val imgHome: ImageView = findViewById(R.id.imgHome)
+        val imgShop: ImageView = findViewById(R.id.imgShop)
+        val imgCamera: ImageView = findViewById(R.id.imgAR)
+        val imgCart: ImageView = findViewById(R.id.imgCart)
+        val imgProfile: ImageView = findViewById(R.id.imgProfile)
 
         // Layouts
         val dashboardPage = R.layout.activity_dashboard
@@ -111,45 +117,89 @@ class MainActivity : AppCompatActivity() {
         pageContainer.addView(inflatedPage)
         initHomePage(inflatedPage, pageContainer)
 
+
         // Refresh dashboard twice
         refreshDashboard(pageContainer)
 
+        // Helper function to reset icons and text colors to default
+        fun resetMenuIcons() {
+            imgHome.setImageResource(R.drawable.home_logo)
+            imgShop.setImageResource(R.drawable.shop_logo)
+            imgCamera.setImageResource(R.drawable.ar_logo)
+            imgCart.setImageResource(R.drawable.cart_logo)
+            imgProfile.setImageResource(R.drawable.profile_logo)
+        }
+
+        // Helper function to set the active page icon and text color
+        fun setActivePageIcon(page: Int) {
+            resetMenuIcons()
+            when (page) {
+                dashboardPage -> {
+                    imgHome.setImageResource(R.drawable.home_logo_fill)
+                }
+                shopPage -> {
+                    imgShop.setImageResource(R.drawable.shop_logo_fill)
+                }
+                cameraPage -> {
+                    imgCamera.setImageResource(R.drawable.ar_logo_fill)
+                }
+                cartPage -> {
+                    imgCart.setImageResource(R.drawable.cart_logo_fill)
+                }
+                profilePage -> {
+                    imgProfile.setImageResource(R.drawable.profile_logo_fill)
+                }
+            }
+        }
+
+        setActivePageIcon(dashboardPage)
+        // Button Click Listeners
         homeButton.setOnClickListener {
             activePage = dashboardPage
             pageContainer.removeAllViews()
             inflatedPage = layoutInflater.inflate(dashboardPage, null) as RelativeLayout
             pageContainer.addView(inflatedPage)
             initHomePage(inflatedPage, pageContainer)
+            setActivePageIcon(dashboardPage)
         }
+
         shopButton.setOnClickListener {
             activePage = shopPage
             pageContainer.removeAllViews()
             inflatedPage = layoutInflater.inflate(shopPage, null) as RelativeLayout
             pageContainer.addView(inflatedPage)
             initShopPage(pageContainer)
+            setActivePageIcon(shopPage)
         }
+
         cameraButton.setOnClickListener {
             activePage = cameraPage
             pageContainer.removeAllViews()
             inflatedPage = layoutInflater.inflate(cameraPage, null) as RelativeLayout
             pageContainer.addView(inflatedPage)
             initCameraPage()
+            setActivePageIcon(cameraPage)
         }
+
         cartButton.setOnClickListener {
             activePage = cartPage
             pageContainer.removeAllViews()
             inflatedPage = layoutInflater.inflate(cartPage, null) as RelativeLayout
             pageContainer.addView(inflatedPage)
             initCartPage(pageContainer)
+            setActivePageIcon(cartPage)
         }
+
         profileButton.setOnClickListener {
             activePage = profilePage
             pageContainer.removeAllViews()
             inflatedPage = layoutInflater.inflate(profilePage, null) as RelativeLayout
             pageContainer.addView(inflatedPage)
             initProfilePage()
+            setActivePageIcon(profilePage)
         }
     }
+
 
     private fun refreshDashboard(pageContainer: ViewGroup) {
         pageContainer.removeAllViews()
