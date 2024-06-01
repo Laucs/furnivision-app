@@ -537,7 +537,7 @@ class MainActivity : AppCompatActivity() {
             setActivePageIcon(dashboardPage)
         }
 
-        val shopImg: LinearLayout = findViewById(R.id.shopImg)
+        val shopImg: ImageButton = findViewById(R.id.shopImg)
         shopImg.setOnClickListener {
             pageContainer.removeAllViews()
             val inflatedPage: RelativeLayout = layoutInflater.inflate(R.layout.activity_shop, null) as RelativeLayout
