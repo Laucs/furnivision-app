@@ -495,7 +495,7 @@
                     <ImageButton
                         android:id="@+id/pop3"
                         android:tag="furnitureImage"
-                        android:layout_width="60dp"
+                        android:layout_width="50dp"
                         android:layout_height="60dp"
                         android:scaleType="centerInside"
                         android:layout_centerInParent="true"

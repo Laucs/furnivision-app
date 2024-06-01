@@ -85,6 +85,20 @@ class MainActivity : AppCompatActivity() {
         private val PRICE_FORMAT = DecimalFormat("#0.00")
     }
 
+    // Icons
+    private lateinit var imgHome: ImageView
+    private lateinit var imgShop: ImageView
+    private lateinit var imgCamera: ImageView
+    private lateinit var imgCart: ImageView
+    private lateinit var imgProfile: ImageView
+
+    // Layouts
+    private val dashboardPage = R.layout.activity_dashboard
+    private val shopPage = R.layout.activity_shop
+    private val cameraPage = R.layout.activity_camera
+    private val cartPage = R.layout.activity_cart
+    private val profilePage = R.layout.activity_profile
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -96,20 +110,12 @@ class MainActivity : AppCompatActivity() {
         val cartButton: LinearLayout = findViewById(R.id.cart_menu)
         val profileButton: LinearLayout = findViewById(R.id.profile_menu)
 
-        // Icons and TextViews
-        val imgHome: ImageView = findViewById(R.id.imgHome)
-        val imgShop: ImageView = findViewById(R.id.imgShop)
-        val imgCamera: ImageView = findViewById(R.id.imgAR)
-        val imgCart: ImageView = findViewById(R.id.imgCart)
-        val imgProfile: ImageView = findViewById(R.id.imgProfile)
-
-        // Layouts
-        val dashboardPage = R.layout.activity_dashboard
-        val shopPage = R.layout.activity_shop
-        val cameraPage = R.layout.activity_camera
-        val cartPage = R.layout.activity_cart
-        val profilePage = R.layout.activity_profile
-        activePage = dashboardPage
+        // Initialize Icons
+        imgHome = findViewById(R.id.imgHome)
+        imgShop = findViewById(R.id.imgShop)
+        imgCamera = findViewById(R.id.imgAR)
+        imgCart = findViewById(R.id.imgCart)
+        imgProfile = findViewById(R.id.imgProfile)
 
         // Navigation Logic
         val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
@@ -117,42 +123,12 @@ class MainActivity : AppCompatActivity() {
         pageContainer.addView(inflatedPage)
         initHomePage(inflatedPage, pageContainer)
 
+        // Set initial active page icon
+        setActivePageIcon(dashboardPage)
 
         // Refresh dashboard twice
         refreshDashboard(pageContainer)
 
-        // Helper function to reset icons and text colors to default
-        fun resetMenuIcons() {
-            imgHome.setImageResource(R.drawable.home_logo)
-            imgShop.setImageResource(R.drawable.shop_logo)
-            imgCamera.setImageResource(R.drawable.ar_logo)
-            imgCart.setImageResource(R.drawable.cart_logo)
-            imgProfile.setImageResource(R.drawable.profile_logo)
-        }
-
-        // Helper function to set the active page icon and text color
-        fun setActivePageIcon(page: Int) {
-            resetMenuIcons()
-            when (page) {
-                dashboardPage -> {
-                    imgHome.setImageResource(R.drawable.home_logo_fill)
-                }
-                shopPage -> {
-                    imgShop.setImageResource(R.drawable.shop_logo_fill)
-                }
-                cameraPage -> {
-                    imgCamera.setImageResource(R.drawable.ar_logo_fill)
-                }
-                cartPage -> {
-                    imgCart.setImageResource(R.drawable.cart_logo_fill)
-                }
-                profilePage -> {
-                    imgProfile.setImageResource(R.drawable.profile_logo_fill)
-                }
-            }
-        }
-
-        setActivePageIcon(dashboardPage)
         // Button Click Listeners
         homeButton.setOnClickListener {
             activePage = dashboardPage
@@ -200,48 +176,95 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // Helper function to reset icons to default
+    private fun resetMenuIcons() {
+        imgHome.setImageResource(R.drawable.home_logo)
+        imgShop.setImageResource(R.drawable.shop_logo)
+        imgCamera.setImageResource(R.drawable.ar_logo)
+        imgCart.setImageResource(R.drawable.cart_logo)
+        imgProfile.setImageResource(R.drawable.profile_logo)
+    }
+
+    // Helper function to set the active page icon
+    private fun setActivePageIcon(page: Int) {
+        resetMenuIcons()
+        when (page) {
+            dashboardPage -> {
+                imgHome.setImageResource(R.drawable.home_logo_fill)
+            }
+            shopPage -> {
+                imgShop.setImageResource(R.drawable.shop_logo_fill)
+            }
+            cameraPage -> {
+                imgCamera.setImageResource(R.drawable.ar_logo_fill)
+            }
+            cartPage -> {
+                imgCart.setImageResource(R.drawable.cart_logo_fill)
+            }
+            profilePage -> {
+                imgProfile.setImageResource(R.drawable.profile_logo_fill)
+            }
+        }
+    }
+
 
     private fun refreshDashboard(pageContainer: ViewGroup) {
         pageContainer.removeAllViews()
         val inflatedPage = layoutInflater.inflate(R.layout.activity_dashboard, null) as RelativeLayout
         pageContainer.addView(inflatedPage)
         initHomePage(inflatedPage, pageContainer)
+        setActivePageIcon(dashboardPage)
     }
 
 
     private fun initHomePage(page: RelativeLayout, pageContainer: ViewGroup) {
-        val newArrivalItem1: RelativeLayout = findViewById(R.id.newArrivalItem1)
+
+        val fav1: ImageButton = findViewById(R.id.fav1)
         val fav1open: ImageButton = findViewById(R.id.fav1_open)
-        setOnClickListener("323HM", "HMF4", pageContainer, newArrivalItem1, fav1open)
+        setOnClickListener("323HM", "HMF4", pageContainer, fav1, fav1open) {
+            setActivePageIcon(shopPage)
+        }
 
-        val newArrivalItem2: RelativeLayout = findViewById(R.id.newArrivalItem2)
+        val fav2: ImageButton = findViewById(R.id.fav2)
         val fav2open: ImageButton = findViewById(R.id.fav2_open)
-        setOnClickListener("212SG", "SGF4", pageContainer, newArrivalItem2, fav2open)
+        setOnClickListener("212SG", "SGF4", pageContainer, fav2, fav2open) {
+            setActivePageIcon(shopPage)
+        }
 
-        val newArrivalItem3: RelativeLayout = findViewById(R.id.newArrivalItem3)
+        val fav3: ImageButton = findViewById(R.id.fav3)
         val fav3open: ImageButton = findViewById(R.id.fav3_open)
-        setOnClickListener("123MF", "MFF5", pageContainer, newArrivalItem3, fav3open)
+        setOnClickListener("123MF", "MFF5", pageContainer, fav3, fav3open) {
+            setActivePageIcon(shopPage)
+        }
 
-        val popularItem1: RelativeLayout = findViewById(R.id.popular_item1)
+        val pop1: ImageButton = findViewById(R.id.pop1)
         val pop1open: ImageButton = findViewById(R.id.pop1_open)
-        setOnClickListener("123MF", "MFF4", pageContainer, popularItem1, pop1open)
+        setOnClickListener("123MF", "MFF4", pageContainer, pop1, pop1open) {
+            setActivePageIcon(shopPage)
+        }
 
-        val popularItem2: RelativeLayout = findViewById(R.id.popular_item2)
+        val pop2: ImageButton = findViewById(R.id.pop2)
         val pop2open: ImageButton = findViewById(R.id.pop2_open)
-        setOnClickListener("323HM", "HMF5", pageContainer, popularItem2, pop2open)
+        setOnClickListener("323HM", "HMF5", pageContainer, pop2, pop2open) {
+            setActivePageIcon(shopPage)
+        }
 
-        val popularItem3: RelativeLayout = findViewById(R.id.popular_item3)
+        val pop3: ImageButton = findViewById(R.id.pop3)
         val pop3open: ImageButton = findViewById(R.id.pop3_open)
-        setOnClickListener("212SG", "SGF5", pageContainer, popularItem3, pop3open)
+        setOnClickListener("212SG", "SGF5", pageContainer, pop3, pop3open) {
+            setActivePageIcon(shopPage)
+        }
     }
 
-    private fun setOnClickListener(shopID: String, furnitureID: String, pageContainer: ViewGroup, vararg views: View) {
+    private fun setOnClickListener(shopID: String, furnitureID: String, pageContainer: ViewGroup, vararg views: View, action: () -> Unit) {
         views.forEach { view ->
             view.setOnClickListener {
                 openFurnitureDirectly(shopID, furnitureID, pageContainer)
+                action()
             }
         }
     }
+
 
 
 
@@ -456,6 +479,7 @@ class MainActivity : AppCompatActivity() {
                         pageContainer.removeAllViews()
                         pageContainer.addView(inflatedPage)
                         initCameraPage()
+                        setActivePageIcon(cameraPage)
                         Toast.makeText(this@MainActivity, "Trying Furniture In AR Camera....", Toast.LENGTH_SHORT).show()
                     }
                 }
@@ -510,6 +534,7 @@ class MainActivity : AppCompatActivity() {
             pageContainer.removeAllViews()
             pageContainer.addView(inflatedPage)
             initHomePage(inflatedPage, pageContainer)
+            setActivePageIcon(dashboardPage)
         }
 
         val shopImg: ImageButton = findViewById(R.id.shopImg)
@@ -520,6 +545,7 @@ class MainActivity : AppCompatActivity() {
             pageContainer.removeAllViews()
             pageContainer.addView(inflatedPage)
             initShopPage(pageContainer)
+            setActivePageIcon(shopPage)
         }
     }
 
@@ -739,6 +765,7 @@ class MainActivity : AppCompatActivity() {
             pageContainer.removeAllViews()
             pageContainer.addView(inflatedPage)
             initHomePage(inflatedPage, pageContainer)
+            setActivePageIcon(dashboardPage)
 
         }
 
@@ -849,18 +876,21 @@ class MainActivity : AppCompatActivity() {
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_account, null) as RelativeLayout)
             initProfileEditPage()
+            setActivePageIcon(profilePage)
         }
         profilePic.setOnClickListener {
             activePage = R.layout.activity_edit_account
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_account, null) as RelativeLayout)
             initProfileEditPage()
+            setActivePageIcon(profilePage)
         }
         cartButton.setOnClickListener {
             activePage = R.layout.activity_cart
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_cart, null) as RelativeLayout)
             initCartPage(pageContainer)
+            setActivePageIcon(cartPage)
         }
 
         settingsButton.setOnClickListener {
@@ -869,6 +899,7 @@ class MainActivity : AppCompatActivity() {
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_settings, null) as RelativeLayout)
             initBackButton()
             initSettingsPage()
+            setActivePageIcon(profilePage)
         }
 
         toPayButton.setOnClickListener {
@@ -876,6 +907,7 @@ class MainActivity : AppCompatActivity() {
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_pay, null) as RelativeLayout)
             initToPayPage()
+            setActivePageIcon(profilePage)
         }
 
         toShipButton.setOnClickListener {
@@ -884,6 +916,7 @@ class MainActivity : AppCompatActivity() {
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_ship, null) as RelativeLayout)
             initBackButton()
             initToShipPage()
+            setActivePageIcon(profilePage)
         }
 
         toReceiveButton.setOnClickListener {
@@ -892,6 +925,7 @@ class MainActivity : AppCompatActivity() {
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_receive, null) as RelativeLayout)
             initBackButton()
             initToReceivePage()
+            setActivePageIcon(profilePage)
         }
 
         toRateButton.setOnClickListener {
@@ -900,6 +934,7 @@ class MainActivity : AppCompatActivity() {
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_rate, null) as RelativeLayout)
             initBackButton()
             initToRatePage()
+            setActivePageIcon(profilePage)
 
         }
 
@@ -909,6 +944,7 @@ class MainActivity : AppCompatActivity() {
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_account, null) as RelativeLayout)
             initBackButton()
             initProfileEditPage()
+            setActivePageIcon(profilePage)
         }
 
         paymentMethodsButton.setOnClickListener {
@@ -917,6 +953,7 @@ class MainActivity : AppCompatActivity() {
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_payment_methods, null) as RelativeLayout)
             initBackButton()
             initPaymentMethodsPage()
+            setActivePageIcon(profilePage)
         }
 
         deliveryAddressButton.setOnClickListener {
@@ -925,6 +962,7 @@ class MainActivity : AppCompatActivity() {
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_delivery_address, null) as RelativeLayout)
             initBackButton()
             initDeliveryAddressPage()
+            setActivePageIcon(profilePage)
         }
         refreshProfile()
     }
@@ -1417,7 +1455,7 @@ class MainActivity : AppCompatActivity() {
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_receive, null) as RelativeLayout)
             initToReceivePage()
-
+            setActivePageIcon(profilePage)
         }
 
         val toRateButton: Button = findViewById(R.id.toRateButton)
@@ -1426,6 +1464,7 @@ class MainActivity : AppCompatActivity() {
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_rate, null) as RelativeLayout)
             initToRatePage()
+            setActivePageIcon(profilePage)
         }
     }
 
@@ -1437,6 +1476,7 @@ class MainActivity : AppCompatActivity() {
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_pay, null) as RelativeLayout)
             initToPayPage()
+            setActivePageIcon(profilePage)
         }
 
         val toReceiveButton: Button = findViewById(R.id.toReceiveButton)
@@ -1445,6 +1485,7 @@ class MainActivity : AppCompatActivity() {
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_receive, null) as RelativeLayout)
             initToReceivePage()
+            setActivePageIcon(profilePage)
 
         }
 
@@ -1454,6 +1495,7 @@ class MainActivity : AppCompatActivity() {
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_rate, null) as RelativeLayout)
             initToRatePage()
+            setActivePageIcon(profilePage)
         }
     }
 
@@ -1465,6 +1507,7 @@ class MainActivity : AppCompatActivity() {
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_pay, null) as RelativeLayout)
             initToReceivePage()
+            setActivePageIcon(profilePage)
         }
 
         val toShipButton: Button = findViewById(R.id.toShipButton)
@@ -1473,6 +1516,7 @@ class MainActivity : AppCompatActivity() {
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_ship, null) as RelativeLayout)
             initToShipPage()
+            setActivePageIcon(profilePage)
         }
 
         val toRateButton: Button = findViewById(R.id.toRateButton)
@@ -1481,6 +1525,7 @@ class MainActivity : AppCompatActivity() {
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_rate, null) as RelativeLayout)
             initToRatePage()
+            setActivePageIcon(profilePage)
         }
         
     }
@@ -1493,6 +1538,7 @@ class MainActivity : AppCompatActivity() {
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_pay, null) as RelativeLayout)
             initToPayPage()
+            setActivePageIcon(profilePage)
         }
 
         val toShipButton: Button = findViewById(R.id.toShipButton)
@@ -1501,6 +1547,7 @@ class MainActivity : AppCompatActivity() {
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_ship, null) as RelativeLayout)
             initToShipPage()
+            setActivePageIcon(profilePage)
         }
 
         val toReceiveButton: Button = findViewById(R.id.toReceiveButton)
@@ -1509,6 +1556,7 @@ class MainActivity : AppCompatActivity() {
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_to_receive, null) as RelativeLayout)
             initToReceivePage()
+            setActivePageIcon(profilePage)
         }
     }
 
@@ -1571,6 +1619,7 @@ class MainActivity : AppCompatActivity() {
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_about, null) as RelativeLayout)
             initAboutPage()
+            setActivePageIcon(profilePage)
 
         }
         changePassButton.setOnClickListener {
@@ -1578,6 +1627,7 @@ class MainActivity : AppCompatActivity() {
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_change_password, null) as RelativeLayout)
             initChangePassPage()
+            setActivePageIcon(profilePage)
         }
         rateUsButton.setOnClickListener {
             try {
@@ -1595,6 +1645,7 @@ class MainActivity : AppCompatActivity() {
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_settings, null) as RelativeLayout)
             initSettingsPage()
+            setActivePageIcon(profilePage)
         }
 
         val editCurrentPass: EditText = findViewById(R.id.editCurrentPass)
@@ -1679,6 +1730,7 @@ class MainActivity : AppCompatActivity() {
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_settings, null) as RelativeLayout)
             initSettingsPage()
+            setActivePageIcon(profilePage)
         }
 
         clearCacheButton.setOnClickListener {
@@ -1698,6 +1750,7 @@ class MainActivity : AppCompatActivity() {
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_profile, null) as RelativeLayout)
             initProfilePage()
+            setActivePageIcon(profilePage)
         }
     }
 
@@ -1708,6 +1761,7 @@ class MainActivity : AppCompatActivity() {
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_edit_account, null) as RelativeLayout)
             initProfileEditPage()
+            setActivePageIcon(profilePage)
         }
     }
 
