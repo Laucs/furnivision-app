@@ -218,39 +218,40 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun initHomePage(page: RelativeLayout, pageContainer: ViewGroup) {
-        val newArrivalItem1: RelativeLayout = findViewById(R.id.newArrivalItem1)
+
+        val fav1: ImageButton = findViewById(R.id.fav1)
         val fav1open: ImageButton = findViewById(R.id.fav1_open)
-        setOnClickListener("323HM", "HMF4", pageContainer, newArrivalItem1, fav1open) {
+        setOnClickListener("323HM", "HMF4", pageContainer, fav1, fav1open) {
             setActivePageIcon(shopPage)
         }
 
-        val newArrivalItem2: RelativeLayout = findViewById(R.id.newArrivalItem2)
+        val fav2: ImageButton = findViewById(R.id.fav2)
         val fav2open: ImageButton = findViewById(R.id.fav2_open)
-        setOnClickListener("212SG", "SGF4", pageContainer, newArrivalItem2, fav2open) {
+        setOnClickListener("212SG", "SGF4", pageContainer, fav2, fav2open) {
             setActivePageIcon(shopPage)
         }
 
-        val newArrivalItem3: RelativeLayout = findViewById(R.id.newArrivalItem3)
+        val fav3: ImageButton = findViewById(R.id.fav3)
         val fav3open: ImageButton = findViewById(R.id.fav3_open)
-        setOnClickListener("123MF", "MFF5", pageContainer, newArrivalItem3, fav3open) {
+        setOnClickListener("123MF", "MFF5", pageContainer, fav3, fav3open) {
             setActivePageIcon(shopPage)
         }
 
-        val popularItem1: RelativeLayout = findViewById(R.id.popular_item1)
+        val pop1: ImageButton = findViewById(R.id.pop1)
         val pop1open: ImageButton = findViewById(R.id.pop1_open)
-        setOnClickListener("123MF", "MFF4", pageContainer, popularItem1, pop1open) {
+        setOnClickListener("123MF", "MFF4", pageContainer, pop1, pop1open) {
             setActivePageIcon(shopPage)
         }
 
-        val popularItem2: RelativeLayout = findViewById(R.id.popular_item2)
+        val pop2: ImageButton = findViewById(R.id.pop2)
         val pop2open: ImageButton = findViewById(R.id.pop2_open)
-        setOnClickListener("323HM", "HMF5", pageContainer, popularItem2, pop2open) {
+        setOnClickListener("323HM", "HMF5", pageContainer, pop2, pop2open) {
             setActivePageIcon(shopPage)
         }
 
-        val popularItem3: RelativeLayout = findViewById(R.id.popular_item3)
+        val pop3: ImageButton = findViewById(R.id.pop3)
         val pop3open: ImageButton = findViewById(R.id.pop3_open)
-        setOnClickListener("212SG", "SGF5", pageContainer, popularItem3, pop3open) {
+        setOnClickListener("212SG", "SGF5", pageContainer, pop3, pop3open) {
             setActivePageIcon(shopPage)
         }
     }
@@ -536,7 +537,7 @@ class MainActivity : AppCompatActivity() {
             setActivePageIcon(dashboardPage)
         }
 
-        val shopImg: ImageButton = findViewById(R.id.shopImg)
+        val shopImg: LinearLayout = findViewById(R.id.shopImg)
         shopImg.setOnClickListener {
             pageContainer.removeAllViews()
             val inflatedPage: RelativeLayout = layoutInflater.inflate(R.layout.activity_shop, null) as RelativeLayout

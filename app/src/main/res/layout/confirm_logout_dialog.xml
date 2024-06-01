@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="40dp">
+    android:padding="25dp">
 
     <RelativeLayout
         android:id="@+id/header"
@@ -13,7 +13,7 @@
             android:id="@+id/warningIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
+
             android:fontFamily="@font/spartan_medium"
             android:textStyle="bold"
             android:textSize="20sp"
@@ -28,7 +28,6 @@
             android:text="Are you sure you want to log out?"
             android:gravity="center"
             android:textSize="12sp"
-            android:layout_centerHorizontal="true"
             />
     </RelativeLayout>
     <LinearLayout
@@ -36,7 +35,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center">
+        android:gravity="end">
         <Button
             android:id="@+id/cancelButton"
             android:layout_width="wrap_content"
@@ -53,7 +52,7 @@
             android:id="@+id/confirmLogoutButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/design_default_color_error"
+            android:background="@color/primary"
             android:fontFamily="@font/spartan_medium"
             android:layout_toEndOf="@id/editButton"
             android:padding="10dp"

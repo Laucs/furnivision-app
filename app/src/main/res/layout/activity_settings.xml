@@ -80,7 +80,7 @@
                 android:layout_alignParentEnd="true"
                 android:textSize="15sp"
                 android:fontFamily="@font/montserrat"
-                android:textColor="@color/black"
+                android:textColor="#747474"
                 android:layout_marginEnd="15dp"/>
         </RelativeLayout>
 
@@ -214,15 +214,8 @@
                 android:layout_toEndOf="@id/logoutIcon"
                 android:fontFamily="@font/montserrat"
                 android:text="Logout"
-                android:textColor="@color/black"
+                android:textColor="#ff0000"
                 android:textSize="15sp" />
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="15dp"
-                android:background="@drawable/right_next_icon" />
         </RelativeLayout>
 
 

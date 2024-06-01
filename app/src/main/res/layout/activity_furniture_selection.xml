@@ -35,16 +35,30 @@
             android:textColor="@color/white"
             android:textSize="20sp" />
 
-        <ImageButton
-            android:id="@+id/shopImg"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+        <LinearLayout
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="15dp"
-            android:scaleType="fitCenter"
-            android:background="@drawable/shop_icon"
-            android:contentDescription="Back" />
+            android:orientation="vertical"
+            android:gravity="center">
+            <ImageButton
+                android:id="@+id/shopImg"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:scaleType="fitCenter"
+                android:background="@drawable/shop_icon" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#396057"
+                android:fontFamily="@font/spartan_medium"
+                android:text="View Shop"
+                android:textColor="@color/white"
+                android:textSize="10sp" />
+        </LinearLayout>
 
     </RelativeLayout>
 
@@ -111,7 +125,6 @@
                 android:layout_above="@+id/furnibtns"
                 android:scrollbarAlwaysDrawVerticalTrack="true"
                 android:scrollbars="vertical">
-
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -205,7 +218,7 @@
                               android:layout_height="20dp"
                               android:fontFamily="@font/glacial_indifference_regular"
                               android:textSize="13sp"
-                              android:background="@drawable/circle_bg"
+                              android:background="#747474"
                               />
                           <TextView
                               android:id="@+id/color2"
@@ -215,7 +228,7 @@
                               android:layout_toEndOf="@id/color1"
                               android:fontFamily="@font/glacial_indifference_regular"
                               android:textSize="13sp"
-                              android:background="@drawable/circle_bg"
+                              android:background="#747474"
                               />
                       </RelativeLayout>
                   </RelativeLayout>
