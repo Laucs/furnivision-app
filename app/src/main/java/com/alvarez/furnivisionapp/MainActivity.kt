@@ -1,6 +1,5 @@
 package com.alvarez.furnivisionapp
-import com.alvarez.furnivisionapp.utils.DeliveryAddressAdapter
-import com.alvarez.furnivisionapp.utils.CartListAdapter
+import UserAccount
 import android.annotation.SuppressLint
 import android.content.ContentValues.TAG
 import android.content.Context
@@ -10,13 +9,9 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.hardware.camera2.CameraManager
 import android.icu.text.DecimalFormat
-import android.media.Image
 import android.net.Uri
 import android.os.Bundle
-import android.provider.ContactsContract.CommonDataKinds.Im
-import android.text.Editable
 import android.text.InputType
-import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.TextureView
@@ -37,39 +32,38 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.SearchView
-import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat
-import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.transition.Visibility
 import com.alvarez.furnivisionapp.data.AuthUtility
 import com.alvarez.furnivisionapp.data.CartItem
-import com.alvarez.furnivisionapp.data.Furniture
-import com.alvarez.furnivisionapp.data.Shop
 import com.alvarez.furnivisionapp.data.DeliveryAddress
-import com.alvarez.furnivisionapp.utils.CameraFunctions
-import com.alvarez.furnivisionapp.utils.HomePageFunctions
-import com.alvarez.furnivisionapp.utils.ShopListAdapter
+import com.alvarez.furnivisionapp.data.Furniture
+import com.alvarez.furnivisionapp.data.Order
 import com.alvarez.furnivisionapp.data.SessionManager
+import com.alvarez.furnivisionapp.data.Shop
 import com.alvarez.furnivisionapp.data.ShopCart
+import com.alvarez.furnivisionapp.utils.CameraFunctions
+import com.alvarez.furnivisionapp.utils.CartListAdapter
+import com.alvarez.furnivisionapp.utils.DBFurnitureAdapter
+import com.alvarez.furnivisionapp.utils.DeliveryAddressAdapter
+import com.alvarez.furnivisionapp.utils.HomePageFunctions
 import com.alvarez.furnivisionapp.utils.SearchListAdapter
+import com.alvarez.furnivisionapp.utils.ShopListAdapter
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldPath
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
-import org.w3c.dom.Text
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.util.Calendar
 import java.util.Date
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -79,10 +73,15 @@ class MainActivity : AppCompatActivity() {
     private lateinit var activeButton: LinearLayout
     private lateinit var database: FirebaseFirestore
     private var cartList: MutableList<ShopCart>? = mutableListOf()
+    private var shops: List<Shop> = mutableListOf()
+    private var furnitures: MutableList<Furniture> = mutableListOf()
+    private var orders: MutableList<Order> = mutableListOf()
+    private lateinit var userDetails: UserAccount
+    private lateinit var email: String
 
     companion object {
-        private const val ONE_MEGABYTE: Long = 1024 * 1024
-        private val PRICE_FORMAT = DecimalFormat("#0.00")
+        const val ONE_MEGABYTE: Long = 1024 * 1024
+        val PRICE_FORMAT = DecimalFormat("#0.00")
     }
 
     // Icons
@@ -98,10 +97,64 @@ class MainActivity : AppCompatActivity() {
     private val cameraPage = R.layout.activity_camera
     private val cartPage = R.layout.activity_cart
     private val profilePage = R.layout.activity_profile
+    private fun getUserDetails() {
+        database = FirebaseFirestore.getInstance()
+        database.collection("users")
+            .whereEqualTo("email", email)
+            .get()
+            .addOnSuccessListener { result: QuerySnapshot ->
+                if (!result.isEmpty) {
+                    val document = result.documents[0]
+                    userDetails = document.toObject(UserAccount::class.java)?.apply {
+                        userId = document.id
+                    }!!
+                }
+            }
+            .addOnFailureListener { e: Exception ->
+                Log.w(TAG, "Error getting phone number", e)
+            }
+    }
+    private fun getShops() {
+        database = FirebaseFirestore.getInstance()
+        database.collection("shops").get()
+            .addOnSuccessListener { result: QuerySnapshot ->
+                shops = result.documents.mapNotNull { document ->
+                    document.toObject(Shop::class.java)?.apply {
+                        id = document.id
+                    }
+                }
+            }
+            .addOnFailureListener { e: Exception ->
+                Log.d(TAG, "Error fetching documents: $e")
+            }
+    }
 
+    private fun getFurniture() {
+        database = FirebaseFirestore.getInstance()
+        database.collection("furniture")
+            .orderBy("name", Query.Direction.DESCENDING)
+            .get()
+            .addOnSuccessListener { result: QuerySnapshot ->
+                furnitures = result.documents.mapNotNull { document ->
+                    document.toObject(Furniture::class.java)?.apply {
+                        id = document.id
+                    }
+
+                }.toMutableList()
+            }
+            .addOnFailureListener { e: Exception ->
+                Log.d(TAG, "Error fetching documents: $e")
+            }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        database = FirebaseFirestore.getInstance()
+        email = SessionManager.getUserEmail(this) ?: ""
+        getShops()
+        getFurniture()
+        getUserDetails()
 
         // Navigation Buttons
         val homeButton: LinearLayout = findViewById(R.id.home_menu)
@@ -219,41 +272,173 @@ class MainActivity : AppCompatActivity() {
 
     private fun initHomePage(page: RelativeLayout, pageContainer: ViewGroup) {
 
-        val fav1: ImageButton = findViewById(R.id.fav1)
-        val fav1open: ImageButton = findViewById(R.id.fav1_open)
-        setOnClickListener("323HM", "HMF4", pageContainer, fav1, fav1open) {
-            setActivePageIcon(shopPage)
-        }
+        database = FirebaseFirestore.getInstance()
+        database.collection("furniture").whereEqualTo("sold", 0).get()
+            .addOnSuccessListener { result: QuerySnapshot ->
+                var newArrivalList: MutableList<Furniture> = mutableListOf()
 
-        val fav2: ImageButton = findViewById(R.id.fav2)
-        val fav2open: ImageButton = findViewById(R.id.fav2_open)
-        setOnClickListener("212SG", "SGF4", pageContainer, fav2, fav2open) {
-            setActivePageIcon(shopPage)
-        }
+                for (document in result.documents) {
+                    // Create a Furniture object with the document data and document ID
+                    val furniture = Furniture(
+                        id = document.id,
+                        img = document.getString("img"),
+                        name = document.getString("name"),
+                        description = document.getString("description"),
+                        price = document.getDouble("price"),
+                        dimensions = document.getString("dimensions"),
+                        stocks = document.getLong("stocks")?.toInt(),
+                        rating = document.getDouble("rating"),
+                        sold = document.getLong("sold")?.toInt(),
+                        shopID = document.getString("shopID"),
+                        colors = document.get("colors") as? List<String>
+                    )
+                    // Add the Furniture object to the list
+                    newArrivalList.add(furniture)
+                }
+                if (newArrivalList.size == 0) {
+                    val newArrivalContent: RelativeLayout = findViewById(R.id.new_arrival_content)
+                    newArrivalContent.visibility = View.GONE
+                }
 
-        val fav3: ImageButton = findViewById(R.id.fav3)
-        val fav3open: ImageButton = findViewById(R.id.fav3_open)
-        setOnClickListener("123MF", "MFF5", pageContainer, fav3, fav3open) {
-            setActivePageIcon(shopPage)
-        }
+                val newArrivalListView: RecyclerView = findViewById(R.id.new_arrival_recyclerview)
+                val newArrivalAdapter = DBFurnitureAdapter(newArrivalList)
 
-        val pop1: ImageButton = findViewById(R.id.pop1)
-        val pop1open: ImageButton = findViewById(R.id.pop1_open)
-        setOnClickListener("123MF", "MFF4", pageContainer, pop1, pop1open) {
-            setActivePageIcon(shopPage)
-        }
+                newArrivalAdapter.setOnItemClickListener(object : DBFurnitureAdapter.OnItemClickListener {
+                    @SuppressLint("InflateParams")
+                    override fun onItemClick(item: Furniture) {
+                        pageContainer.removeAllViews()
+                        val inflatedPage = layoutInflater.inflate(R.layout.activity_furniture_selection, null) as ViewGroup
+                        pageContainer.addView(inflatedPage)
+                        item.shopID?.let { initFurniSelectPage(it, pageContainer, item.name) }
+                    }
+                })
 
-        val pop2: ImageButton = findViewById(R.id.pop2)
-        val pop2open: ImageButton = findViewById(R.id.pop2_open)
-        setOnClickListener("323HM", "HMF5", pageContainer, pop2, pop2open) {
-            setActivePageIcon(shopPage)
-        }
+                newArrivalListView.apply {
+                    adapter = newArrivalAdapter
+                    layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
+                }
 
-        val pop3: ImageButton = findViewById(R.id.pop3)
-        val pop3open: ImageButton = findViewById(R.id.pop3_open)
-        setOnClickListener("212SG", "SGF5", pageContainer, pop3, pop3open) {
-            setActivePageIcon(shopPage)
-        }
+                Log.d("sa", newArrivalList.size.toString())
+
+
+
+                Log.d("New Arrivals", result.documents.size.toString())
+                Log.d("New Arrivals List", newArrivalList.toList().toString())
+            }
+            .addOnFailureListener { e: Exception ->
+
+                Log.d(TAG, "Error fetching documents: $e")
+            }
+
+
+        database.collection("furniture")
+            .orderBy("sold", Query.Direction.DESCENDING)
+            .limit(7)
+            .get()
+            .addOnSuccessListener { result: QuerySnapshot ->
+                val popularsRecyclerView: RecyclerView = findViewById(R.id.popular_recycler_view)
+                val topSellingList = mutableListOf<Furniture>()
+                for (document in result.documents) {
+                    // Create a Furniture object with the document data and document ID
+                    val furniture = Furniture(
+                        id = document.id,
+                        img = document.getString("img"),
+                        name = document.getString("name"),
+                        description = document.getString("description"),
+                        price = document.getDouble("price"),
+                        dimensions = document.getString("dimensions"),
+                        stocks = document.getLong("stocks")?.toInt(),
+                        rating = document.getDouble("rating"),
+                        sold = document.getLong("sold")?.toInt(),
+                        shopID = document.getString("shopID"),
+                        colors = document.get("colors") as? List<String>
+                    )
+                    // Add the Furniture object to the list
+                    topSellingList.add(furniture)
+                    Log.d("List", furniture.toString())
+                }
+                val popularsAdapter = DBFurnitureAdapter(topSellingList)
+                if (popularsAdapter.itemCount == 0) {
+                val popularContent: RelativeLayout = findViewById(R.id.popular_content)
+                popularContent.visibility = View.GONE
+            }
+                popularsAdapter.setOnItemClickListener(object : DBFurnitureAdapter.OnItemClickListener {
+                    @SuppressLint("InflateParams")
+                    override fun onItemClick(item: Furniture) {
+                        pageContainer.removeAllViews()
+                        val inflatedPage = layoutInflater.inflate(R.layout.activity_furniture_selection, null) as ViewGroup
+                        pageContainer.addView(inflatedPage)
+                        item.shopID?.let { initFurniSelectPage(it, pageContainer, item.name) }
+                    }
+                })
+
+                popularsRecyclerView.apply {
+                    adapter = popularsAdapter
+                    layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
+                }
+            }
+            .addOnFailureListener { e: Exception ->
+                Log.d(TAG, "Error fetching documents: $e")
+            }
+
+        val searchBar: androidx.appcompat.widget.SearchView = findViewById(R.id.search_bar)
+        val contentScroll: ScrollView = findViewById(R.id.scroll_content)
+        val searchListView: ListView = findViewById(R.id.search_list_view)
+        var furnitureList: List<Furniture> = furnitures
+
+
+        val searchAdapter = SearchListAdapter(this, furnitureList)
+        searchListView.adapter = searchAdapter
+
+        searchBar.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                // Handle search action (optional)
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                val isSearchEmpty = newText.isNullOrEmpty()
+                Log.d(TAG, "Search text changed: $newText")
+
+                contentScroll.visibility = if (isSearchEmpty) View.VISIBLE else View.GONE
+                searchListView.visibility = if (isSearchEmpty) View.GONE else View.VISIBLE
+
+                if (!isSearchEmpty) {
+                    newText?.let {
+                        val filteredList = furnitureList.filter { furniture ->
+                            furniture.name?.contains(it, ignoreCase = true) ?: false
+                        }
+                        (searchListView.adapter as SearchListAdapter).updateList(filteredList)
+                        Log.d(TAG, "Filtered list updated with ${filteredList.size} items")
+                    }
+                }
+
+                searchListView.setOnItemClickListener { parent, view, position, id  ->
+                    // Get the Furniture object corresponding to the clicked item
+                    var clickedFurniture: Furniture? = null
+                    val furnitureName: TextView = view.findViewById(R.id.search_item)
+
+                    for (furniture in furnitureList) {
+                        if  (furnitureName.text.toString() == furniture.name) {
+                            clickedFurniture = furniture
+                        }
+                    }
+
+                    // Now you can use the data from the clicked Furniture object as needed
+                    val furnitureShopID = clickedFurniture?.shopID
+
+                    // Perform further actions based on the clicked item's data
+                    pageContainer.removeAllViews()
+                    val inflatedPage = layoutInflater.inflate(R.layout.activity_furniture_selection, null) as ViewGroup
+                    pageContainer.addView(inflatedPage)
+                    if (furnitureShopID != null) {
+                        setActivePageIcon(shopPage)
+                        initFurniSelectPage(furnitureShopID, pageContainer, furnitureName.text.toString())
+                    }
+                }
+                return true
+            }
+        })
     }
 
     private fun setOnClickListener(shopID: String, furnitureID: String, pageContainer: ViewGroup, vararg views: View, action: () -> Unit) {
@@ -264,9 +449,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
-
-
 
     private fun openFurnitureDirectly(shopID: String, furnitureID: String, pageContainer: ViewGroup) {
         val database = FirebaseFirestore.getInstance()
@@ -336,7 +518,7 @@ class MainActivity : AppCompatActivity() {
                 pageContainer.removeAllViews()
                 val inflatedPage = layoutInflater.inflate(R.layout.activity_furniture_selection, null) as ViewGroup
                 pageContainer.addView(inflatedPage)
-                initFurniSelectPage(shopID, pageContainer, furnitureID = null)
+                initFurniSelectPage(shopID, pageContainer, null)
             }
         })
 
@@ -381,8 +563,9 @@ class MainActivity : AppCompatActivity() {
 
 
     @SuppressLint("SetTextI18n", "DefaultLocale", "CommitPrefEdits", "InflateParams")
-    private fun initFurniSelectPage(shopID: String, pageContainer: ViewGroup, furnitureID: String? = null) {
+    private fun initFurniSelectPage(shopID: String, pageContainer: ViewGroup, furnitureName: String? = null) {
         var index: Int = 0
+
         database = FirebaseFirestore.getInstance()
 
         database.collection("furniture").whereEqualTo("shopID", shopID).get()
@@ -391,14 +574,17 @@ class MainActivity : AppCompatActivity() {
                     document.toObject(Furniture::class.java)?.apply {
                         id = document.id
                     }
+
                 }
 
+                var fIndex = 0
                 // Find the index of the furnitureID in the list
-                furnitureID?.let {
-                    val furnitureIndex = furnitures.indexOfFirst { it.id == furnitureID }
-                    if (furnitureIndex != -1) {
-                        index = furnitureIndex
-                    }
+                for (furnitureItem in furnitures) {
+                    if (furnitureName == furnitureItem.name) {
+                        index = fIndex
+                        Log.d("name", furnitures[index].id + "-" + furnitures[index].name)
+                        break
+                    }else fIndex++
                 }
 
                 Log.d("Open Cart", cartList.toString())
@@ -416,8 +602,6 @@ class MainActivity : AppCompatActivity() {
                 val rateTextView: TextView = findViewById(R.id.rateTV)
                 val dimensionsTextView: TextView = findViewById(R.id.furnitureDimensions)
                 val stocksTextView: TextView = findViewById(R.id.furnitureStocks)
-
-
 
                 //for colors
                 val color1TextView: TextView = findViewById(R.id.color1)
@@ -528,6 +712,7 @@ class MainActivity : AppCompatActivity() {
         val backBtn: ImageButton = findViewById(R.id.backBtn)
 
         backBtn.setOnClickListener {
+            index = 0
             pageContainer.removeAllViews()
             val inflatedPage: RelativeLayout = layoutInflater.inflate(R.layout.activity_dashboard, null) as RelativeLayout
             activePage = R.layout.activity_dashboard
@@ -665,13 +850,14 @@ class MainActivity : AppCompatActivity() {
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_cart, null) as RelativeLayout)
             initCartPage(pageContainer)
         }
-        val productProtectSubtotal = 0
-        val shipSubtotal = 0
+        val productProtectSubtotal = 1000
+        val shipSubtotal = 1000
         val merchSubTotalValue = cartList?.let { calculateTotalPrice(it) } ?: 0.0
         val merchSubTotal = "₱ " + PRICE_FORMAT.format(merchSubTotalValue)
 
         val totalPaymentValue = productProtectSubtotal + shipSubtotal + merchSubTotalValue
         val totalPayment = "₱ " + PRICE_FORMAT.format(totalPaymentValue)
+
 
 
         orderProductProtectTextView.text = productProtectSubtotal.toString()
@@ -703,6 +889,11 @@ class MainActivity : AppCompatActivity() {
             // Get current timestamp
             val today = Date()
 
+            val calendar = Calendar.getInstance()
+            calendar.time = today
+            calendar.add(Calendar.DAY_OF_MONTH, 10)
+            val arrivalDate = calendar.time
+
             // Get the user's email
             val email = SessionManager.getUserEmail(this)
 
@@ -718,8 +909,9 @@ class MainActivity : AppCompatActivity() {
                         // Create a hashmap to store order details including user ID
                         val order = hashMapOf(
                             "timestamp" to today,
-                            "furnitures" to furnitureIds,
-                            "userID" to userId
+                            "items" to cartList,
+                            "userID" to userId,
+                            "dateOfArrival" to arrivalDate
                         )
 
                         // Add the order to the "orders" collection along with the user ID
