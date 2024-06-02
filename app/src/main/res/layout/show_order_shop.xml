@@ -4,9 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
-    android:layout_margin="20dp"
-    app:contentPadding="10dp"
-    app:cardCornerRadius="15dp"
+    android:layout_marginBottom="10dp"
     >
     <RelativeLayout
         android:layout_width="match_parent"
@@ -17,6 +15,9 @@
             android:id="@+id/order_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
             >
             <androidx.cardview.widget.CardView
                 android:id="@+id/order_shop_logo"
@@ -60,31 +61,34 @@
                 android:text="2000"
                 tools:ignore="InvalidId" />
 
-            <TextView
-                android:id="@+id/item_date_arrival"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:textStyle="bold"
-                android:textAllCaps="true"
-                android:textSize="20sp"
-                android:text="2000"
-                />
+
 
         </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/order_header"
+            android:paddingHorizontal="30dp"
+            android:layout_marginBottom="15dp"
             >
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/cart_items_view"
+            <TextView
+                android:id="@+id/order_list_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textSize="17sp"
+                android:text="Orders"
+                />
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/order_items_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/order_list_title"
+                android:layout_marginTop="5dp"
+                android:elevation="10dp"
                 />
         </RelativeLayout>
-
-
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

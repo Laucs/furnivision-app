@@ -95,18 +95,47 @@
     </LinearLayout>
 
     <RelativeLayout
+        android:id="@+id/orders_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="50dp"
         android:layout_below="@id/header"
-        android:layout_marginTop="20dp"
         >
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/order_recycler_view"
-            android:layout_marginTop="30dp"
+            android:id="@+id/orders_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             />
     </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/no_orders_section"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:layout_below="@id/header">
 
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="40dp"
+            android:fontFamily="@font/spartan_medium"
+            android:text="No Orders Yet"
+            android:layout_marginTop="10dp"
+            android:layout_below="@id/ordersIcon"
+            android:textStyle="bold"
+            android:textSize="20sp" />
+
+        <ImageView
+            android:id="@+id/ordersIcon"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="250dp"
+            android:contentDescription="Back"
+            android:src="@drawable/no_orders_icon" />
+
+    </RelativeLayout>
 </RelativeLayout>
