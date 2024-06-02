@@ -273,7 +273,7 @@ class MainActivity : AppCompatActivity() {
     private fun initHomePage(page: RelativeLayout, pageContainer: ViewGroup) {
 
         database = FirebaseFirestore.getInstance()
-        database.collection("furniture").whereEqualTo("sold", 0).get()
+        database.collection("furniture").whereLessThan("sold", 10).get()
             .addOnSuccessListener { result: QuerySnapshot ->
                 var newArrivalList: MutableList<Furniture> = mutableListOf()
 
@@ -281,7 +281,7 @@ class MainActivity : AppCompatActivity() {
                     // Create a Furniture object with the document data and document ID
                     val furniture = Furniture(
                         id = document.id,
-                        img = document.getString("img"),
+                        img = document.getString("imgPNG"),
                         name = document.getString("name"),
                         description = document.getString("description"),
                         price = document.getDouble("price"),
@@ -305,13 +305,30 @@ class MainActivity : AppCompatActivity() {
 
                 newArrivalAdapter.setOnItemClickListener(object : DBFurnitureAdapter.OnItemClickListener {
                     @SuppressLint("InflateParams")
+                    //for whole item
                     override fun onItemClick(item: Furniture) {
                         pageContainer.removeAllViews()
                         val inflatedPage = layoutInflater.inflate(R.layout.activity_furniture_selection, null) as ViewGroup
                         pageContainer.addView(inflatedPage)
                         item.shopID?.let { initFurniSelectPage(it, pageContainer, item.name) }
                     }
+                    //for button
+                    override fun onLinkButtonClick(item: Furniture) {
+                        pageContainer.removeAllViews()
+                        val inflatedPage = layoutInflater.inflate(R.layout.activity_furniture_selection, null) as ViewGroup
+                        pageContainer.addView(inflatedPage)
+                        item.shopID?.let { initFurniSelectPage(it, pageContainer, item.name) }
+                    }
+                    //for image
+                    override fun onItemImageClick(item: Furniture) {
+                        pageContainer.removeAllViews()
+                        val inflatedPage = layoutInflater.inflate(R.layout.activity_furniture_selection, null) as ViewGroup
+                        pageContainer.addView(inflatedPage)
+                        item.shopID?.let { initFurniSelectPage(it, pageContainer, item.name) }
+                    }
                 })
+
+
 
                 newArrivalListView.apply {
                     adapter = newArrivalAdapter
@@ -342,7 +359,7 @@ class MainActivity : AppCompatActivity() {
                     // Create a Furniture object with the document data and document ID
                     val furniture = Furniture(
                         id = document.id,
-                        img = document.getString("img"),
+                        img = document.getString("imgPNG"),
                         name = document.getString("name"),
                         description = document.getString("description"),
                         price = document.getDouble("price"),
@@ -360,11 +377,27 @@ class MainActivity : AppCompatActivity() {
                 val popularsAdapter = DBFurnitureAdapter(topSellingList)
                 if (popularsAdapter.itemCount == 0) {
                 val popularContent: RelativeLayout = findViewById(R.id.popular_content)
+
                 popularContent.visibility = View.GONE
             }
                 popularsAdapter.setOnItemClickListener(object : DBFurnitureAdapter.OnItemClickListener {
                     @SuppressLint("InflateParams")
+                    //for whole item
                     override fun onItemClick(item: Furniture) {
+                        pageContainer.removeAllViews()
+                        val inflatedPage = layoutInflater.inflate(R.layout.activity_furniture_selection, null) as ViewGroup
+                        pageContainer.addView(inflatedPage)
+                        item.shopID?.let { initFurniSelectPage(it, pageContainer, item.name) }
+                    }
+                    //for button
+                    override fun onLinkButtonClick(item: Furniture) {
+                        pageContainer.removeAllViews()
+                        val inflatedPage = layoutInflater.inflate(R.layout.activity_furniture_selection, null) as ViewGroup
+                        pageContainer.addView(inflatedPage)
+                        item.shopID?.let { initFurniSelectPage(it, pageContainer, item.name) }
+                    }
+                    //for image
+                    override fun onItemImageClick(item: Furniture) {
                         pageContainer.removeAllViews()
                         val inflatedPage = layoutInflater.inflate(R.layout.activity_furniture_selection, null) as ViewGroup
                         pageContainer.addView(inflatedPage)

@@ -52,6 +52,7 @@
                 android:id="@+id/item_ratings"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
                 />
 
             <ImageButton

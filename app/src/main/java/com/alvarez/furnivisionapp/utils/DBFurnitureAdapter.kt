@@ -20,6 +20,8 @@ class DBFurnitureAdapter (private var furnitures: MutableList<Furniture>) :
 
     interface OnItemClickListener {
         fun onItemClick(item: Furniture)
+        fun onLinkButtonClick(item: Furniture)
+        fun onItemImageClick(item: Furniture)
     }
     private var listener: OnItemClickListener? = null
 
@@ -30,6 +32,7 @@ class DBFurnitureAdapter (private var furnitures: MutableList<Furniture>) :
         val furnitureRatings: TextView = itemView.findViewById(R.id.item_ratings)
         val furnitureSold: TextView = itemView.findViewById(R.id.item_solds)
         val linkButton: ImageButton = itemView.findViewById(R.id.item_link)
+        val itemImage: ImageButton = itemView.findViewById(R.id.item_image)
     }
 
     fun setOnItemClickListener(listener: OnItemClickListener) {
@@ -61,6 +64,16 @@ class DBFurnitureAdapter (private var furnitures: MutableList<Furniture>) :
         viewHolder.itemView.setOnClickListener {
             if (furniture.id?.isNotEmpty() == true) {
                 listener?.onItemClick(furniture)
+            }
+        }
+        viewHolder.linkButton.setOnClickListener {
+            if (furniture.id?.isNotEmpty() == true) {
+                listener?.onLinkButtonClick(furniture)
+            }
+        }
+        viewHolder.linkButton.setOnClickListener {
+            if (furniture.id?.isNotEmpty() == true) {
+                listener?.onItemImageClick(furniture)
             }
         }
     }
