@@ -40,11 +40,11 @@ class CartItemListAdapter(private val shopCart: ShopCart, private val onItemChan
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: InnerViewHolder, position: Int) {
         val item = shopCart.items?.get(position)
-        val totalPrice = item?.furniture?.price?.times(item.quantity)
+        val totalPrice = item?.quantity?.let { item.furniture?.price?.times(it) }
 
         // Load image from Firebase Storage
         if (item != null) {
-            item.furniture.img?.let { imageUrl ->
+            item.furniture?.img?.let { imageUrl ->
                 val storageReference = Firebase.storage.getReferenceFromUrl(imageUrl)
                 storageReference.getBytes(ONE_MEGABYTE).addOnSuccessListener { bytes ->
                     val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
@@ -55,10 +55,10 @@ class CartItemListAdapter(private val shopCart: ShopCart, private val onItemChan
 
         // Bind data to views
         if (item != null) {
-            holder.itemTitleView.text = item.furniture.name
+            holder.itemTitleView.text = item.furniture?.name ?: ""
         }
         if (item != null) {
-            holder.itemDescTextView.text = item.furniture.description
+            holder.itemDescTextView.text = item.furniture?.description ?: ""
         }
         holder.itemPriceTextView.text = "₱ ${PRICE_FORMAT.format(totalPrice)}"
         if (item != null) {
@@ -68,7 +68,7 @@ class CartItemListAdapter(private val shopCart: ShopCart, private val onItemChan
         // Add button click listener
         holder.itemAddButton.setOnClickListener {
             if (item != null) {
-                updateItemQuantity(position, item.quantity + 1)
+                updateItemQuantity(position, item.quantity?.plus(1) ?: 1)
             }
         }
 
@@ -89,7 +89,7 @@ class CartItemListAdapter(private val shopCart: ShopCart, private val onItemChan
 
     private fun updateItemQuantity(position: Int, newQuantity: Int) {
         // Return if item is null or position is out of bounds
-        val item = shopCart.items.get(position)
+        val item = shopCart.items?.get(position)
         if (item == null) {
             return
         }
@@ -99,6 +99,6 @@ class CartItemListAdapter(private val shopCart: ShopCart, private val onItemChan
     }
 
     override fun getItemCount(): Int {
-        return shopCart.items.size
+        return shopCart.items?.size ?: 0
     }
 }

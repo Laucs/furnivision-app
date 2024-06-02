@@ -48,6 +48,7 @@ import com.alvarez.furnivisionapp.utils.CartListAdapter
 import com.alvarez.furnivisionapp.utils.DBFurnitureAdapter
 import com.alvarez.furnivisionapp.utils.DeliveryAddressAdapter
 import com.alvarez.furnivisionapp.utils.HomePageFunctions
+import com.alvarez.furnivisionapp.utils.OrdersAdapter
 import com.alvarez.furnivisionapp.utils.SearchListAdapter
 import com.alvarez.furnivisionapp.utils.ShopListAdapter
 import com.bumptech.glide.Glide
@@ -57,6 +58,8 @@ import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.getField
+import com.google.firebase.firestore.toObjects
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import java.io.ByteArrayOutputStream
@@ -76,7 +79,7 @@ class MainActivity : AppCompatActivity() {
     private var shops: List<Shop> = mutableListOf()
     private var furnitures: MutableList<Furniture> = mutableListOf()
     private var orders: MutableList<Order> = mutableListOf()
-    private lateinit var userDetails: UserAccount
+    private var userDetails: UserAccount = UserAccount()
     private lateinit var email: String
 
     companion object {
@@ -97,6 +100,83 @@ class MainActivity : AppCompatActivity() {
     private val cameraPage = R.layout.activity_camera
     private val cartPage = R.layout.activity_cart
     private val profilePage = R.layout.activity_profile
+
+
+    private fun getOrders() {
+        getUserDetails()
+        val db = FirebaseFirestore.getInstance()
+
+        db.collection("orders")
+            .whereEqualTo("userId", userDetails.userId)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                orders.clear() // Clear previous orders
+                querySnapshot.documents.forEach { document ->
+                    val order = document.toObject(Order::class.java)
+                    order?.id = document.id
+
+                    // Assuming itemShops is an array in Firestore
+                    val itemShopsArray = document.get("itemShops") as? List<Map<String, Any>>
+
+                    if (itemShopsArray != null) {
+                        val itemShopsList = itemShopsArray.map { shopCartMap ->
+                            val shop = shopCartMap["shop"] as? Map<String, Any>
+                            val items = shopCartMap["items"] as? List<Map<String, Any>>
+
+                            ShopCart(
+                                shop = shop?.let { mapToShop(it) } ?: Shop(),
+                                items = items?.map { mapToCartItem(it) }?.toMutableList() ?: mutableListOf()
+                            )
+                        }.toMutableList()
+
+                        order?.itemShops = itemShopsList
+                    }
+
+                    order?.let { orders.add(it) }
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "Error getting orders", exception)
+            }
+    }
+
+    // Helper functions to convert maps to data class objects
+    private fun mapToShop(map: Map<String, Any>): Shop {
+        return Shop(
+            id = map["id"] as? String,
+            logo = map["logo"] as? String,
+            name = map["name"] as? String,
+            description = map["description"] as? String,
+            slogan = map["slogan"] as? String,
+            reviews = map["reviews"] as? Double,
+            views = map["views"] as? Int
+        )
+    }
+
+    private fun mapToCartItem(map: Map<String, Any>): CartItem {
+        val furnitureMap = map["furniture"] as? Map<String, Any>
+        val furniture = furnitureMap?.let {
+            Furniture(
+                id = it["id"] as? String,
+                img = it["img"] as? String,
+                name = it["name"] as? String,
+                description = it["description"] as? String,
+                price = it["price"] as? Double ?: 0.0,
+                dimensions = it["dimensions"] as? String,
+                stocks = it["stocks"] as? Int,
+                rating = it["rating"] as? Double ?: 0.0,
+                sold = it["sold"] as? Int ?: 0,
+                shopID = it["shopID"] as? String,
+                colors = it["colors"] as? List<String>
+            )
+        } ?: Furniture()
+
+        return CartItem(
+            furniture = furniture,
+            quantity = map["quantity"] as? Int ?: 0
+        )
+    }
+
     private fun getUserDetails() {
         database = FirebaseFirestore.getInstance()
         database.collection("users")
@@ -155,6 +235,7 @@ class MainActivity : AppCompatActivity() {
         getShops()
         getFurniture()
         getUserDetails()
+        getOrders()
 
         // Navigation Buttons
         val homeButton: LinearLayout = findViewById(R.id.home_menu)
@@ -317,13 +398,6 @@ class MainActivity : AppCompatActivity() {
                     adapter = newArrivalAdapter
                     layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
                 }
-
-                Log.d("sa", newArrivalList.size.toString())
-
-
-
-                Log.d("New Arrivals", result.documents.size.toString())
-                Log.d("New Arrivals List", newArrivalList.toList().toString())
             }
             .addOnFailureListener { e: Exception ->
 
@@ -736,20 +810,20 @@ class MainActivity : AppCompatActivity() {
 
     private fun addItemToCart(selectedShop: Shop, selectedFurniture: Furniture) {
         // Find the ShopCart in the list
-        val shopCart = cartList?.find { it.shop.id == selectedShop.id }
+        val shopCart = cartList?.find { it.shop?.id == selectedShop.id }
 
         if (shopCart != null) {
             // Shop exists in the list, check for the furniture item
-            val cartItem = shopCart.items.find { it.furniture.id == selectedFurniture.id }
+            val cartItem = shopCart.items?.find { it.furniture?.id == selectedFurniture.id }
             if (cartItem != null) {
                 // Furniture exists in the list, increment the quantity
-                cartItem.quantity += 1
+                cartItem.quantity = cartItem.quantity?.plus(1)
             } else {
                 // Furniture does not exist, add it to the list
                 if (shopCart.items == null) {
                     shopCart.items = mutableListOf(CartItem(selectedFurniture, 1))
                 } else {
-                    shopCart.items.add(CartItem(selectedFurniture, 1))
+                    shopCart.items!!.add(CartItem(selectedFurniture, 1))
                 }
             }
         } else {
@@ -826,8 +900,8 @@ class MainActivity : AppCompatActivity() {
     fun calculateTotalPrice(shoppingCarts: MutableList<ShopCart>): Double {
         var totalPrice = 0.0
         for (cart in shoppingCarts) {
-            for (item in cart.items) {
-                totalPrice += (item.furniture.price?.times(item.quantity) ?: 0.0)
+            for (item in cart.items!!) {
+                totalPrice += (item.quantity?.let { item.furniture?.price?.times(it) } ?: 0.0)
             }
         }
         return totalPrice
@@ -879,9 +953,11 @@ class MainActivity : AppCompatActivity() {
             // Retrieve furniture IDs from the cart
             val furnitureIds = mutableListOf<String>()
             cartList?.forEach { shopCart ->
-                shopCart.items.forEach { cartItem ->
-                    repeat(cartItem.quantity) {
-                        cartItem.furniture.id?.let { it1 -> furnitureIds.add(it1) }
+                shopCart.items?.forEach { cartItem ->
+                    cartItem.quantity?.let { it1 ->
+                        repeat(it1) {
+                            cartItem.furniture?.id?.let { it1 -> furnitureIds.add(it1) }
+                        }
                     }
                 }
             }
@@ -908,10 +984,11 @@ class MainActivity : AppCompatActivity() {
 
                         // Create a hashmap to store order details including user ID
                         val order = hashMapOf(
-                            "timestamp" to today,
-                            "items" to cartList,
-                            "userID" to userId,
-                            "dateOfArrival" to arrivalDate
+                            "date" to today,
+                            "itemShops" to cartList,
+                            "userId" to userId,
+                            "arrival" to arrivalDate,
+                            "totalPrice" to totalPaymentValue
                         )
 
                         // Add the order to the "orders" collection along with the user ID
@@ -932,6 +1009,7 @@ class MainActivity : AppCompatActivity() {
                         val inflatedPage = layoutInflater.inflate(R.layout.activity_after_checkout_page, null) as RelativeLayout
                         pageContainer.addView(inflatedPage)
                         initAfterCheckOutPage()
+
                     } else {
                         // Handle case where user document is not found
                         Log.e(TAG, "User document not found for email: $email")
@@ -947,7 +1025,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun initAfterCheckOutPage(){
-
+        getOrders()
         val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
         val homeButton: Button = findViewById(R.id.homeButton)
         homeButton.setOnClickListener {
@@ -1629,6 +1707,22 @@ class MainActivity : AppCompatActivity() {
 
 
     fun initToPayPage() {
+        getOrders()
+
+        Log.d("asda", orders.size.toString())
+        val ordersContentView: RelativeLayout = findViewById(R.id.orders_content)
+        val noOrdersContentView: RelativeLayout = findViewById(R.id.no_orders_section)
+
+        ordersContentView.visibility = View.VISIBLE
+        noOrdersContentView.visibility = View.GONE
+        val ordersRecyclerView: RecyclerView = findViewById(R.id.orders_recycler_view)
+        val ordersAdapter = OrdersAdapter(orders)
+
+        ordersRecyclerView.apply {
+            adapter = ordersAdapter
+            layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
+        }
+
 
         initBackButton()
 
