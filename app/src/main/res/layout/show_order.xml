@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:id="@+id/order_titleheader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp">
+            <TextView
+                android:id="@+id/order_id_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:fontFamily="@font/spartan_extrabold"
+                android:textColor="@color/primary_darker"
+                android:textAllCaps="true"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:text="Order ID"
+                />
+            <TextView
+                android:id="@+id/order_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/spartan_medium"
+                android:layout_toEndOf="@id/order_id_title"
+                android:textColor="@color/primary_darker"
+                android:textAllCaps="true"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:text="1289398123987127893"
+                />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/separator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/order_titleheader"
+            android:layout_marginBottom="10dp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/light_gray"
+
+                />
+        </RelativeLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/order_shops_recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_below="@id/separator"
+            />
+
+        <RelativeLayout
+            android:id="@+id/separator2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/order_shops_recyclerView"
+            android:layout_marginBottom="10dp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/light_gray"
+
+                />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/order_footer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/order_shops_recyclerView"
+            android:padding="10dp">
+            <TextView
+                android:id="@+id/order_date_arrival_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:fontFamily="@font/montserrat_semibold"
+                android:textColor="@color/primary_darker"
+                android:textStyle="bold"
+                android:textSize="13sp"
+                android:text="Expected Arrival: "
+                />
+            <TextView
+                android:id="@+id/order_date_arrival"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/spartan_medium"
+                android:layout_toEndOf="@id/order_date_arrival_title"
+                android:textColor="@color/primary_darker"
+                android:textStyle="bold"
+                android:textSize="13sp"
+                android:text="May 9, 2024"
+                />
+
+            <TextView
+                android:id="@+id/order_date_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/order_date_arrival_title"
+                android:layout_marginEnd="5dp"
+                android:fontFamily="@font/montserrat_semibold"
+                android:textColor="@color/primary_darker"
+                android:textStyle="bold"
+                android:textSize="13sp"
+                android:text="Date Ordered:"
+                />
+            <TextView
+                android:id="@+id/order_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:layout_below="@id/order_date_arrival_title"
+                android:layout_toEndOf="@id/order_date_title"
+                android:fontFamily="@font/spartan_medium"
+                android:textColor="@color/primary_darker"
+                android:textStyle="bold"
+                android:textSize="13sp"
+                android:text="May 9, 2024"
+                />
+
+            <TextView
+                android:id="@+id/order_pay_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="5dp"
+                android:fontFamily="@font/montserrat_semibold"
+                android:textColor="@color/primary_darker"
+                android:textStyle="bold"
+                android:textSize="13sp"
+                android:text="Amount Payable"
+                />
+            <TextView
+                android:id="@+id/order_pay_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:layout_below="@id/order_pay_title"
+                android:layout_alignParentEnd="true"
+                android:fontFamily="@font/spartan_medium"
+                android:textColor="@color/primary_darker"
+                android:textStyle="bold"
+                android:textSize="13sp"
+                android:text="P 999, 000"
+
+                />
+
+        </RelativeLayout>
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

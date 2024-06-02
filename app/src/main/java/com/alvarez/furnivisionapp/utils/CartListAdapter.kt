@@ -22,10 +22,10 @@ class CartListAdapter(private val shops: MutableList<ShopCart>) :
         private val shopLogoImageView: ImageView = itemView.findViewById(R.id.shop_logo)
 
         fun bind(shop: ShopCart, position: Int) {
-            shopCartTitleView.text = shop.shop.name
+            shopCartTitleView.text = shop.shop?.name ?: ""
 
             if (shop != null) {
-                shop.shop.logo?.let { imageUrl ->
+                shop.shop?.logo?.let { imageUrl ->
                     val storageReference = Firebase.storage.getReferenceFromUrl(imageUrl)
                     storageReference.getBytes(CartItemListAdapter.ONE_MEGABYTE).addOnSuccessListener { bytes ->
                         val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
@@ -36,7 +36,7 @@ class CartListAdapter(private val shops: MutableList<ShopCart>) :
             val cartItemsAdapter = CartItemListAdapter(shop) { newQuantity, itemPosition ->
                 if (newQuantity == 0) {
                     // Remove the item from the list
-                    shop.items.removeAt(itemPosition)
+                    shop.items?.removeAt(itemPosition)
                     // If the shop's items list is empty, remove the shop
                     if (shop.items.isNullOrEmpty()) {
                         shops.removeAt(position)

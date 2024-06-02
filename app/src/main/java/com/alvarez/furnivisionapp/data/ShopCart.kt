@@ -1,3 +1,6 @@
 package com.alvarez.furnivisionapp.data
 
-data class ShopCart(val shop:Shop, var items: MutableList<CartItem>)
+data class ShopCart(val shop:Shop?, var items: MutableList<CartItem>?)
+{
+    constructor() : this(null, mutableListOf())
+}
