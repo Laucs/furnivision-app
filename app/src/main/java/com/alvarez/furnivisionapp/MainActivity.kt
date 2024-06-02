@@ -313,7 +313,6 @@ class MainActivity : AppCompatActivity() {
                     }
                 })
 
-
                 newArrivalListView.apply {
                     adapter = newArrivalAdapter
                     layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
@@ -451,7 +450,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun openFurnitureDirectly(shopID: String, furnitureID: String, pageContainer: ViewGroup) {
+    private fun openFurnitureDirectly(shopID: String, furnitureID: String, pageContainer: ViewGroup) {
         val database = FirebaseFirestore.getInstance()
 
         // Query the furniture collection to get the specific furniture by ID
@@ -564,7 +563,7 @@ class MainActivity : AppCompatActivity() {
 
 
     @SuppressLint("SetTextI18n", "DefaultLocale", "CommitPrefEdits", "InflateParams")
-    fun initFurniSelectPage(shopID: String, pageContainer: ViewGroup, furnitureName: String? = null) {
+    private fun initFurniSelectPage(shopID: String, pageContainer: ViewGroup, furnitureName: String? = null) {
         var index: Int = 0
 
         database = FirebaseFirestore.getInstance()
