@@ -35,6 +35,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.alvarez.furnivisionapp.data.AuthUtility
@@ -897,6 +898,63 @@ class MainActivity : AppCompatActivity() {
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_cart, null) as RelativeLayout)
             initCartPage(pageContainer)
         }
+
+        //select shipping method
+        val orderShippingMethod: CardView = findViewById(R.id.order_ship_method)
+        val shippingMethodTV: TextView = findViewById(R.id.shipping_method_text_view)
+
+        orderShippingMethod.setOnClickListener {
+            val dialogView = LayoutInflater.from(this).inflate(R.layout.shipping_method_dialog, null)
+            val radioGroup: RadioGroup = dialogView.findViewById(R.id.radioGroup)
+
+            val builder = AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setPositiveButton("Set") { dialog, _ ->
+                    val selectedRadioButtonId = radioGroup.checkedRadioButtonId
+                    if (selectedRadioButtonId != -1) {
+                        val selectedRadioButton: RadioButton = dialogView.findViewById(selectedRadioButtonId)
+                        shippingMethodTV.text = selectedRadioButton.text
+                        shippingMethodTV.setTextColor(ContextCompat.getColor(this, R.color.lighter_gray))
+                        Toast.makeText(this, "Shipping Method Set!", Toast.LENGTH_SHORT).show()
+                    }
+                    dialog.dismiss()
+                }
+                .setNegativeButton("Cancel") { dialog, _ ->
+                    dialog.cancel()
+                }
+
+            val dialog = builder.create()
+            dialog.show()
+        }
+        //select payment method
+        val orderPaymentMethod: CardView = findViewById(R.id.order_payment_method)
+        val paymentMethodTV: TextView = findViewById(R.id.payment_method_text_view)
+
+        orderPaymentMethod.setOnClickListener {
+            val dialogView = LayoutInflater.from(this).inflate(R.layout.payment_method_dialog, null)
+            val radioGroup: RadioGroup = dialogView.findViewById(R.id.payment_method_radio_group)
+
+            val builder = AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setPositiveButton("Set") { dialog, _ ->
+                    val selectedRadioButtonId = radioGroup.checkedRadioButtonId
+                    if (selectedRadioButtonId != -1) {
+                        val selectedRadioButton: RadioButton = dialogView.findViewById(selectedRadioButtonId)
+                        paymentMethodTV.text = selectedRadioButton.text
+                        paymentMethodTV.setTextColor(ContextCompat.getColor(this, R.color.lighter_gray))
+                        Toast.makeText(this, "Payment Method Set!", Toast.LENGTH_SHORT).show()
+                    }
+                    dialog.dismiss()
+                }
+                .setNegativeButton("Cancel") { dialog, _ ->
+                    dialog.cancel()
+                }
+
+            val dialog = builder.create()
+            dialog.show()
+        }
+
+
         val productProtectSubtotal = 1000
         val shipSubtotal = 1000
         val merchSubTotalValue = cartList?.let { calculateTotalPrice(it) } ?: 0.0
@@ -906,7 +964,6 @@ class MainActivity : AppCompatActivity() {
         val totalPayment = "₱ " + PRICE_FORMAT.format(totalPaymentValue)
 
 
-
         orderProductProtectTextView.text = productProtectSubtotal.toString()
         ordershipSubtotalTextView.text = shipSubtotal.toString()
         merchSubTotalTextView.text = merchSubTotal.toString()
@@ -914,6 +971,7 @@ class MainActivity : AppCompatActivity() {
         orderTotalPaymentTextView.text = totalPayment.toString()
         totalValueTextView.text = totalPayment.toString()
         val adapter = cartList?.let { CartListAdapter(it) }
+
 
         orderListRecyclerView.apply {
             this.adapter = adapter
@@ -990,32 +1048,6 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this, "Failed to place order. Please try again.", Toast.LENGTH_SHORT).show()
                 }
         }
-
-        val orderPaymentMethod: CardView = findViewById(R.id.order_payment_method)
-        val paymentMethodTV: TextView = findViewById(R.id.payment_method_text_view)
-
-        orderPaymentMethod.setOnClickListener {
-            val dialogView = LayoutInflater.from(this).inflate(R.layout.payment_method_dialog, null)
-            val radioGroup: RadioGroup = dialogView.findViewById(R.id.payment_method_radio_group)
-
-            val builder = AlertDialog.Builder(this)
-                .setView(dialogView)
-                .setPositiveButton("Save") { dialog, _ ->
-                    val selectedRadioButtonId = radioGroup.checkedRadioButtonId
-                    if (selectedRadioButtonId != -1) {
-                        val selectedRadioButton: RadioButton = dialogView.findViewById(selectedRadioButtonId)
-                        paymentMethodTV.text = selectedRadioButton.text
-                    }
-                    dialog.dismiss()
-                }
-                .setNegativeButton("Cancel") { dialog, _ ->
-                    dialog.cancel()
-                }
-
-            val dialog = builder.create()
-            dialog.show()
-        }
-
 
     }
 

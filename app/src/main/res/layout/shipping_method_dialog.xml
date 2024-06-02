@@ -34,7 +34,7 @@
         android:layout_alignTop="@id/icons"
         android:layout_toEndOf="@id/icons"
         android:orientation="vertical"
-        android:padding="10dp">
+        android:padding="15dp">
 
         <RadioGroup
             android:id="@+id/radioGroup"
@@ -48,25 +48,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Standard Shipping"
-                android:drawableStart="@drawable/standard_shipping_icon"
                 android:padding="8dp"
-                android:layout_marginBottom="20dp"/>
+                android:layout_marginBottom="25dp"/>
 
             <RadioButton
                 android:id="@+id/radioButtonExpress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Express Shipping"
-                android:drawableStart="@drawable/express_shipping_icon"
                 android:padding="8dp"
-                android:layout_marginBottom="20dp"/>
+                android:layout_marginBottom="23dp"/>
 
             <RadioButton
                 android:id="@+id/radioButtonOvernight"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Overnight Shipping"
-                android:drawableStart="@drawable/overnight_shipping_icon"
                 android:padding="8dp" />
         </RadioGroup>
     </LinearLayout>
@@ -80,18 +77,18 @@
         android:layout_marginStart="20dp"
         android:paddingHorizontal="10dp">
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/cash_icon"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:src="@drawable/standard_shipping_icon"
             android:contentDescription="COD"
             android:layout_marginBottom="15dp"
             android:layout_marginTop="20dp"
             android:paddingBottom="5dp"/>
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/gcash_logo"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:src="@drawable/express_shipping_icon"
             android:contentDescription="GCash"
             android:layout_marginBottom="15dp"
             android:paddingVertical="5dp"/>
@@ -99,7 +96,7 @@
         <ImageView
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@drawable/paypal_icon"
+            android:src="@drawable/overnight_shipping_icon"
             android:contentDescription="PayPal"
             android:layout_marginBottom="5dp"/>
     </LinearLayout>

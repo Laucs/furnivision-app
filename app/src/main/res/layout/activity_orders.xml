@@ -110,17 +110,6 @@
                             android:textColor="@color/white"
                             android:textSize="12sp"
                             android:textStyle="bold" />
-                        <ImageButton
-                            android:id="@+id/show_shipping_add_button"
-                            android:layout_width="10dp"
-                            android:layout_height="10dp"
-                            android:layout_alignParentEnd="true"
-                            android:layout_centerVertical="true"
-                            android:layout_marginEnd="11dp"
-                            android:background="@color/transparent"
-                            android:scaleType="fitXY"
-                            android:src="@drawable/arrow_right"
-                            android:contentDescription="@string/content_desc_ship_add"/>
                     </RelativeLayout>
 
                     <LinearLayout
@@ -228,6 +217,7 @@
                 app:cardCornerRadius="15dp">
 
                 <RelativeLayout
+                    android:id="@+id/shipping_method_header"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
@@ -267,7 +257,7 @@
                         android:text="@string/pick_up_option"
                         android:textColor="@color/primary_lighter2"
                         android:textSize="11sp"
-                        android:textStyle="bold"
+
                         tools:ignore="HardcodedText,RelativeOverlap,SmallSp" />
 
                     <ImageButton
@@ -281,8 +271,13 @@
                         android:scaleType="fitXY"
                         android:src="@drawable/arrow_right"
                         android:contentDescription="@string/ship_method"/>
-
                 </RelativeLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/shipping_method_header"
+                    >
+                </LinearLayout>
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
@@ -335,7 +330,6 @@
                         android:text="Payment Method"
                         android:textColor="@color/primary_lighter2"
                         android:textSize="11sp"
-                        android:textStyle="bold"
                         tools:ignore="HardcodedText,RelativeOverlap,SmallSp" />
 
                     <ImageButton
