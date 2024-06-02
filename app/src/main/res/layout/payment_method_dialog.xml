@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#F4F4F4">
+
+    <RelativeLayout
+        android:id="@+id/accountHeader"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="#396057">
+
+        <TextView
+            android:id="@+id/paymentMethodsTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="20dp"
+            android:background="#396057"
+            android:fontFamily="@font/spartan_medium"
+            android:text="Payment Methods"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+    <RadioGroup
+        android:id="@+id/payment_method_radio_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/accountHeader"
+        android:orientation="vertical"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="20dp"
+        android:layout_alignTop="@id/icons"
+        android:layout_toEndOf="@id/icons">
+
+        <RadioButton
+            android:id="@+id/radio_cod"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="COD"
+            android:textSize="16sp"
+            android:padding="10dp"
+            android:layout_marginBottom="10dp"
+            />
+
+        <RadioButton
+            android:id="@+id/radio_gcash"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="GCash"
+            android:textSize="16sp"
+            android:padding="10dp"
+            android:layout_marginBottom="10dp"/>
+
+        <RadioButton
+            android:id="@+id/radio_paypal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PayPal"
+            android:textSize="16sp"
+            android:padding="10dp" />
+
+    </RadioGroup>
+
+    <LinearLayout
+        android:id="@+id/icons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/accountHeader"
+        android:orientation="vertical"
+        android:layout_marginStart="20dp"
+        android:paddingHorizontal="10dp">
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/cash_icon"
+            android:contentDescription="COD"
+            android:layout_marginBottom="15dp"
+            android:layout_marginTop="20dp"
+            android:paddingBottom="5dp"/>
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/gcash_logo"
+            android:contentDescription="GCash"
+            android:layout_marginBottom="10dp"
+            android:paddingVertical="5dp"/>
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/paypal_icon"
+            android:contentDescription="PayPal"
+            android:layout_marginBottom="5dp"/>
+    </LinearLayout>
+</RelativeLayout>

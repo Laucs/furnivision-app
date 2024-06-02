@@ -290,7 +290,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/order_ship_method"
-                android:layout_marginHorizontal="40dp"
+                android:layout_marginHorizontal="20dp"
                 android:layout_marginBottom="10dp"
                 android:background="@color/white"
                 app:cardCornerRadius="15dp">
@@ -300,13 +300,13 @@
                     android:layout_height="wrap_content">
 
                     <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_marginVertical="5dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:layout_marginStart="12dp"
+                        android:layout_centerVertical="true"
                         android:elevation="1dp"
-                        android:src="@drawable/payment_method"
-                        android:contentDescription="@string/content_desc_pm"/>
+                        android:src="@drawable/shipping_address_icon"
+                        android:contentDescription="@string/payment_method"/>
 
                     <TextView
                         android:id="@+id/payment_method_title_view"
@@ -315,12 +315,41 @@
                         android:layout_centerVertical="true"
                         android:background="@color/primary_lighter2"
                         android:fontFamily="@font/montserrat"
-                        android:paddingStart="50dp"
+                        android:paddingVertical="2dp"
+                        android:paddingStart="60dp"
                         android:paddingEnd="15dp"
+                        android:layout_marginVertical="10dp"
                         android:text="@string/payment_method"
                         android:textColor="@color/white"
                         android:textSize="12sp"
                         android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/payment_method_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="5dp"
+                        android:layout_toStartOf="@id/show_payment_method_button"
+                        android:fontFamily="@font/montserrat"
+                        android:text="Payment Method"
+                        android:textColor="@color/primary_lighter2"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        tools:ignore="HardcodedText,RelativeOverlap,SmallSp" />
+
+                    <ImageButton
+                        android:id="@+id/show_payment_method_button"
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="11dp"
+                        android:background="@color/transparent"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/arrow_right"
+                        android:contentDescription="@string/payment_method"/>
+
                 </RelativeLayout>
             </androidx.cardview.widget.CardView>
 
@@ -328,7 +357,7 @@
                 android:id="@+id/order_payment_details"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/order_ship_method"
+                android:layout_below="@id/order_payment_method"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginBottom="110dp"
                 android:background="@color/white"
@@ -474,6 +503,7 @@
                 </RelativeLayout>
             </androidx.cardview.widget.CardView>
         </RelativeLayout>
+
     </ScrollView>
 
     <androidx.cardview.widget.CardView

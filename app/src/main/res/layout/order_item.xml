@@ -56,7 +56,7 @@
                 android:textColor="@color/white"
                 android:textStyle="bold"
                 android:textAllCaps="true"
-                android:textSize="20sp"
+                android:textSize="15sp"
                 android:text="2000"
                 tools:ignore="InvalidId" />
 

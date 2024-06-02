@@ -33,6 +33,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.alvarez.furnivisionapp.data.AuthUtility
@@ -430,6 +431,7 @@ class MainActivity : AppCompatActivity() {
         searchListView.adapter = searchAdapter
 
         searchBar.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
+
             override fun onQueryTextSubmit(query: String?): Boolean {
                 // Handle search action (optional)
                 return false
@@ -450,6 +452,7 @@ class MainActivity : AppCompatActivity() {
                         (searchListView.adapter as SearchListAdapter).updateList(filteredList)
                         Log.d(TAG, "Filtered list updated with ${filteredList.size} items")
                     }
+
                 }
 
                 searchListView.setOnItemClickListener { parent, view, position, id  ->
@@ -474,6 +477,7 @@ class MainActivity : AppCompatActivity() {
                         setActivePageIcon(shopPage)
                         initFurniSelectPage(furnitureShopID, pageContainer, furnitureName.text.toString())
                     }
+                    refreshDashboard(pageContainer)
                 }
 
                 return true
@@ -883,6 +887,7 @@ class MainActivity : AppCompatActivity() {
         val totalValueTextView: TextView = findViewById(R.id.total_value)
         val backButton: ImageButton = findViewById(R.id.backButton)
 
+
         fetchAndDisplayDeliveryAddress()
 
         backButton.setOnClickListener {
@@ -983,6 +988,18 @@ class MainActivity : AppCompatActivity() {
                     Log.w(TAG, "Error getting user document", e)
                     Toast.makeText(this, "Failed to place order. Please try again.", Toast.LENGTH_SHORT).show()
                 }
+        }
+
+        val orderPaymentMethod: CardView = findViewById(R.id.order_payment_method)
+
+        orderPaymentMethod.setOnClickListener {
+            val dialogView = LayoutInflater.from(this).inflate(R.layout.payment_method_dialog, null)
+            val builder = AlertDialog.Builder(this)
+                .setView(dialogView)
+
+
+            val dialog = builder.create()
+            dialog.show()
         }
 
     }
@@ -2464,7 +2481,7 @@ class MainActivity : AppCompatActivity() {
     fun initPaymentMethodsPage() {
         val cashLayout = findViewById<RelativeLayout>(R.id.cashLayout)
         val paypalLayout = findViewById<RelativeLayout>(R.id.paypalLayout)
-        val masterCardLayout = findViewById<RelativeLayout>(R.id.masterCardLayout)
+
         val gcashLayout = findViewById<RelativeLayout>(R.id.gcashLayout)
 
 
