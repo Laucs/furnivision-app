@@ -25,6 +25,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ListView
+import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.RelativeLayout
 import android.widget.ScrollView
@@ -991,16 +992,30 @@ class MainActivity : AppCompatActivity() {
         }
 
         val orderPaymentMethod: CardView = findViewById(R.id.order_payment_method)
+        val paymentMethodTV: TextView = findViewById(R.id.payment_method_text_view)
 
         orderPaymentMethod.setOnClickListener {
             val dialogView = LayoutInflater.from(this).inflate(R.layout.payment_method_dialog, null)
+            val radioGroup: RadioGroup = dialogView.findViewById(R.id.payment_method_radio_group)
+
             val builder = AlertDialog.Builder(this)
                 .setView(dialogView)
-
+                .setPositiveButton("Save") { dialog, _ ->
+                    val selectedRadioButtonId = radioGroup.checkedRadioButtonId
+                    if (selectedRadioButtonId != -1) {
+                        val selectedRadioButton: RadioButton = dialogView.findViewById(selectedRadioButtonId)
+                        paymentMethodTV.text = selectedRadioButton.text
+                    }
+                    dialog.dismiss()
+                }
+                .setNegativeButton("Cancel") { dialog, _ ->
+                    dialog.cancel()
+                }
 
             val dialog = builder.create()
             dialog.show()
         }
+
 
     }
 

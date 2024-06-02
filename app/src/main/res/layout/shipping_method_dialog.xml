@@ -6,7 +6,7 @@
     android:background="#fff">
 
     <RelativeLayout
-        android:id="@+id/accountHeader"
+        android:id="@+id/shippingHeader"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="#396057">
@@ -19,56 +19,63 @@
             android:layout_marginStart="20dp"
             android:background="#396057"
             android:fontFamily="@font/spartan_medium"
-            android:text="Payment Methods"
+            android:text="Shipping Methods"
             android:textColor="@color/white"
             android:textSize="20sp" />
     </RelativeLayout>
 
-    <RadioGroup
+    <LinearLayout
         android:id="@+id/payment_method_radio_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/accountHeader"
-        android:orientation="vertical"
+        android:layout_below="@id/shippingHeader"
         android:paddingHorizontal="10dp"
         android:paddingVertical="20dp"
         android:layout_alignTop="@id/icons"
-        android:layout_toEndOf="@id/icons">
+        android:layout_toEndOf="@id/icons"
+        android:orientation="vertical"
+        android:padding="10dp">
 
-        <RadioButton
-            android:id="@+id/radio_cod"
-            android:layout_width="wrap_content"
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="COD"
-            android:textSize="16sp"
-            android:padding="10dp"
-            android:layout_marginBottom="10dp"
-            />
+            android:orientation="vertical"
+            android:layout_marginTop="10dp">
 
-        <RadioButton
-            android:id="@+id/radio_gcash"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="GCash"
-            android:textSize="16sp"
-            android:padding="10dp"
-            android:layout_marginBottom="10dp"/>
+            <RadioButton
+                android:id="@+id/radioButtonStandard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Standard Shipping"
+                android:drawableStart="@drawable/standard_shipping_icon"
+                android:padding="8dp"
+                android:layout_marginBottom="20dp"/>
 
-        <RadioButton
-            android:id="@+id/radio_paypal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="PayPal"
-            android:textSize="16sp"
-            android:padding="10dp" />
+            <RadioButton
+                android:id="@+id/radioButtonExpress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Express Shipping"
+                android:drawableStart="@drawable/express_shipping_icon"
+                android:padding="8dp"
+                android:layout_marginBottom="20dp"/>
 
-    </RadioGroup>
+            <RadioButton
+                android:id="@+id/radioButtonOvernight"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Overnight Shipping"
+                android:drawableStart="@drawable/overnight_shipping_icon"
+                android:padding="8dp" />
+        </RadioGroup>
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/icons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/accountHeader"
+        android:layout_below="@id/shippingHeader"
         android:orientation="vertical"
         android:layout_marginStart="20dp"
         android:paddingHorizontal="10dp">
@@ -86,7 +93,7 @@
             android:layout_height="40dp"
             android:src="@drawable/gcash_logo"
             android:contentDescription="GCash"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="15dp"
             android:paddingVertical="5dp"/>
 
         <ImageView
