@@ -273,7 +273,7 @@ class MainActivity : AppCompatActivity() {
     private fun initHomePage(page: RelativeLayout, pageContainer: ViewGroup) {
 
         database = FirebaseFirestore.getInstance()
-        database.collection("furniture").whereEqualTo("sold", 0).get()
+        database.collection("furniture").whereLessThan("sold", 10).get()
             .addOnSuccessListener { result: QuerySnapshot ->
                 var newArrivalList: MutableList<Furniture> = mutableListOf()
 
@@ -312,6 +312,7 @@ class MainActivity : AppCompatActivity() {
                         item.shopID?.let { initFurniSelectPage(it, pageContainer, item.name) }
                     }
                 })
+
 
                 newArrivalListView.apply {
                     adapter = newArrivalAdapter
@@ -450,7 +451,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun openFurnitureDirectly(shopID: String, furnitureID: String, pageContainer: ViewGroup) {
+    fun openFurnitureDirectly(shopID: String, furnitureID: String, pageContainer: ViewGroup) {
         val database = FirebaseFirestore.getInstance()
 
         // Query the furniture collection to get the specific furniture by ID
@@ -563,7 +564,7 @@ class MainActivity : AppCompatActivity() {
 
 
     @SuppressLint("SetTextI18n", "DefaultLocale", "CommitPrefEdits", "InflateParams")
-    private fun initFurniSelectPage(shopID: String, pageContainer: ViewGroup, furnitureName: String? = null) {
+    fun initFurniSelectPage(shopID: String, pageContainer: ViewGroup, furnitureName: String? = null) {
         var index: Int = 0
 
         database = FirebaseFirestore.getInstance()
