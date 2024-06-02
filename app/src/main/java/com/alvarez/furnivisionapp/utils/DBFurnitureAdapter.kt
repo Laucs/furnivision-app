@@ -14,6 +14,7 @@ import com.alvarez.furnivisionapp.R
 import com.alvarez.furnivisionapp.data.Furniture
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import java.util.Locale
 
 class DBFurnitureAdapter (private var furnitures: MutableList<Furniture>) :
     RecyclerView.Adapter<DBFurnitureAdapter.ViewHolder>() {
@@ -56,7 +57,7 @@ class DBFurnitureAdapter (private var furnitures: MutableList<Furniture>) :
             Log.e("Firebase", "Error downloading image: $exception")
         }
         viewHolder.furnitureTitle.text = furnitures[position].name
-        viewHolder.furnitureRatings.text = MainActivity.PRICE_FORMAT.format(furnitures[position].rating)
+        viewHolder.furnitureRatings.text = String.format(Locale.getDefault(), "%.1f", furnitures[position].rating)
         viewHolder.furnitureSold.text = furnitures[position].sold.toString()
 
         val furniture = furnitures[position]
@@ -71,7 +72,7 @@ class DBFurnitureAdapter (private var furnitures: MutableList<Furniture>) :
                 listener?.onLinkButtonClick(furniture)
             }
         }
-        viewHolder.linkButton.setOnClickListener {
+        viewHolder.itemImage.setOnClickListener {
             if (furniture.id?.isNotEmpty() == true) {
                 listener?.onItemImageClick(furniture)
             }

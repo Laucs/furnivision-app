@@ -311,6 +311,7 @@ class MainActivity : AppCompatActivity() {
                         val inflatedPage = layoutInflater.inflate(R.layout.activity_furniture_selection, null) as ViewGroup
                         pageContainer.addView(inflatedPage)
                         item.shopID?.let { initFurniSelectPage(it, pageContainer, item.name) }
+                        setActivePageIcon(shopPage)
                     }
                     //for button
                     override fun onLinkButtonClick(item: Furniture) {
@@ -318,6 +319,7 @@ class MainActivity : AppCompatActivity() {
                         val inflatedPage = layoutInflater.inflate(R.layout.activity_furniture_selection, null) as ViewGroup
                         pageContainer.addView(inflatedPage)
                         item.shopID?.let { initFurniSelectPage(it, pageContainer, item.name) }
+                        setActivePageIcon(shopPage)
                     }
                     //for image
                     override fun onItemImageClick(item: Furniture) {
@@ -325,6 +327,7 @@ class MainActivity : AppCompatActivity() {
                         val inflatedPage = layoutInflater.inflate(R.layout.activity_furniture_selection, null) as ViewGroup
                         pageContainer.addView(inflatedPage)
                         item.shopID?.let { initFurniSelectPage(it, pageContainer, item.name) }
+                        setActivePageIcon(shopPage)
                     }
                 })
 
@@ -388,6 +391,7 @@ class MainActivity : AppCompatActivity() {
                         val inflatedPage = layoutInflater.inflate(R.layout.activity_furniture_selection, null) as ViewGroup
                         pageContainer.addView(inflatedPage)
                         item.shopID?.let { initFurniSelectPage(it, pageContainer, item.name) }
+                        setActivePageIcon(shopPage)
                     }
                     //for button
                     override fun onLinkButtonClick(item: Furniture) {
@@ -395,6 +399,7 @@ class MainActivity : AppCompatActivity() {
                         val inflatedPage = layoutInflater.inflate(R.layout.activity_furniture_selection, null) as ViewGroup
                         pageContainer.addView(inflatedPage)
                         item.shopID?.let { initFurniSelectPage(it, pageContainer, item.name) }
+                        setActivePageIcon(shopPage)
                     }
                     //for image
                     override fun onItemImageClick(item: Furniture) {
@@ -402,6 +407,7 @@ class MainActivity : AppCompatActivity() {
                         val inflatedPage = layoutInflater.inflate(R.layout.activity_furniture_selection, null) as ViewGroup
                         pageContainer.addView(inflatedPage)
                         item.shopID?.let { initFurniSelectPage(it, pageContainer, item.name) }
+                        setActivePageIcon(shopPage)
                     }
                 })
 
@@ -469,7 +475,9 @@ class MainActivity : AppCompatActivity() {
                         initFurniSelectPage(furnitureShopID, pageContainer, furnitureName.text.toString())
                     }
                 }
+
                 return true
+
             }
         })
     }

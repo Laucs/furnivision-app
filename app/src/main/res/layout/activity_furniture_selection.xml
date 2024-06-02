@@ -77,7 +77,7 @@
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/furniture_selected"
                 android:scaleType="fitXY"
-                android:src="@drawable/loading_img" />
+                android:src="#f2f2f2" />
         <ImageButton
             android:id="@+id/previousBtn"
             android:layout_width="40dp"

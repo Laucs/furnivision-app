@@ -8,83 +8,82 @@
 
 
     <RelativeLayout
-                android:id="@+id/header"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+        android:id="@+id/header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        >
+        <androidx.cardview.widget.CardView
+            android:id="@+id/header_background"
+            android:layout_width="match_parent"
+            android:layout_height="440dp"
+            android:layout_marginTop="-294dp"
+            app:cardBackgroundColor="@color/primary"
+            android:elevation="-30dp"
+            app:cardCornerRadius="20dp"
+            >
+        </androidx.cardview.widget.CardView>
 
-                android:background="@color/transparent"
-                >
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/header_background"
-                    android:layout_width="match_parent"
-                    android:layout_height="440dp"
-                    android:layout_marginTop="-294dp"
-                    app:cardBackgroundColor="@color/primary"
-                    android:elevation="-30dp"
-                    app:cardCornerRadius="20dp"
-                    >
-                </androidx.cardview.widget.CardView>
+        <TextView
+            android:id="@+id/welcome"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="35dp"
+            android:layout_marginBottom="20dp"
+            android:elevation="10dp"
+            android:fontFamily="@font/questrial"
+            android:lineHeight="30sp"
+            android:letterSpacing="0.05"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            android:text="@string/welcome_dashboard"
+            />
+        <TextView
+            android:id="@+id/emailTextView"
+            android:layout_width="200sp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20sp"
+            android:layout_marginTop="35sp"
+            android:ellipsize="end"
+            android:textColor="@color/white"
+            android:textSize="25sp" />
 
-                <TextView
-                    android:id="@+id/welcome"
-                    android:layout_width="200dp"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginStart="40dp"
-                    android:layout_marginTop="35dp"
-                    android:layout_marginBottom="20dp"
-                    android:elevation="10dp"
-                    android:fontFamily="@font/questrial"
-                    android:lineHeight="30sp"
-                    android:letterSpacing="0.05"
-                    android:textColor="@color/white"
-                    android:textSize="25sp"
-                    android:text="@string/welcome_dashboard"
-                    />
-                <TextView
-                    android:id="@+id/emailTextView"
-                    android:layout_width="200sp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20sp"
-                    android:layout_marginTop="35sp"
-                    android:ellipsize="end"
-                    android:textColor="@color/white"
-                    android:textSize="25sp" />
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_margin="30sp"
+            android:elevation="20dp"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/furni_logo"
+            android:contentDescription="@string/furnivision_logo_desc"/>
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/search_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/header_background"
+            android:layout_marginHorizontal="50dp"
+            android:layout_marginTop="-30dp"
+            android:layout_marginBottom="20dp"
+            android:paddingStart="15dp"
+            android:elevation="5dp"
+            android:background="@drawable/search_style"
+            android:drawablePadding="10dp"
+            android:drawableStart="@drawable/baseline_search_24"
+            android:hint="Search furniture"
+            android:inputType="text"
+            android:fontFamily="@font/quicksand"
+            />
 
-                <ImageView
-                    android:id="@+id/logo"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_margin="30sp"
-                    android:elevation="20dp"
-                    android:layout_alignParentEnd="true"
-                    android:src="@drawable/furni_logo"
-                    android:contentDescription="@string/furnivision_logo_desc"/>
-                <androidx.appcompat.widget.SearchView
-                    android:id="@+id/search_bar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/header_background"
-                    android:layout_marginHorizontal="50dp"
-                    android:layout_marginTop="-30dp"
-                    android:layout_marginBottom="20dp"
-                    android:paddingStart="15dp"
-                    android:elevation="5dp"
-                    android:background="@drawable/search_style"
-                    android:drawablePadding="10dp"
-                    android:drawableStart="@drawable/baseline_search_24"
-                    android:hint="Search furniture"
-                    android:inputType="text"
-                    android:fontFamily="@font/quicksand"
-                    />
-
-                    <ListView
-                        android:id="@+id/search_list_view"
-                        android:layout_below="@id/search_bar"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:visibility="gone"
-                        />
+        <ListView
+            android:id="@+id/search_list_view"
+            android:layout_below="@id/search_bar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            />
 
 
 
@@ -118,10 +117,7 @@
                         android:id="@+id/dashboard_navigation_container"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:elevation="5dp"
-
-                       >
+                        android:orientation="horizontal">
 
                         <ImageButton
                             android:id="@+id/chair_button"
@@ -189,13 +185,13 @@
                     android:id="@+id/new_arrival_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#F4F4F4"
+                    android:layout_marginTop="10dp"
                     >
                     <TextView
                         android:id="@+id/newArrival"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="30dp"
+                        android:layout_marginStart="20dp"
                         android:text="New Arrival"
                         android:textColor="@color/primary"
                         android:fontFamily="@font/montserrat"
@@ -206,7 +202,7 @@
                         android:id="@+id/new_arrival_recyclerview"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingHorizontal="30dp"
+                        android:paddingHorizontal="20dp"
                         android:layout_below="@id/newArrival"
                         />
                 </RelativeLayout>
@@ -215,27 +211,26 @@
                     android:id="@+id/popular_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_below="@id/new_arrival_content"
-                    android:background="#F4F4F4">
+                    android:layout_marginTop="10dp"
+                    android:layout_below="@id/new_arrival_content">
 
                     <TextView
                         android:id="@+id/popular"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="30dp"
+                        android:layout_marginStart="20dp"
                         android:text="Popular"
                         android:fontFamily="@font/montserrat"
                         android:textColor="#396057"
                         android:textSize="20sp"/>
 
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/popular_recycler_view"
-                            android:layout_below="@id/popular"
-                            android:layout_width="match_parent"
-                            android:layout_marginStart="30dp"
-                            android:layout_height="wrap_content"
-                            />
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/popular_recycler_view"
+                        android:layout_below="@id/popular"
+                        android:paddingHorizontal="20dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        />
                 </RelativeLayout>
             </RelativeLayout>
         </RelativeLayout>
