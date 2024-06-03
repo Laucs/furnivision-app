@@ -889,6 +889,84 @@ class MainActivity : AppCompatActivity() {
         return totalPrice
     }
 
+    private fun afterCheckoutCompletion(
+        productProtectSubtotal: Double,
+        shipSubtotal: Double,
+        merchSubTotalValue: Double
+    ) {
+        val totalPrice = productProtectSubtotal + shipSubtotal + merchSubTotalValue
+
+        val furnitureIds = mutableListOf<String>()
+        cartList?.forEach { shopCart ->
+            shopCart.items?.forEach { cartItem ->
+                cartItem.quantity?.let { quantity ->
+                    repeat(quantity) {
+                        cartItem.furniture?.id?.let { id -> furnitureIds.add(id) }
+                    }
+                }
+            }
+        }
+        // Get current timestamp
+        val today = Date()
+        val calendar = Calendar.getInstance()
+        calendar.time = today
+        calendar.add(Calendar.DAY_OF_MONTH, 10)
+        val arrivalDate = calendar.time
+
+        // Get the user's email
+        val email = SessionManager.getUserEmail(this)
+
+        // Query the database to get the user document based on email
+        database.collection("users")
+            .whereEqualTo("email", email)
+            .get()
+            .addOnSuccessListener { result: QuerySnapshot ->
+                val document = result.documents.firstOrNull()
+                if (document != null) {
+                    val userId = document.id
+
+                    // Create a hashmap to store order details including user ID
+                    val order = hashMapOf(
+                        "date" to today,
+                        "itemShops" to cartList,
+                        "userId" to userId,
+                        "arrival" to arrivalDate,
+                        "totalPrice" to totalPrice
+                    )
+
+                    // Add the order to the "orders" collection along with the user ID
+                    database.collection("orders")
+                        .add(order)
+                        .addOnSuccessListener {
+                            Toast.makeText(this, "Order is successful", Toast.LENGTH_SHORT).show()
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(this, "Order isn't successful", Toast.LENGTH_SHORT).show()
+                        }
+
+                    // Clear the cart after placing the order
+                    cartList = mutableListOf()
+
+                    // Navigate to the dashboard or any other desired page after placing the order
+                    val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
+                    pageContainer.removeAllViews()
+                    val inflatedPage = layoutInflater.inflate(R.layout.activity_after_checkout_page, null) as RelativeLayout
+                    pageContainer.addView(inflatedPage)
+                    initAfterCheckOutPage()
+
+                } else {
+                    // Handle case where user document is not found
+                    Log.e(TAG, "User document not found for email: $email")
+                    Toast.makeText(this, "User not found. Please try again.", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .addOnFailureListener { e: Exception ->
+                Log.w(TAG, "Error getting user document", e)
+                Toast.makeText(this, "Failed to place order. Please try again.", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+
 
     private fun initOrderPage(pageContainer: ViewGroup) {
         val orderListRecyclerView: RecyclerView = findViewById(R.id.order_recycler_view)
@@ -1018,85 +1096,41 @@ class MainActivity : AppCompatActivity() {
 
         val placeOrderButton: Button = findViewById(R.id.place_order_button)
         placeOrderButton.setOnClickListener {
-            if (nameDeliveryTV.text.isNullOrEmpty() || phoneDeliveryTV.text.isNullOrEmpty() ||
-                regionTV.text.isNullOrEmpty() || barangayTV.text.isNullOrEmpty() ||
-                streetNameTV.text.isNullOrEmpty() || postalCodeTV.text.isNullOrEmpty()
+            val nameDelivery = nameDeliveryTV.text.toString()
+            val phoneDelivery = phoneDeliveryTV.text.toString()
+            val region = regionTV.text.toString()
+            val barangay = barangayTV.text.toString()
+            val streetName = streetNameTV.text.toString()
+            val postalCode = postalCodeTV.text.toString()
+
+            if (nameDelivery.isEmpty() || phoneDelivery.isEmpty() ||
+                region.isEmpty() || barangay.isEmpty() ||
+                streetName.isEmpty() || postalCode.isEmpty()
             ) {
                 Toast.makeText(this, "Please add a delivery address", Toast.LENGTH_SHORT).show()
-            } else if (shippingMethodTV.text == "Select") {
+                return@setOnClickListener
+            }
+
+            if (shippingMethodTV.text == "Select") {
                 Toast.makeText(this, "Please select a shipping method", Toast.LENGTH_SHORT).show()
-            } else if (paymentMethodTV.text == "Select") {
+                return@setOnClickListener
+            }
+
+            if (paymentMethodTV.text == "Select") {
                 Toast.makeText(this, "Please select a payment method", Toast.LENGTH_SHORT).show()
-            } else {
-                // Retrieve furniture IDs from the cart
-                val furnitureIds = mutableListOf<String>()
-                cartList?.forEach { shopCart ->
-                    shopCart.items?.forEach { cartItem ->
-                        cartItem.quantity?.let { quantity ->
-                            repeat(quantity) {
-                                cartItem.furniture?.id?.let { id -> furnitureIds.add(id) }
-                            }
-                        }
-                    }
+                return@setOnClickListener
+            }
+
+            // Handle different payment methods using when statement
+            when (paymentMethodTV.text) {
+                "Paypal", "GCash" -> {
+
+                    afterCheckoutCompletion(productProtectSubtotal, shipSubtotal, merchSubTotalValue)
                 }
-
-                // Get current timestamp
-                val today = Date()
-                val calendar = Calendar.getInstance()
-                calendar.time = today
-                calendar.add(Calendar.DAY_OF_MONTH, 10)
-                val arrivalDate = calendar.time
-
-                // Get the user's email
-                val email = SessionManager.getUserEmail(this)
-
-                // Query the database to get the user document based on email
-                database.collection("users")
-                    .whereEqualTo("email", email)
-                    .get()
-                    .addOnSuccessListener { result: QuerySnapshot ->
-                        val document = result.documents.firstOrNull()
-                        if (document != null) {
-                            val userId = document.id
-
-                            // Create a hashmap to store order details including user ID
-                            val order = hashMapOf(
-                                "date" to today,
-                                "itemShops" to cartList,
-                                "userId" to userId,
-                                "arrival" to arrivalDate,
-                                "totalPrice" to productProtectSubtotal + shipSubtotal + merchSubTotalValue
-                            )
-
-                            // Add the order to the "orders" collection along with the user ID
-                            database.collection("orders")
-                                .add(order)
-                                .addOnSuccessListener {
-                                    Toast.makeText(this, "Order is successful", Toast.LENGTH_SHORT).show()
-                                }
-                                .addOnFailureListener {
-                                    Toast.makeText(this, "Order isn't successful", Toast.LENGTH_SHORT).show()
-                                }
-
-                            // Clear the cart after placing the order
-                            cartList = mutableListOf()
-
-                            // Navigate to the dashboard or any other desired page after placing the order
-                            pageContainer.removeAllViews()
-                            val inflatedPage = layoutInflater.inflate(R.layout.activity_after_checkout_page, null) as RelativeLayout
-                            pageContainer.addView(inflatedPage)
-                            initAfterCheckOutPage()
-
-                        } else {
-                            // Handle case where user document is not found
-                            Log.e(TAG, "User document not found for email: $email")
-                            Toast.makeText(this, "User not found. Please try again.", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                    .addOnFailureListener { e: Exception ->
-                        Log.w(TAG, "Error getting user document", e)
-                        Toast.makeText(this, "Failed to place order. Please try again.", Toast.LENGTH_SHORT).show()
-                    }
+                "COD" -> {
+                    //straight forward
+                    afterCheckoutCompletion(productProtectSubtotal, shipSubtotal, merchSubTotalValue)
+                }
             }
         }
     }

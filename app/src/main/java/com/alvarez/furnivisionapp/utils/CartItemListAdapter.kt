@@ -60,7 +60,7 @@ class CartItemListAdapter(private val shopCart: ShopCart, private val onItemChan
         if (item != null) {
             holder.itemDescTextView.text = item.furniture?.description ?: ""
         }
-        holder.itemPriceTextView.text = "₱ ${PRICE_FORMAT.format(totalPrice)}"
+        holder.itemPriceTextView.text = "₱ ${String.format("%,.2f",totalPrice)}"
         if (item != null) {
             holder.itemQuantityTextView.text = item.quantity.toString()
         }
