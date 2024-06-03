@@ -97,7 +97,7 @@
                             android:textSize="13sp"
                             android:textStyle="bold" />
                         <TextView
-                            android:id="@+id/amount_dueTV"
+                            android:id="@+id/gcash_amount_due"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"

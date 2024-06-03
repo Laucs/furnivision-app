@@ -886,7 +886,8 @@ class MainActivity : AppCompatActivity() {
         return totalPrice
     }
 
-    private fun afterCheckoutCompletion(
+    //store in the database
+    fun afterCheckoutCompletion(
         productProtectSubtotal: Double,
         shipSubtotal: Double,
         merchSubTotalValue: Double
@@ -1122,71 +1123,109 @@ class MainActivity : AppCompatActivity() {
 
             // Handle different payment methods using when statement
             when (paymentMethodTV.text) {
-                "PayPal", "GCash" -> {
-                    val emailVerificationLayout = layoutInflater.inflate(R.layout.activity_email_verification, null) as RelativeLayout
-                    pageContainer.removeAllViews()
-                    pageContainer.addView(emailVerificationLayout)
-                    val email = SessionManager.getUserEmail(this)
-                    val totalPaymentEmail: TextView = emailVerificationLayout.findViewById(R.id.total_payment_value_email)
-                    val paymentMethodEmail: TextView = emailVerificationLayout.findViewById(R.id.payment_method_TV_email)
-                    val emailOrPhone: EditText = emailVerificationLayout.findViewById(R.id.emailET)
-                    val payButton: Button = emailVerificationLayout.findViewById(R.id.payButton)
+                "PayPal"-> {
 
-                    backToOrders(emailVerificationLayout)
+                    initEmailVerification(pageContainer, productProtectSubtotal, shipSubtotal, merchSubTotalValue)
 
-                    val TOTAL_AMOUNT= "₱ ${String.format("%,.2f", productProtectSubtotal + shipSubtotal + merchSubTotalValue)}"
-                    // Set total payment and payment method
-                    totalPaymentEmail.text = TOTAL_AMOUNT
-                    paymentMethodEmail.text = "${paymentMethodTV.text}"
-                    //get name
-                    if (email != null) {
-                        AuthUtility.getUserName(email,
-                            onSuccess = { _ ->
-                                emailOrPhone.setText(email)
-                            },
-                            onFailure = {
-                                Log.e("GetUser", "Failed to retrieve user name")
-                            }
-                        )
-                    }
 
-                    val gcashVerification = layoutInflater.inflate(R.layout.activity_gcash_verification, null) as ScrollView
-                    val paypalVerification = layoutInflater.inflate(R.layout.activity_gcash_verification, null) as ScrollView
-                    val gcashAmountDueTV: TextView = gcashVerification.findViewById(R.id.amount_dueTV)
-                    val gcashConfirmButton: Button = gcashVerification.findViewById(R.id.confirmButton)
-                    val gcashPhone: EditText = gcashVerification.findViewById(R.id.editPhoneET)
-                    val backButton2: ImageButton = gcashVerification.findViewById(R.id.backButton)
-                    backToOrders(gcashVerification)
+                }
+                "GCash" -> {
 
-                    payButton.setOnClickListener {
-                        val emailOrPhoneText = emailOrPhone.text.toString().trim()
-                        if (emailOrPhoneText.isEmpty()) {
-                            Toast.makeText(this, "Invalid Email Format", Toast.LENGTH_SHORT).show()
-                        } else {
-                            pageContainer.removeAllViews()
-                            pageContainer.addView(emailVerificationLayout2)
-                            paymentMethodTitle.text = paymentMethodTV.text
-                            amountDueTV.text = TOTAL_AMOUNT
-                        }
-                    }
+                    initEmailVerification(pageContainer, productProtectSubtotal, shipSubtotal, merchSubTotalValue)
 
-                    confirmButton.setOnClickListener {
-                        val emailPhoneText = emailPhoneET.text.toString().trim()
-                        if (emailPhoneText.isEmpty()) {
-                            Toast.makeText(this, "Please enter email or phone", Toast.LENGTH_SHORT).show()
-                        } else {
-                            afterCheckoutCompletion(productProtectSubtotal, shipSubtotal, merchSubTotalValue)
-                        }
-                    }
                 }
                 "COD" -> {
                     //straight forward
                     afterCheckoutCompletion(productProtectSubtotal, shipSubtotal, merchSubTotalValue)
                 }
+                else -> Toast.makeText(this, "Unsupported Payment Method", Toast.LENGTH_SHORT).show()
             }
         }
     }
-    fun backToOrders(layout: RelativeLayout){
+
+    fun initEmailVerification(pageContainer: ViewGroup, productProtectSubtotal: Double, shipSubtotal: Double, merchSubTotalValue: Double) {
+        val emailVerificationLayout = layoutInflater.inflate(R.layout.activity_email_verification, null) as RelativeLayout
+        pageContainer.removeAllViews()
+        pageContainer.addView(emailVerificationLayout)
+
+        val email = SessionManager.getUserEmail(this)
+        val totalPaymentEmail: TextView = emailVerificationLayout.findViewById(R.id.total_payment_value_email)
+        val paymentMethodEmail: TextView = emailVerificationLayout.findViewById(R.id.payment_method_TV_email)
+        val emailOrPhone: EditText = emailVerificationLayout.findViewById(R.id.emailET)
+        val payButton: Button = emailVerificationLayout.findViewById(R.id.payButton)
+
+        backToOrders(emailVerificationLayout)
+
+        // Get user name
+        if (email != null) {
+            AuthUtility.getUserName(email,
+                onSuccess = { _ ->
+                    emailOrPhone.setText(email)
+                },
+                onFailure = {
+                    Log.e("GetUser", "Failed to retrieve user name")
+                }
+            )
+        }
+
+        val TOTAL_AMOUNT = "₱ ${String.format("%,.2f", productProtectSubtotal + shipSubtotal + merchSubTotalValue)}"
+        totalPaymentEmail.text = TOTAL_AMOUNT
+
+        payButton.setOnClickListener {
+            val emailOrPhoneText = emailOrPhone.text.toString().trim()
+            if (emailOrPhoneText.isEmpty()) {
+                Toast.makeText(this, "Invalid Email Format", Toast.LENGTH_SHORT).show()
+            } else {
+                when (paymentMethodEmail.text.toString()) {
+                    "PayPal" -> {
+                        val totalAmount =
+                        initPaypalVerification(pageContainer, TOTAL_AMOUNT, productProtectSubtotal, shipSubtotal, merchSubTotalValue)
+                    }
+                    "GCash" -> {
+
+                        initGcashVerification(pageContainer, TOTAL_AMOUNT, productProtectSubtotal, shipSubtotal, merchSubTotalValue)
+                    }
+                    else -> Toast.makeText(this, "Unsupported Payment Method", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    fun initPaypalVerification(pageContainer: ViewGroup, totalAmount: String, productProtectSubtotal: Double, shipSubtotal: Double, merchSubTotalValue: Double) {
+        val paypalVerification = layoutInflater.inflate(R.layout.activity_paypal_verification, null) as RelativeLayout
+        pageContainer.removeAllViews()
+        pageContainer.addView(paypalVerification)
+
+        backToOrders(paypalVerification)
+
+        val paypalAmountDueTextView: TextView = paypalVerification.findViewById(R.id.paypal_amount_due)
+        paypalAmountDueTextView.text = totalAmount
+
+        val confirmButton: Button = paypalVerification.findViewById(R.id.confirmButton)
+        confirmButton.setOnClickListener {
+            // Call afterCheckoutCompletion with the appropriate parameters
+            afterCheckoutCompletion(productProtectSubtotal, shipSubtotal, merchSubTotalValue)
+        }
+    }
+
+    fun initGcashVerification(pageContainer: ViewGroup, totalAmount: String, productProtectSubtotal: Double, shipSubtotal: Double, merchSubTotalValue: Double) {
+        val gcashVerificationLayout = layoutInflater.inflate(R.layout.activity_gcash_verification, null) as ScrollView
+        pageContainer.removeAllViews()
+        pageContainer.addView(gcashVerificationLayout)
+
+        backToOrders(gcashVerificationLayout)
+
+        val gcashAmountDueTextView: TextView = gcashVerificationLayout.findViewById(R.id.gcash_amount_due)
+        gcashAmountDueTextView.text = totalAmount
+
+        val confirmButton: Button = gcashVerificationLayout.findViewById(R.id.confirmButton)
+        confirmButton.setOnClickListener {
+            // Call afterCheckoutCompletion with the appropriate parameters
+            afterCheckoutCompletion(productProtectSubtotal, shipSubtotal, merchSubTotalValue)
+        }
+    }
+
+    fun backToOrders(layout: ViewGroup){
         val backButton: ImageButton = layout.findViewById(R.id.backButton)
         val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
         backButton.setOnClickListener {

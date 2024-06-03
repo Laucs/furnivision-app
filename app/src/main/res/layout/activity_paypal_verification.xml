@@ -97,14 +97,14 @@
                             android:textSize="13sp"
                             android:textStyle="bold" />
                         <TextView
-                            android:id="@+id/amount_dueTV"
+                            android:id="@+id/paypal_amount_due"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
 
                             android:fontFamily="@font/glacial_indifference_regular"
                             android:text="PHP 464.00"
-                            android:textColor="#0056e4"
+                            android:textColor="#223c7f"
                             android:textSize="13sp"
                             android:textStyle="bold"
                             android:gravity="end"/>
