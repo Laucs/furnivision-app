@@ -11,7 +11,8 @@ data class Order(
     var totalPrice: Double?,
     var date: Date?,
     var arrival: Date?,
-    var paymentMethod: String? // New field for payment method
+    var paymentMethod: String?,
+    var emailOrPhone: String?
 ) {
-    constructor() : this(null, null, mutableListOf(), 0.0, Date(), Date(), null)
+    constructor() : this(null, null, mutableListOf(), 0.0, Date(), Date(), null,null)
 }

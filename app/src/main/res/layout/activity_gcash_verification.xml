@@ -41,7 +41,7 @@
                 android:layout_marginTop="20dp"
                 android:textStyle="bold"
                 android:fontFamily="@font/spartan_extrabold"
-                android:text="PaymentMethod"
+                android:text="GCash"
                 android:textColor="@color/white"
                 android:textSize="20sp" />
 

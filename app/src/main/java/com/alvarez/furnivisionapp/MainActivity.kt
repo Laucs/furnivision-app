@@ -688,7 +688,7 @@ class MainActivity : AppCompatActivity() {
                     nameTextView.text = furnitures[index].name
                     rateTextView.text = furnitures[index].rating.toString()
                     descTextView.text = furnitures[index].description
-                    priceTextView.text = "₱ " + PRICE_FORMAT.format(furnitures[index].price)
+                    priceTextView.text = "₱ " + String.format("%,.2f",furnitures[index].price)
                     dimensionsTextView.text = furnitures[index].dimensions
                     stocksTextView.text = getString(R.string.stock) + " " + furnitures[index].stocks.toString()
 
@@ -1277,7 +1277,6 @@ class MainActivity : AppCompatActivity() {
     fun fetchAndDisplayDeliveryAddress() {
         val firestore = FirebaseFirestore.getInstance()
         val email = SessionManager.getUserEmail(this)
-
         val nameDeliveryTV: TextView = findViewById(R.id.nameDeliveryTV)
         val phoneDeliveryTV: TextView = findViewById(R.id.phoneDeliveryTV)
         val regionTV: TextView = findViewById(R.id.regionTV)
