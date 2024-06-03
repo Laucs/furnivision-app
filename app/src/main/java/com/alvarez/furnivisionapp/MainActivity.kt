@@ -1210,7 +1210,11 @@ class MainActivity : AppCompatActivity() {
         val confirmButton: Button = paypalVerification.findViewById(R.id.confirmButton)
         confirmButton.setOnClickListener {
             // Call afterCheckoutCompletion with the appropriate parameters
-            afterCheckoutCompletion(productProtectSubtotal, shipSubtotal, merchSubTotalValue)
+            if (paypalAmountDueTextView.text.isEmpty()){
+                Toast.makeText(this, "Please enter your PayPal Email Address", Toast.LENGTH_SHORT).show()
+            }else {
+                afterCheckoutCompletion(productProtectSubtotal, shipSubtotal, merchSubTotalValue)
+            }
         }
     }
 
@@ -1227,7 +1231,11 @@ class MainActivity : AppCompatActivity() {
         val confirmButton: Button = gcashVerificationLayout.findViewById(R.id.confirmButton)
         confirmButton.setOnClickListener {
             // Call afterCheckoutCompletion with the appropriate parameters
-            afterCheckoutCompletion(productProtectSubtotal, shipSubtotal, merchSubTotalValue)
+            if (gcashAmountDueTextView.text.isEmpty()){
+                Toast.makeText(this, "Please enter your GCash Mobile Number", Toast.LENGTH_SHORT).show()
+            }else {
+                afterCheckoutCompletion(productProtectSubtotal, shipSubtotal, merchSubTotalValue)
+            }
         }
     }
 
