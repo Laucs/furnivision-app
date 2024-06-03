@@ -49,8 +49,8 @@ class OrderShopItemAdapter(private val items: MutableList<CartItem>) : RecyclerV
             val itemPrice = item.furniture?.price ?: 0.00
             val totalPrice = itemPrice * (item.quantity ?: 1)
 
-            orderFurnitureTotalPrice.text = MainActivity.PRICE_FORMAT.format(totalPrice)
-            orderFurniturePrice.text = "₱ " + MainActivity.PRICE_FORMAT.format(itemPrice)
+            orderFurnitureTotalPrice.text = "₱ " + String.format("%,.2f", totalPrice)
+            orderFurniturePrice.text = "₱ " + String.format("%,.2f", itemPrice)
             orderFurnitureDesc.text = item.furniture?.description ?: ""
             orderFurnitureTitle.text = item.furniture?.name.toString()
 
