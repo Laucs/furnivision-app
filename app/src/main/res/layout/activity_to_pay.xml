@@ -94,20 +94,26 @@
 
     </LinearLayout>
 
-    <RelativeLayout
+    <ScrollView
         android:id="@+id/orders_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="50dp"
         android:layout_below="@id/header"
         >
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/orders_recycler_view"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            />
-    </RelativeLayout>
+            android:layout_marginTop="50dp"
+            android:visibility="visible"
+            >
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/orders_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+        </RelativeLayout>
+    </ScrollView>
     <RelativeLayout
         android:id="@+id/no_orders_section"
         android:layout_width="match_parent"

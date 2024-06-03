@@ -75,10 +75,10 @@ class MainActivity : AppCompatActivity() {
     private var activePage: Int? = null
     private lateinit var activeButton: LinearLayout
     private lateinit var database: FirebaseFirestore
-    private var cartList: MutableList<ShopCart>? = mutableListOf()
-    private var shops: List<Shop> = mutableListOf()
-    private var furnitures: MutableList<Furniture> = mutableListOf()
-    private var orders: MutableList<Order> = mutableListOf()
+    private var cartList: MutableList<ShopCart>? = mutableListOf<ShopCart>()
+    private var shops: List<Shop> = mutableListOf<Shop>()
+    private var furnitures: MutableList<Furniture> = mutableListOf<Furniture>()
+    private var orders: List<Order> = listOf<Order>()
     private var userDetails: UserAccount = UserAccount()
     private lateinit var email: String
 
@@ -105,79 +105,28 @@ class MainActivity : AppCompatActivity() {
     private fun getOrders() {
         getUserDetails()
         val db = FirebaseFirestore.getInstance()
-
+        Log.d("email", userDetails.id.toString())
         db.collection("orders")
-            .whereEqualTo("userId", userDetails.userId)
+            .whereEqualTo("userId", userDetails.id)
             .get()
-            .addOnSuccessListener { querySnapshot ->
-                orders.clear() // Clear previous orders
-                querySnapshot.documents.forEach { document ->
-                    val order = document.toObject(Order::class.java)
-                    order?.id = document.id
-
-                    // Assuming itemShops is an array in Firestore
-                    val itemShopsArray = document.get("itemShops") as? List<Map<String, Any>>
-
-                    if (itemShopsArray != null) {
-                        val itemShopsList = itemShopsArray.map { shopCartMap ->
-                            val shop = shopCartMap["shop"] as? Map<String, Any>
-                            val items = shopCartMap["items"] as? List<Map<String, Any>>
-
-                            ShopCart(
-                                shop = shop?.let { mapToShop(it) } ?: Shop(),
-                                items = items?.map { mapToCartItem(it) }?.toMutableList() ?: mutableListOf()
-                            )
-                        }.toMutableList()
-
-                        order?.itemShops = itemShopsList
+            .addOnSuccessListener { result: QuerySnapshot ->
+                val orderList = result.documents.mapNotNull { document ->
+                    document.toObject(Order::class.java)?.apply {
+                        id = document.id
                     }
-
-                    order?.let { orders.add(it) }
                 }
+                Log.d("reuslt", orderList.toString() )
+                orders = orderList.toMutableList()
             }
             .addOnFailureListener { exception ->
                 Log.e(TAG, "Error getting orders", exception)
             }
+        Log.d("asd", orders.toString())
     }
 
-    // Helper functions to convert maps to data class objects
-    private fun mapToShop(map: Map<String, Any>): Shop {
-        return Shop(
-            id = map["id"] as? String,
-            logo = map["logo"] as? String,
-            name = map["name"] as? String,
-            description = map["description"] as? String,
-            slogan = map["slogan"] as? String,
-            reviews = map["reviews"] as? Double,
-            views = map["views"] as? Int
-        )
-    }
-
-    private fun mapToCartItem(map: Map<String, Any>): CartItem {
-        val furnitureMap = map["furniture"] as? Map<String, Any>
-        val furniture = furnitureMap?.let {
-            Furniture(
-                id = it["id"] as? String,
-                img = it["img"] as? String,
-                name = it["name"] as? String,
-                description = it["description"] as? String,
-                price = it["price"] as? Double ?: 0.0,
-                dimensions = it["dimensions"] as? String,
-                stocks = it["stocks"] as? Int,
-                rating = it["rating"] as? Double ?: 0.0,
-                sold = it["sold"] as? Int ?: 0,
-                shopID = it["shopID"] as? String,
-                colors = it["colors"] as? List<String>
-            )
-        } ?: Furniture()
-
-        return CartItem(
-            furniture = furniture,
-            quantity = map["quantity"] as? Int ?: 0
-        )
-    }
 
     private fun getUserDetails() {
+        email = SessionManager.getUserEmail(this).toString()
         database = FirebaseFirestore.getInstance()
         database.collection("users")
             .whereEqualTo("email", email)
@@ -186,7 +135,7 @@ class MainActivity : AppCompatActivity() {
                 if (!result.isEmpty) {
                     val document = result.documents[0]
                     userDetails = document.toObject(UserAccount::class.java)?.apply {
-                        userId = document.id
+                        id = document.id
                     }!!
                 }
             }
@@ -890,7 +839,9 @@ class MainActivity : AppCompatActivity() {
     fun afterCheckoutCompletion(
         productProtectSubtotal: Double,
         shipSubtotal: Double,
-        merchSubTotalValue: Double
+        merchSubTotalValue: Double,
+        paymentMethod: String,
+        phoneNumber: String
     ) {
         val totalPrice = productProtectSubtotal + shipSubtotal + merchSubTotalValue
 
@@ -923,14 +874,8 @@ class MainActivity : AppCompatActivity() {
                 if (document != null) {
                     val userId = document.id
 
-                    // Create a hashmap to store order details including user ID
-                    val order = hashMapOf(
-                        "date" to today,
-                        "itemShops" to cartList,
-                        "userId" to userId,
-                        "arrival" to arrivalDate,
-                        "totalPrice" to totalPrice
-                    )
+                        // Create a hashmap to store order details including user ID
+                        val order: Order = Order("", userId, cartList, totalPrice, today, arrivalDate, paymentMethod, phoneNumber)
 
                     // Add the order to the "orders" collection along with the user ID
                     database.collection("orders")
@@ -1137,7 +1082,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 "COD" -> {
                     //straight forward
-                    afterCheckoutCompletion(productProtectSubtotal, shipSubtotal, merchSubTotalValue)
+                    afterCheckoutCompletion(productProtectSubtotal, shipSubtotal, merchSubTotalValue, paymentMethodTV.text.toString(), phoneDelivery)
                 }
                 else -> Toast.makeText(this, "Unsupported Payment Method", Toast.LENGTH_SHORT).show()
             }
@@ -1204,17 +1149,16 @@ class MainActivity : AppCompatActivity() {
         pageContainer.addView(paypalVerification)
 
         backToOrders(paypalVerification)
-
+        val paypalEmailET: EditText = paypalVerification.findViewById(R.id.editPhoneET)
         val paypalAmountDueTextView: TextView = paypalVerification.findViewById(R.id.paypal_amount_due)
         paypalAmountDueTextView.text = totalAmount
 
         val confirmButton: Button = paypalVerification.findViewById(R.id.confirmButton)
         confirmButton.setOnClickListener {
-            // Call afterCheckoutCompletion with the appropriate parameters
             if (paypalAmountDueTextView.text.isEmpty()){
                 Toast.makeText(this, "Please enter your PayPal Email Address", Toast.LENGTH_SHORT).show()
             }else {
-                afterCheckoutCompletion(productProtectSubtotal, shipSubtotal, merchSubTotalValue)
+                afterCheckoutCompletion(productProtectSubtotal, shipSubtotal, merchSubTotalValue, "PayPal" , paypalEmailET.text.toString())
             }
         }
     }
@@ -1225,7 +1169,7 @@ class MainActivity : AppCompatActivity() {
         pageContainer.addView(gcashVerificationLayout)
 
         backToOrders(gcashVerificationLayout)
-
+        val gcashNumTV: EditText = gcashVerificationLayout.findViewById(R.id.editPhoneET)
         val gcashAmountDueTextView: TextView = gcashVerificationLayout.findViewById(R.id.gcash_amount_due)
         gcashAmountDueTextView.text = totalAmount
 
@@ -1235,7 +1179,7 @@ class MainActivity : AppCompatActivity() {
             if (gcashAmountDueTextView.text.isEmpty()){
                 Toast.makeText(this, "Please enter your GCash Mobile Number", Toast.LENGTH_SHORT).show()
             }else {
-                afterCheckoutCompletion(productProtectSubtotal, shipSubtotal, merchSubTotalValue)
+                afterCheckoutCompletion(productProtectSubtotal, shipSubtotal, merchSubTotalValue, "GCash", gcashNumTV.text.toString())
             }
         }
     }
@@ -1934,7 +1878,7 @@ class MainActivity : AppCompatActivity() {
         getOrders()
 
         Log.d("asda", orders.size.toString())
-        val ordersContentView: RelativeLayout = findViewById(R.id.orders_content)
+        val ordersContentView: ScrollView = findViewById(R.id.orders_content)
         val noOrdersContentView: RelativeLayout = findViewById(R.id.no_orders_section)
 
         ordersContentView.visibility = View.VISIBLE
@@ -1944,7 +1888,7 @@ class MainActivity : AppCompatActivity() {
 
         ordersRecyclerView.apply {
             adapter = ordersAdapter
-            layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
+            layoutManager = LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
         }
 
 
