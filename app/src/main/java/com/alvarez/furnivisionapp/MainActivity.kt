@@ -494,7 +494,7 @@ class MainActivity : AppCompatActivity() {
                 Log.d(TAG, "Error fetching documents: $e")
             }
 
-        val searchBar: androidx.appcompat.widget.SearchView = findViewById(R.id.search_bar)
+        val searchBar: SearchView = findViewById(R.id.search_bar)
         val contentScroll: ScrollView = findViewById(R.id.scroll_content)
         val searchListView: ListView = findViewById(R.id.search_list_view)
         var furnitureList: List<Furniture> = furnitures
@@ -503,7 +503,7 @@ class MainActivity : AppCompatActivity() {
         val searchAdapter = SearchListAdapter(this, furnitureList)
         searchListView.adapter = searchAdapter
 
-        searchBar.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
+        searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 // Handle search action (optional)
                 return false
@@ -554,70 +554,6 @@ class MainActivity : AppCompatActivity() {
 
             }
         })
-    }
-
-    private fun setOnClickListener(shopID: String, furnitureID: String, pageContainer: ViewGroup, vararg views: View, action: () -> Unit) {
-        views.forEach { view ->
-            view.setOnClickListener {
-                openFurnitureDirectly(shopID, furnitureID, pageContainer)
-                action()
-            }
-        }
-    }
-
-    private fun openFurnitureDirectly(shopID: String, furnitureID: String, pageContainer: ViewGroup) {
-        val database = FirebaseFirestore.getInstance()
-
-        // Query the furniture collection to get the specific furniture by ID
-        database.collection("furniture")
-            .whereEqualTo("shopID", shopID)
-            .whereEqualTo(FieldPath.documentId(), furnitureID)
-            .get()
-            .addOnSuccessListener { result ->
-                if (!result.isEmpty) {
-                    var foundFurniture: Furniture? = null
-
-                    for (documentSnapshot in result.documents) {
-                        val furniture = documentSnapshot.toObject(Furniture::class.java)
-                        if (furniture != null && documentSnapshot.id == furnitureID) {
-                            foundFurniture = furniture
-                            break
-                        }
-                    }
-
-                    if (foundFurniture != null) {
-                        // Furniture with the specified ID found, proceed to display it
-                        pageContainer.removeAllViews()
-                        val inflatedPage = layoutInflater.inflate(R.layout.activity_furniture_selection, null) as ViewGroup
-                        pageContainer.addView(inflatedPage)
-
-                        // Pass the shopID and furnitureID to initFurniSelectPage
-                        initFurniSelectPage(shopID, pageContainer, furnitureID)
-                    } else {
-                        Toast.makeText(this, "Furniture with ID $furnitureID not found in this shop", Toast.LENGTH_SHORT).show()
-                    }
-                } else {
-                    Toast.makeText(this, "Furniture not found in this shop", Toast.LENGTH_SHORT).show()
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.d(TAG, "Error fetching furniture document: $exception")
-                Toast.makeText(this, "Error fetching furniture document", Toast.LENGTH_SHORT).show()
-            }
-    }
-
-
-
-
-
-
-
-    fun showHide(view:View) {
-        view.visibility = if (view.visibility == View.VISIBLE){
-            View.GONE
-        } else{
-            View.VISIBLE
-        }
     }
 
     private fun initShopPage(pageContainer: ViewGroup) {
@@ -2047,6 +1983,7 @@ class MainActivity : AppCompatActivity() {
             return false
         }
     }
+
     fun initAboutPage(){
         val backButton: ImageButton = findViewById(R.id.backButton)
         val clearCacheButton: Button = findViewById(R.id.clearCacheButton)
@@ -2370,7 +2307,7 @@ class MainActivity : AppCompatActivity() {
 
         val editButton: ImageButton = findViewById(R.id.editButton)
 
-        editButton.setOnClickListener(){
+        editButton.setOnClickListener {
             if (email != null) {
                 showImageSelectionDialog(email)
             } else {
