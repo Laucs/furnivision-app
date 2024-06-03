@@ -73,7 +73,7 @@ class CartItemListAdapter(private val shopCart: ShopCart, private val onItemChan
                     } else {
                         // Notify the user that there's insufficient stock
                         // You can show a toast message or any other appropriate UI indication
-                        Toast.makeText(holder.itemView.context, "Furniture out of Stock", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(holder.itemView.context, "Insufficient stock. Please adjust quantity.", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
