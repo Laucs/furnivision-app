@@ -1126,15 +1126,17 @@ class MainActivity : AppCompatActivity() {
                     val emailVerificationLayout = layoutInflater.inflate(R.layout.activity_email_verification, null) as RelativeLayout
                     pageContainer.removeAllViews()
                     pageContainer.addView(emailVerificationLayout)
-
                     val email = SessionManager.getUserEmail(this)
                     val totalPaymentEmail: TextView = emailVerificationLayout.findViewById(R.id.total_payment_value_email)
                     val paymentMethodEmail: TextView = emailVerificationLayout.findViewById(R.id.payment_method_TV_email)
                     val emailOrPhone: EditText = emailVerificationLayout.findViewById(R.id.emailET)
                     val payButton: Button = emailVerificationLayout.findViewById(R.id.payButton)
 
+                    backToOrders(emailVerificationLayout)
+
+                    val TOTAL_AMOUNT= "₱ ${String.format("%,.2f", productProtectSubtotal + shipSubtotal + merchSubTotalValue)}"
                     // Set total payment and payment method
-                    totalPaymentEmail.text = "${String.format("%,.2f", productProtectSubtotal + shipSubtotal + merchSubTotalValue)}"
+                    totalPaymentEmail.text = TOTAL_AMOUNT
                     paymentMethodEmail.text = "${paymentMethodTV.text}"
                     //get name
                     if (email != null) {
@@ -1147,7 +1149,35 @@ class MainActivity : AppCompatActivity() {
                             }
                         )
                     }
-//                    afterCheckoutCompletion(productProtectSubtotal, shipSubtotal, merchSubTotalValue)
+
+                    val gcashVerification = layoutInflater.inflate(R.layout.activity_gcash_verification, null) as ScrollView
+                    val paypalVerification = layoutInflater.inflate(R.layout.activity_gcash_verification, null) as ScrollView
+                    val gcashAmountDueTV: TextView = gcashVerification.findViewById(R.id.amount_dueTV)
+                    val gcashConfirmButton: Button = gcashVerification.findViewById(R.id.confirmButton)
+                    val gcashPhone: EditText = gcashVerification.findViewById(R.id.editPhoneET)
+                    val backButton2: ImageButton = gcashVerification.findViewById(R.id.backButton)
+                    backToOrders(gcashVerification)
+
+                    payButton.setOnClickListener {
+                        val emailOrPhoneText = emailOrPhone.text.toString().trim()
+                        if (emailOrPhoneText.isEmpty()) {
+                            Toast.makeText(this, "Invalid Email Format", Toast.LENGTH_SHORT).show()
+                        } else {
+                            pageContainer.removeAllViews()
+                            pageContainer.addView(emailVerificationLayout2)
+                            paymentMethodTitle.text = paymentMethodTV.text
+                            amountDueTV.text = TOTAL_AMOUNT
+                        }
+                    }
+
+                    confirmButton.setOnClickListener {
+                        val emailPhoneText = emailPhoneET.text.toString().trim()
+                        if (emailPhoneText.isEmpty()) {
+                            Toast.makeText(this, "Please enter email or phone", Toast.LENGTH_SHORT).show()
+                        } else {
+                            afterCheckoutCompletion(productProtectSubtotal, shipSubtotal, merchSubTotalValue)
+                        }
+                    }
                 }
                 "COD" -> {
                     //straight forward
@@ -1156,7 +1186,16 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
+    fun backToOrders(layout: RelativeLayout){
+        val backButton: ImageButton = layout.findViewById(R.id.backButton)
+        val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
+        backButton.setOnClickListener {
+            pageContainer.removeAllViews()
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_orders, null) as RelativeLayout)
+            initOrderPage(pageContainer)
+            setActivePageIcon(cartPage)
+        }
+    }
     fun initAfterCheckOutPage(){
         getOrders()
         val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
