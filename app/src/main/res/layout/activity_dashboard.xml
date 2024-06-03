@@ -185,13 +185,13 @@
                     android:id="@+id/new_arrival_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="5dp"
                     >
                     <TextView
                         android:id="@+id/newArrival"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
+                        android:layout_marginStart="30dp"
                         android:text="New Arrival"
                         android:textColor="@color/primary"
                         android:fontFamily="@font/montserrat"
@@ -202,7 +202,7 @@
                         android:id="@+id/new_arrival_recyclerview"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingHorizontal="20dp"
+                        android:paddingStart="25dp"
                         android:layout_below="@id/newArrival"
                         />
                 </RelativeLayout>
@@ -211,14 +211,14 @@
                     android:id="@+id/popular_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="5dp"
                     android:layout_below="@id/new_arrival_content">
 
                     <TextView
                         android:id="@+id/popular"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
+                        android:layout_marginStart="30dp"
                         android:text="Popular"
                         android:fontFamily="@font/montserrat"
                         android:textColor="#396057"
@@ -227,7 +227,7 @@
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/popular_recycler_view"
                         android:layout_below="@id/popular"
-                        android:paddingHorizontal="20dp"
+                        android:paddingStart="25dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         />
