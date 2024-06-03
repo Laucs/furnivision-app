@@ -1515,7 +1515,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     fun initRefreshDeliveryAddress() {
         val firestore = FirebaseFirestore.getInstance()
         val email = SessionManager.getUserEmail(this)
