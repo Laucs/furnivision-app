@@ -1,7 +1,7 @@
 import com.alvarez.furnivisionapp.data.DeliveryAddress
 
 data class UserAccount(
-    var userId: String? = null,
+    var id: String? = null,
     var name: String? = null,
     var image: String? = null,
     var gender: String? = null,
