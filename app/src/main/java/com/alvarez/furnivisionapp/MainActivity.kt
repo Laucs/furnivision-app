@@ -1144,12 +1144,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun initPaypalVerification(pageContainer: ViewGroup, totalAmount: String, productProtectSubtotal: Double, shipSubtotal: Double, merchSubTotalValue: Double) {
-        val paypalVerification = layoutInflater.inflate(R.layout.activity_paypal_verification, null) as RelativeLayout
+        val paypalVerification = layoutInflater.inflate(R.layout.activity_paypal_verification, null) as ScrollView
         pageContainer.removeAllViews()
         pageContainer.addView(paypalVerification)
 
         backToOrders(paypalVerification)
-        val paypalEmailET: EditText = paypalVerification.findViewById(R.id.editPhoneET)
+
+        val paypalEmailET: EditText = paypalVerification.findViewById(R.id.editEmailET)
         val paypalAmountDueTextView: TextView = paypalVerification.findViewById(R.id.paypal_amount_due)
         paypalAmountDueTextView.text = totalAmount
 
