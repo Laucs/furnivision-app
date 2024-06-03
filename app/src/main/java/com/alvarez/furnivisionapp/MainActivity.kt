@@ -57,12 +57,9 @@ import com.alvarez.furnivisionapp.utils.ShopListAdapter
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
-import com.google.firebase.firestore.getField
-import com.google.firebase.firestore.toObjects
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import java.io.ByteArrayOutputStream
@@ -1121,11 +1118,36 @@ class MainActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+
+
             // Handle different payment methods using when statement
             when (paymentMethodTV.text) {
-                "Paypal", "GCash" -> {
+                "PayPal", "GCash" -> {
+                    val emailVerificationLayout = layoutInflater.inflate(R.layout.activity_email_verification, null) as RelativeLayout
+                    pageContainer.removeAllViews()
+                    pageContainer.addView(emailVerificationLayout)
 
-                    afterCheckoutCompletion(productProtectSubtotal, shipSubtotal, merchSubTotalValue)
+                    val email = SessionManager.getUserEmail(this)
+                    val totalPaymentEmail: TextView = emailVerificationLayout.findViewById(R.id.total_payment_value_email)
+                    val paymentMethodEmail: TextView = emailVerificationLayout.findViewById(R.id.payment_method_TV_email)
+                    val emailOrPhone: EditText = emailVerificationLayout.findViewById(R.id.emailET)
+                    val payButton: Button = emailVerificationLayout.findViewById(R.id.payButton)
+
+                    // Set total payment and payment method
+                    totalPaymentEmail.text = "${String.format("%,.2f", productProtectSubtotal + shipSubtotal + merchSubTotalValue)}"
+                    paymentMethodEmail.text = "${paymentMethodTV.text}"
+                    //get name
+                    if (email != null) {
+                        AuthUtility.getUserName(email,
+                            onSuccess = { _ ->
+                                emailOrPhone.setText(email)
+                            },
+                            onFailure = {
+                                Log.e("GetUser", "Failed to retrieve user name")
+                            }
+                        )
+                    }
+//                    afterCheckoutCompletion(productProtectSubtotal, shipSubtotal, merchSubTotalValue)
                 }
                 "COD" -> {
                     //straight forward

@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#F4F4F4">
 
     <RelativeLayout
@@ -20,144 +21,152 @@
             android:layout_marginStart="15dp"
             android:background="@drawable/green_back_button"
             android:contentDescription="Back" />
+    </RelativeLayout>
 
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_below="@id/accountHeader"
+        android:background="#0056e4">
         <TextView
             android:id="@+id/emailVerificationTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="20dp"
-            android:layout_toEndOf="@id/backButton"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
             android:fontFamily="@font/spartan_medium"
-            android:text="Email Verification "
-            android:textColor="@color/black"
-            android:textSize="20sp" />
-    </RelativeLayout>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/accountHeader"
-        android:orientation="vertical"
-        android:layout_marginTop="10dp"
-        android:background="#F4F4F4">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="@color/white"
-            android:paddingBottom="15dp"
-            android:paddingTop="15dp">
-
-            <TextView
-                android:id="@+id/total_payment_title_email"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:fontFamily="@font/montserrat"
-                android:text="Username"
-                android:textColor="@color/custom_gray"
-                android:textSize="15sp" />
-
-            <TextView
-                android:id="@+id/total_payment_value_email"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="₱ 4,400"
-                android:layout_alignParentEnd="true"
-                android:textSize="15sp"
-                android:fontFamily="@font/montserrat"
-                android:textColor="@color/primary"
-                android:layout_marginEnd="15dp"/>
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/changePasswordButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="@color/white"
-            android:paddingBottom="15dp"
-            android:paddingTop="15dp"
-            android:layout_marginTop="1dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:fontFamily="@font/montserrat"
-                android:text="Payment Method"
-                android:textColor="@color/custom_gray"
-                android:textSize="15sp" />
-            <TextView
-                android:id="@+id/payment_method_TV_email"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Payment Method"
-                android:layout_alignParentEnd="true"
-                android:textSize="15sp"
-                android:fontFamily="@font/montserrat"
-                android:textColor="#747474"
-                android:layout_marginEnd="15dp"/>
-
-
-        </RelativeLayout>
-
-
-        <RelativeLayout
-            android:id="@+id/rateUsButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="@color/white"
-            android:layout_marginTop="10dp"
-            android:paddingTop="15dp"
-            android:paddingBottom="15dp">
-            <TextView
-                android:id="@+id/emailLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Email"
-                android:textColor="@color/custom_gray"
-                android:textSize="18sp"
-                android:fontFamily="@font/glacial_indifference_regular"
-                android:layout_marginStart="15dp" />
-            <EditText
-                android:id="@+id/bdayLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:hint="Sample@gmail.com"
-                android:layout_below="@id/emailLabel"
-                android:layout_centerVertical="true"
-                android:textSize="15sp"
-                android:layout_marginTop="20dp"
-                android:fontFamily="@font/montserrat"
-                android:textColor="@color/black"
-                android:layout_marginStart="15dp"/>
-        </RelativeLayout>
-    </LinearLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#fff"
-        android:layout_alignParentBottom="true"
-        android:padding="5dp">
-        <Button
-            android:id="@+id/payButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@color/primary_darker"
-            android:fontFamily="@font/spartan_medium"
-            android:padding="15dp"
-            android:text="Pay"
+            android:text="PaymentMethod"
             android:textColor="@color/white"
-            android:textSize="18sp"
-            android:textAllCaps="false"/>
+            android:textSize="20sp" />
+
     </RelativeLayout>
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="290dp"
+        app:cardBackgroundColor="@color/white"
+        android:layout_below="@id/accountHeader"
+        android:layout_marginVertical="70dp"
+        android:layout_marginHorizontal="30dp"
+        android:padding="10dp"
+        app:cardCornerRadius="5dp"
+        app:cardElevation="2dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <RelativeLayout
+                android:id="@+id/header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#f2f2f2"
+                android:padding="20dp">
+                <RelativeLayout
+                    android:id="@+id/shopTitleContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/shopNameTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/glacial_indifference_regular"
+                        android:text="Shop Name"
+                        android:textColor="#808080"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/shopName_email"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="40dp"
+                        android:fontFamily="@font/glacial_indifference_regular"
+                        android:text="ShopName"
+                        android:textColor="#a6a6a6"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:gravity="end"/>
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_below="@id/shopTitleContent"
+                    android:layout_marginTop="10dp">
+                    <TextView
+                        android:id="@+id/amountDueTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/glacial_indifference_regular"
+                        android:text="Amount Due"
+                        android:textColor="#808080"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/amount_dueTV"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="40dp"
+                        android:fontFamily="@font/glacial_indifference_regular"
+                        android:text="PHP 464.00"
+                        android:textColor="#0056e4"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:gravity="end"/>
+                </RelativeLayout>
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:layout_below="@id/header"
+                android:layout_centerHorizontal="true"
+                android:gravity="center">
+                <EditText
+                    android:id="@+id/email_phone_ET"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/glacial_indifference_regular"
+                    android:hint="Enter Email or Phone"
+                    android:padding="20dp"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/button_radius_bg"
+                    android:textColor="#0056e4"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:gravity="start"/>
+                <TextView
+                    android:id="@+id/line"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="#d9d9d9"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_below="@id/email_phone_ET" />
+
+                <Button
+                    android:id="@+id/payButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:backgroundTint="#0056e4"
+                    android:background="@drawable/button_radius_bg"
+                    android:fontFamily="@font/spartan_medium"
+                    android:padding="15dp"
+                    android:text="Confirm"
+                    android:textStyle="bold"
+                    app:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="15sp"
+                    android:textAllCaps="false"/>
+            </RelativeLayout>
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+
 
 </RelativeLayout>
