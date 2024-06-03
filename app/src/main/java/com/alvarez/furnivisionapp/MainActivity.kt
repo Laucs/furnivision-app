@@ -1022,7 +1022,7 @@ class MainActivity : AppCompatActivity() {
 
             val builder = AlertDialog.Builder(this)
                 .setView(dialogView)
-                .setPositiveButton("Set") { dialog, _ ->
+                .setPositiveButton("Confirm") { dialog, _ ->
                     val selectedRadioButtonId = radioGroup.checkedRadioButtonId
                     if (selectedRadioButtonId != -1) {
                         val selectedRadioButton: RadioButton = dialogView.findViewById(selectedRadioButtonId)
@@ -1061,7 +1061,7 @@ class MainActivity : AppCompatActivity() {
 
             val builder = AlertDialog.Builder(this)
                 .setView(dialogView)
-                .setPositiveButton("Set") { dialog, _ ->
+                .setPositiveButton("Confirm") { dialog, _ ->
                     val selectedRadioButtonId = radioGroup.checkedRadioButtonId
                     if (selectedRadioButtonId != -1) {
                         val selectedRadioButton: RadioButton = dialogView.findViewById(selectedRadioButtonId)

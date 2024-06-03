@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F4F4F4">
+
+    <RelativeLayout
+        android:id="@+id/accountHeader"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="#FFF">
+
+        <ImageButton
+            android:id="@+id/backButton"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="15dp"
+            android:background="@drawable/green_back_button"
+            android:contentDescription="Back" />
+
+        <TextView
+            android:id="@+id/emailVerificationTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="20dp"
+            android:layout_toEndOf="@id/backButton"
+            android:fontFamily="@font/spartan_medium"
+            android:text="Email Verification "
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/accountHeader"
+        android:orientation="vertical"
+        android:layout_marginTop="10dp"
+        android:background="#F4F4F4">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/white"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp">
+
+            <TextView
+                android:id="@+id/total_payment_title_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:fontFamily="@font/montserrat"
+                android:text="Username"
+                android:textColor="@color/custom_gray"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/total_payment_value_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="₱ 4,400"
+                android:layout_alignParentEnd="true"
+                android:textSize="15sp"
+                android:fontFamily="@font/montserrat"
+                android:textColor="@color/primary"
+                android:layout_marginEnd="15dp"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/changePasswordButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/white"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp"
+            android:layout_marginTop="1dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:fontFamily="@font/montserrat"
+                android:text="Payment Method"
+                android:textColor="@color/custom_gray"
+                android:textSize="15sp" />
+            <TextView
+                android:id="@+id/payment_method_TV_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Payment Method"
+                android:layout_alignParentEnd="true"
+                android:textSize="15sp"
+                android:fontFamily="@font/montserrat"
+                android:textColor="#747474"
+                android:layout_marginEnd="15dp"/>
+
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/rateUsButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/white"
+            android:layout_marginTop="10dp"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp">
+            <TextView
+                android:id="@+id/emailLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Email"
+                android:textColor="@color/custom_gray"
+                android:textSize="18sp"
+                android:fontFamily="@font/glacial_indifference_regular"
+                android:layout_marginStart="15dp" />
+            <EditText
+                android:id="@+id/bdayLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:hint="Sample@gmail.com"
+                android:layout_below="@id/emailLabel"
+                android:layout_centerVertical="true"
+                android:textSize="15sp"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/montserrat"
+                android:textColor="@color/black"
+                android:layout_marginStart="15dp"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#fff"
+        android:layout_alignParentBottom="true"
+        android:padding="5dp">
+        <Button
+            android:id="@+id/payButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@color/primary_darker"
+            android:fontFamily="@font/spartan_medium"
+            android:padding="15dp"
+            android:text="Pay"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textAllCaps="false"/>
+    </RelativeLayout>
+
+</RelativeLayout>
