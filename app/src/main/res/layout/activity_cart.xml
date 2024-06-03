@@ -72,70 +72,63 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        app:cardBackgroundColor="@color/white"
-        android:elevation="15dp"
+        app:cardElevation="10dp"
         >
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingVertical="18dp"
-            android:paddingHorizontal="30dp"
             >
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:paddingEnd="20dp"
+                android:paddingVertical="14dp"
+                android:layout_centerVertical="true"
+                android:layout_alignTop="@id/checkout_button"
+                android:layout_alignBottom="@id/checkout_button"
+                android:layout_toStartOf="@id/checkout_button"
+                tools:ignore="RtlSymmetry">
+                <TextView
+                    android:id="@+id/total_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="20dp"
+                    android:fontFamily="@font/questrial"
+                    android:textColor="@color/primary"
+                    android:textSize="15sp"
+                    android:text="Total"
+                    />
 
-            <TextView
-                android:id="@+id/total_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/montserrat"
-                android:textStyle="bold"
-                android:textSize="20sp"
-                android:text="@string/total"/>
-
-            <TextView
-                android:id="@+id/currency_sign"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/total_textview"
-                android:layout_marginVertical="2dp"
-                android:fontFamily="@font/montserrat"
-                android:text="₱"
-                android:textColor="@color/primary"
-                android:textSize="17sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/total_amount_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/total_textview"
-                android:layout_alignTop="@id/currency_sign"
-                android:layout_alignBottom="@id/currency_sign"
-                android:layout_marginHorizontal="30dp"
-                android:layout_toEndOf="@id/currency_sign"
-                android:background="@color/white"
-                android:fontFamily="@font/montserrat"
-                android:text="@string/sample_price"
-                android:textColor="@color/primary"
-                android:textSize="17sp"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/total_amount_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="20dp"
+                    android:layout_below="@id/total_title"
+                    android:fontFamily="@font/questrial"
+                    android:textColor="@color/primary"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:text="@string/sample_total_payment_value"
+                    />
+            </RelativeLayout>
 
             <Button
                 android:id="@+id/checkout_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingVertical="25dp"
+                android:paddingHorizontal="25dp"
                 android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:paddingHorizontal="15dp"
-                android:textAllCaps="false"
-                android:background="@drawable/button_darker_style"
-                android:drawablePadding="5dp"
-                android:drawableRight="@drawable/arrow_right_icon"
-                android:fontFamily="@font/montserrat"
-                android:text="Check out"
-                android:textColor="@color/white"
-                android:textSize="15sp"
-                />
 
+                android:background="@color/primary_darker"
+                android:fontFamily="@font/assistant_bold"
+                android:textColor="@color/white"
+                android:textAllCaps="false"
+                android:text="Check out"
+                />
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 </RelativeLayout>

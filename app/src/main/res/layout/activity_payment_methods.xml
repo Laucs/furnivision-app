@@ -6,7 +6,7 @@
     android:background="#F4F4F4">
 
     <RelativeLayout
-        android:id="@+id/accountHeader"
+        android:id="@+id/paymentHeader"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="#396057">
@@ -40,7 +40,7 @@
         android:id="@+id/currentMethod"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/accountHeader"
+        android:layout_below="@id/paymentHeader"
         android:orientation="vertical"
         android:layout_marginTop="10dp"
         android:background="#F4F4F4">
@@ -52,7 +52,7 @@
             android:layout_toEndOf="@id/cashImage"
             android:fontFamily="@font/glacial_indifference_regular"
             android:paddingTop="10dp"
-            android:text="My Payment Methods"
+            android:text="Available Payment Methods"
             android:textColor="#737373"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -78,9 +78,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Cash Payment"
+                android:text="Cash on Delivery"
                 android:layout_centerVertical="true"
-                android:textSize="15sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 android:fontFamily="@font/montserrat"
                 android:textColor="#737373"
@@ -123,8 +123,8 @@
                 android:id="@+id/emailPaypalTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="sample@gmail.com"
-                android:textSize="15sp"
+                android:text="PayPal"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 android:fontFamily="@font/montserrat"
                 android:textColor="#737373"
@@ -154,7 +154,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="**** *******5967"
+                android:text="GCash"
                 android:layout_centerVertical="true"
                 android:textSize="20sp"
                 android:textStyle="bold"
@@ -164,53 +164,5 @@
                 android:layout_marginStart="20dp"/>
 
         </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/masterCardLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:paddingTop="20dp"
-            android:paddingBottom="20dp"
-            android:layout_marginTop="10dp">
-
-            <ImageView
-                android:id="@+id/imgMethod1"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_alignParentStart="true"
-                android:src="@drawable/mastercard_icon"
-                android:contentDescription="Back"
-                android:layout_marginStart="20dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="**** *******5967"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:fontFamily="@font/montserrat"
-                android:textColor="#737373"
-                android:layout_toEndOf="@id/imgMethod1"
-                android:layout_marginStart="20dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Express 09/25"
-                android:textColor="#737373"
-                android:textSize="15sp"
-                android:layout_marginTop="20dp"
-                android:paddingTop="10dp"
-                android:fontFamily="@font/montserrat_light"
-                android:textStyle="bold"
-                android:layout_marginStart="20dp"
-                android:layout_toEndOf="@id/imgMethod1"/>
-
-        </RelativeLayout>
-
-
     </LinearLayout>
-
-
 </RelativeLayout>

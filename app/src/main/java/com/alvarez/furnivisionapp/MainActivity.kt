@@ -25,6 +25,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ListView
+import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.RelativeLayout
 import android.widget.ScrollView
@@ -33,6 +34,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.alvarez.furnivisionapp.data.AuthUtility
@@ -54,7 +57,6 @@ import com.alvarez.furnivisionapp.utils.ShopListAdapter
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
@@ -441,7 +443,7 @@ class MainActivity : AppCompatActivity() {
                 Log.d(TAG, "Error fetching documents: $e")
             }
 
-        val searchBar: androidx.appcompat.widget.SearchView = findViewById(R.id.search_bar)
+        val searchBar: SearchView = findViewById(R.id.search_bar)
         val contentScroll: ScrollView = findViewById(R.id.scroll_content)
         val searchListView: ListView = findViewById(R.id.search_list_view)
         var furnitureList: List<Furniture> = furnitures
@@ -450,7 +452,7 @@ class MainActivity : AppCompatActivity() {
         val searchAdapter = SearchListAdapter(this, furnitureList)
         searchListView.adapter = searchAdapter
 
-        searchBar.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
+        searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 // Handle search action (optional)
                 return false
@@ -471,6 +473,7 @@ class MainActivity : AppCompatActivity() {
                         (searchListView.adapter as SearchListAdapter).updateList(filteredList)
                         Log.d(TAG, "Filtered list updated with ${filteredList.size} items")
                     }
+
                 }
 
                 searchListView.setOnItemClickListener { parent, view, position, id  ->
@@ -495,76 +498,13 @@ class MainActivity : AppCompatActivity() {
                         setActivePageIcon(shopPage)
                         initFurniSelectPage(furnitureShopID, pageContainer, furnitureName.text.toString())
                     }
+                    refreshDashboard(pageContainer)
                 }
 
                 return true
 
             }
         })
-    }
-
-    private fun setOnClickListener(shopID: String, furnitureID: String, pageContainer: ViewGroup, vararg views: View, action: () -> Unit) {
-        views.forEach { view ->
-            view.setOnClickListener {
-                openFurnitureDirectly(shopID, furnitureID, pageContainer)
-                action()
-            }
-        }
-    }
-
-    private fun openFurnitureDirectly(shopID: String, furnitureID: String, pageContainer: ViewGroup) {
-        val database = FirebaseFirestore.getInstance()
-
-        // Query the furniture collection to get the specific furniture by ID
-        database.collection("furniture")
-            .whereEqualTo("shopID", shopID)
-            .whereEqualTo(FieldPath.documentId(), furnitureID)
-            .get()
-            .addOnSuccessListener { result ->
-                if (!result.isEmpty) {
-                    var foundFurniture: Furniture? = null
-
-                    for (documentSnapshot in result.documents) {
-                        val furniture = documentSnapshot.toObject(Furniture::class.java)
-                        if (furniture != null && documentSnapshot.id == furnitureID) {
-                            foundFurniture = furniture
-                            break
-                        }
-                    }
-
-                    if (foundFurniture != null) {
-                        // Furniture with the specified ID found, proceed to display it
-                        pageContainer.removeAllViews()
-                        val inflatedPage = layoutInflater.inflate(R.layout.activity_furniture_selection, null) as ViewGroup
-                        pageContainer.addView(inflatedPage)
-
-                        // Pass the shopID and furnitureID to initFurniSelectPage
-                        initFurniSelectPage(shopID, pageContainer, furnitureID)
-                    } else {
-                        Toast.makeText(this, "Furniture with ID $furnitureID not found in this shop", Toast.LENGTH_SHORT).show()
-                    }
-                } else {
-                    Toast.makeText(this, "Furniture not found in this shop", Toast.LENGTH_SHORT).show()
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.d(TAG, "Error fetching furniture document: $exception")
-                Toast.makeText(this, "Error fetching furniture document", Toast.LENGTH_SHORT).show()
-            }
-    }
-
-
-
-
-
-
-
-    fun showHide(view:View) {
-        view.visibility = if (view.visibility == View.VISIBLE){
-            View.GONE
-        } else{
-            View.VISIBLE
-        }
     }
 
     private fun initShopPage(pageContainer: ViewGroup) {
@@ -697,7 +637,7 @@ class MainActivity : AppCompatActivity() {
                     nameTextView.text = furnitures[index].name
                     rateTextView.text = furnitures[index].rating.toString()
                     descTextView.text = furnitures[index].description
-                    priceTextView.text = "₱ " + PRICE_FORMAT.format(furnitures[index].price)
+                    priceTextView.text = "₱ " + String.format("%,.2f",furnitures[index].price)
                     dimensionsTextView.text = furnitures[index].dimensions
                     stocksTextView.text = getString(R.string.stock) + " " + furnitures[index].stocks.toString()
 
@@ -859,31 +799,31 @@ class MainActivity : AppCompatActivity() {
     private fun initCartPage(pageContainer: ViewGroup) {
         val cartListRecyclerView: RecyclerView = findViewById(R.id.cart_recycler_view)
         val totalPriceTextView: TextView = findViewById(R.id.total_amount_textview)
-        var totalPrice = cartList?.let { calculateTotalPrice(it) }
 
-        totalPriceTextView.text = PRICE_FORMAT.format(totalPrice)
+        // Calculate and display the initial total price
+        val totalPrice = calculateTotalPrice(cartList ?: mutableListOf())
+        totalPriceTextView.text = "₱ ${String.format("%,.2f", totalPrice)}"
 
-        val adapter = cartList?.let { CartListAdapter(it) }
-
-        cartListRecyclerView.adapter = adapter
-        cartListRecyclerView.apply {
-            layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
+        // Set up CartListAdapter
+        val adapter = CartListAdapter(cartList ?: mutableListOf()) { newTotalPrice ->
+            totalPriceTextView.text = "₱ ${String.format("%,.2f", newTotalPrice)}"
         }
+        cartListRecyclerView.adapter = adapter
+        cartListRecyclerView.layoutManager = LinearLayoutManager(this)
 
+        // Checkout button click listener
         val checkoutBtn: Button = findViewById(R.id.checkout_button)
-
         checkoutBtn.setOnClickListener {
             if (cartList.isNullOrEmpty()) {
                 Toast.makeText(this, "No items to checkout.", Toast.LENGTH_SHORT).show()
             } else {
-                activePage = (R.layout.activity_orders)
+                activePage = R.layout.activity_orders
                 pageContainer.removeAllViews()
                 pageContainer.addView(layoutInflater.inflate(R.layout.activity_orders, null) as RelativeLayout)
                 initOrderPage(pageContainer)
             }
         }
     }
-
 
     fun calculateTotalPrice(shoppingCarts: MutableList<ShopCart>): Double {
         var totalPrice = 0.0
@@ -895,7 +835,83 @@ class MainActivity : AppCompatActivity() {
         return totalPrice
     }
 
-    private fun initOrderPage (pageContainer: ViewGroup) {
+    //store in the database
+    fun afterCheckoutCompletion(
+        productProtectSubtotal: Double,
+        shipSubtotal: Double,
+        merchSubTotalValue: Double,
+        paymentMethod: String,
+        phoneNumber: String
+    ) {
+        val totalPrice = productProtectSubtotal + shipSubtotal + merchSubTotalValue
+
+        val furnitureIds = mutableListOf<String>()
+        cartList?.forEach { shopCart ->
+            shopCart.items?.forEach { cartItem ->
+                cartItem.quantity?.let { quantity ->
+                    repeat(quantity) {
+                        cartItem.furniture?.id?.let { id -> furnitureIds.add(id) }
+                    }
+                }
+            }
+        }
+        // Get current timestamp
+        val today = Date()
+        val calendar = Calendar.getInstance()
+        calendar.time = today
+        calendar.add(Calendar.DAY_OF_MONTH, 10)
+        val arrivalDate = calendar.time
+
+        // Get the user's email
+        val email = SessionManager.getUserEmail(this)
+
+        // Query the database to get the user document based on email
+        database.collection("users")
+            .whereEqualTo("email", email)
+            .get()
+            .addOnSuccessListener { result: QuerySnapshot ->
+                val document = result.documents.firstOrNull()
+                if (document != null) {
+                    val userId = document.id
+
+                        // Create a hashmap to store order details including user ID
+                        val order: Order = Order("", userId, cartList, totalPrice, today, arrivalDate, paymentMethod, phoneNumber)
+
+                    // Add the order to the "orders" collection along with the user ID
+                    database.collection("orders")
+                        .add(order)
+                        .addOnSuccessListener {
+                            Toast.makeText(this, "Order is successful", Toast.LENGTH_SHORT).show()
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(this, "Order isn't successful", Toast.LENGTH_SHORT).show()
+                        }
+
+                    // Clear the cart after placing the order
+                    cartList = mutableListOf()
+
+                    // Navigate to the dashboard or any other desired page after placing the order
+                    val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
+                    pageContainer.removeAllViews()
+                    val inflatedPage = layoutInflater.inflate(R.layout.activity_after_checkout_page, null) as RelativeLayout
+                    pageContainer.addView(inflatedPage)
+                    initAfterCheckOutPage()
+
+                } else {
+                    // Handle case where user document is not found
+                    Log.e(TAG, "User document not found for email: $email")
+                    Toast.makeText(this, "User not found. Please try again.", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .addOnFailureListener { e: Exception ->
+                Log.w(TAG, "Error getting user document", e)
+                Toast.makeText(this, "Failed to place order. Please try again.", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+
+
+    private fun initOrderPage(pageContainer: ViewGroup) {
         val orderListRecyclerView: RecyclerView = findViewById(R.id.order_recycler_view)
         val orderProductProtectTextView: TextView = findViewById(R.id.prod_protect_subtotal_value)
         val ordershipSubtotalTextView: TextView = findViewById(R.id.ship_subtotal_value)
@@ -907,105 +923,277 @@ class MainActivity : AppCompatActivity() {
         fetchAndDisplayDeliveryAddress()
 
         backButton.setOnClickListener {
-
             pageContainer.removeAllViews()
             pageContainer.addView(layoutInflater.inflate(R.layout.activity_cart, null) as RelativeLayout)
             initCartPage(pageContainer)
         }
-        val productProtectSubtotal = 1000
-        val shipSubtotal = 1000
-        val merchSubTotalValue = cartList?.let { calculateTotalPrice(it) } ?: 0.0
-        val merchSubTotal = "₱ " + PRICE_FORMAT.format(merchSubTotalValue)
 
-        val totalPaymentValue = productProtectSubtotal + shipSubtotal + merchSubTotalValue
-        val totalPayment = "₱ " + PRICE_FORMAT.format(totalPaymentValue)
+        // Define shipping costs
+        val STANDARD_SHIPPING_COST = 50.0
+        val EXPRESS_SHIPPING_COST = 100.0
+        val OVERNIGHT_SHIPPING_COST = 200.0
 
+        // Initialize shipping subtotal
+        var shipSubtotal = STANDARD_SHIPPING_COST
 
+        // Calculate and display subtotals
+        val productProtectSubtotal = 1000.0
+        var merchSubTotalValue = cartList?.let { calculateTotalPrice(it) } ?: 0.0
+        val merchSubTotal = "₱ " + String.format("%,.2f", merchSubTotalValue)
 
-        orderProductProtectTextView.text = productProtectSubtotal.toString()
-        ordershipSubtotalTextView.text = shipSubtotal.toString()
-        merchSubTotalTextView.text = merchSubTotal.toString()
-
-        orderTotalPaymentTextView.text = totalPayment.toString()
-        totalValueTextView.text = totalPayment.toString()
-        val adapter = cartList?.let { CartListAdapter(it) }
-
-        orderListRecyclerView.apply {
-            this.adapter = adapter
-            layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
+        // Function to update total payment
+        fun updateTotalPayment() {
+            val totalPaymentValue = productProtectSubtotal + shipSubtotal + merchSubTotalValue
+            val totalPayment = "₱ " + String.format("%,.2f", totalPaymentValue)
+            orderTotalPaymentTextView.text = totalPayment
+            totalValueTextView.text = totalPayment
         }
+
+        // Initialize views with default values
+        orderProductProtectTextView.text = "₱ " + String.format("%,.2f", productProtectSubtotal)
+        ordershipSubtotalTextView.text = "₱ " + String.format("%,.2f", shipSubtotal)
+        merchSubTotalTextView.text = merchSubTotal
+        updateTotalPayment()
+
+        // Select shipping method
+        val orderShippingMethod: CardView = findViewById(R.id.order_ship_method)
+        val shippingMethodTV: TextView = findViewById(R.id.shipping_method_text_view)
+
+        orderShippingMethod.setOnClickListener {
+            val dialogView = LayoutInflater.from(this).inflate(R.layout.shipping_method_dialog, null)
+            val radioGroup: RadioGroup = dialogView.findViewById(R.id.radioGroup)
+
+            val builder = AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setPositiveButton("Confirm") { dialog, _ ->
+                    val selectedRadioButtonId = radioGroup.checkedRadioButtonId
+                    if (selectedRadioButtonId != -1) {
+                        val selectedRadioButton: RadioButton = dialogView.findViewById(selectedRadioButtonId)
+                        shippingMethodTV.text = selectedRadioButton.text
+                        shippingMethodTV.setTextColor(ContextCompat.getColor(this, R.color.lighter_gray))
+
+                        // Update shipping subtotal based on selected method
+                        shipSubtotal = when (selectedRadioButton.text.toString()) {
+                            "Standard Shipping" -> STANDARD_SHIPPING_COST
+                            "Express Shipping" -> EXPRESS_SHIPPING_COST
+                            "Overnight Shipping" -> OVERNIGHT_SHIPPING_COST
+                            else -> STANDARD_SHIPPING_COST
+                        }
+                        ordershipSubtotalTextView.text = "₱ " + String.format("%,.2f", shipSubtotal)
+                        updateTotalPayment()
+
+                        Toast.makeText(this, "Shipping Method Set!", Toast.LENGTH_SHORT).show()
+                    }
+                    dialog.dismiss()
+                }
+                .setNegativeButton("Cancel") { dialog, _ ->
+                    dialog.cancel()
+                }
+
+            val dialog = builder.create()
+            dialog.show()
+        }
+
+        // Select payment method
+        val orderPaymentMethod: CardView = findViewById(R.id.order_payment_method)
+        val paymentMethodTV: TextView = findViewById(R.id.payment_method_text_view)
+
+        orderPaymentMethod.setOnClickListener {
+            val dialogView = LayoutInflater.from(this).inflate(R.layout.payment_method_dialog, null)
+            val radioGroup: RadioGroup = dialogView.findViewById(R.id.payment_method_radio_group)
+
+            val builder = AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setPositiveButton("Confirm") { dialog, _ ->
+                    val selectedRadioButtonId = radioGroup.checkedRadioButtonId
+                    if (selectedRadioButtonId != -1) {
+                        val selectedRadioButton: RadioButton = dialogView.findViewById(selectedRadioButtonId)
+                        paymentMethodTV.text = selectedRadioButton.text
+                        paymentMethodTV.setTextColor(ContextCompat.getColor(this, R.color.lighter_gray))
+                        Toast.makeText(this, "Payment Method Set!", Toast.LENGTH_SHORT).show()
+                    }
+                    dialog.dismiss()
+                }
+                .setNegativeButton("Cancel") { dialog, _ ->
+                    dialog.cancel()
+                }
+
+            val dialog = builder.create()
+            dialog.show()
+        }
+
+        // Set up CartListAdapter
+        val adapter = CartListAdapter(cartList ?: mutableListOf()) { newTotalPrice ->
+            merchSubTotalValue = newTotalPrice
+            merchSubTotalTextView.text = "₱ ${String.format("%,.2f", newTotalPrice)}"
+            updateTotalPayment()
+        }
+        orderListRecyclerView.adapter = adapter
+        orderListRecyclerView.layoutManager = LinearLayoutManager(this)
+
+        val nameDeliveryTV: TextView = findViewById(R.id.nameDeliveryTV)
+        val phoneDeliveryTV: TextView = findViewById(R.id.phoneDeliveryTV)
+        val regionTV: TextView = findViewById(R.id.regionTV)
+        val barangayTV: TextView = findViewById(R.id.barangayTV)
+        val streetNameTV: TextView = findViewById(R.id.streetNameTV)
+        val postalCodeTV: TextView = findViewById(R.id.postalCodeTV)
 
         val placeOrderButton: Button = findViewById(R.id.place_order_button)
         placeOrderButton.setOnClickListener {
+            val nameDelivery = nameDeliveryTV.text.toString()
+            val phoneDelivery = phoneDeliveryTV.text.toString()
+            val region = regionTV.text.toString()
+            val barangay = barangayTV.text.toString()
+            val streetName = streetNameTV.text.toString()
+            val postalCode = postalCodeTV.text.toString()
 
-            // Retrieve furniture IDs from the cart
-            val furnitureIds = mutableListOf<String>()
-            cartList?.forEach { shopCart ->
-                shopCart.items?.forEach { cartItem ->
-                    cartItem.quantity?.let { it1 ->
-                        repeat(it1) {
-                            cartItem.furniture?.id?.let { it1 -> furnitureIds.add(it1) }
-                        }
-                    }
-                }
+            if (nameDelivery.isEmpty() || phoneDelivery.isEmpty() ||
+                region.isEmpty() || barangay.isEmpty() ||
+                streetName.isEmpty() || postalCode.isEmpty()
+            ) {
+                Toast.makeText(this, "Please add a delivery address", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
 
-            // Get current timestamp
-            val today = Date()
+            if (shippingMethodTV.text == "Select") {
+                Toast.makeText(this, "Please select a shipping method", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
 
-            val calendar = Calendar.getInstance()
-            calendar.time = today
-            calendar.add(Calendar.DAY_OF_MONTH, 10)
-            val arrivalDate = calendar.time
+            if (paymentMethodTV.text == "Select") {
+                Toast.makeText(this, "Please select a payment method", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
 
-            // Get the user's email
-            val email = SessionManager.getUserEmail(this)
 
-            // Query the database to get the user document based on email
-            database.collection("users")
-                .whereEqualTo("email", email)
-                .get()
-                .addOnSuccessListener { result: QuerySnapshot ->
-                    val document = result.documents.firstOrNull()
-                    if (document != null) {
-                        val userId = document.id
 
-                        // Create a hashmap to store order details including user ID
-                        val order: Order = Order("", userId, cartList, totalPaymentValue, today, arrivalDate)
+            // Handle different payment methods using when statement
+            when (paymentMethodTV.text.toString()) {
+                "PayPal"-> {
 
-                        // Add the order to the "orders" collection along with the user ID
-                        database.collection("orders")
-                            .add(order)
-                            .addOnSuccessListener {
-                                Toast.makeText(this, "Order is successful", Toast.LENGTH_SHORT).show()
-                            }
-                            .addOnFailureListener{
-                                Toast.makeText(this, "Order isn't successful", Toast.LENGTH_SHORT).show()
-                            }
+                    initEmailVerification(pageContainer,productProtectSubtotal, shipSubtotal, merchSubTotalValue,"PayPal")
 
-                        // Clear the cart after placing the order
-                        cartList = mutableListOf()
 
-                        // Navigate to the dashboard or any other desired page after placing the order
-                        pageContainer.removeAllViews()
-                        val inflatedPage = layoutInflater.inflate(R.layout.activity_after_checkout_page, null) as RelativeLayout
-                        pageContainer.addView(inflatedPage)
-                        initAfterCheckOutPage()
-
-                    } else {
-                        // Handle case where user document is not found
-                        Log.e(TAG, "User document not found for email: $email")
-                        Toast.makeText(this, "User not found. Please try again.", Toast.LENGTH_SHORT).show()
-                    }
                 }
-                .addOnFailureListener { e: Exception ->
-                    Log.w(TAG, "Error getting user document", e)
-                    Toast.makeText(this, "Failed to place order. Please try again.", Toast.LENGTH_SHORT).show()
+                "GCash" -> {
+
+                    initEmailVerification(pageContainer, productProtectSubtotal, shipSubtotal, merchSubTotalValue,"GCash")
+
                 }
+                "COD" -> {
+                    //straight forward
+                    afterCheckoutCompletion(productProtectSubtotal, shipSubtotal, merchSubTotalValue, paymentMethodTV.text.toString(), phoneDelivery)
+                }
+                else -> Toast.makeText(this, "Unsupported Payment Method", Toast.LENGTH_SHORT).show()
+            }
         }
-
     }
 
+    fun initEmailVerification(
+        pageContainer: ViewGroup,
+        productProtectSubtotal: Double,
+        shipSubtotal: Double,
+        merchSubTotalValue: Double,
+        paymentMethod: String
+    ) {
+        val emailVerificationLayout = layoutInflater.inflate(R.layout.activity_email_verification, null) as RelativeLayout
+        pageContainer.removeAllViews()
+        pageContainer.addView(emailVerificationLayout)
+
+        val email = SessionManager.getUserEmail(this)
+        val totalPaymentEmail: TextView = emailVerificationLayout.findViewById(R.id.total_payment_value_email)
+        val paymentMethodEmail: TextView = emailVerificationLayout.findViewById(R.id.payment_method_TV_email)
+        val emailOrPhone: EditText = emailVerificationLayout.findViewById(R.id.emailET)
+        val payButton: Button = emailVerificationLayout.findViewById(R.id.payButton)
+
+        // Set payment method
+        paymentMethodEmail.text = paymentMethod
+        backToOrders(emailVerificationLayout)
+
+        // Get user name
+        if (email != null) {
+            AuthUtility.getUserName(email,
+                onSuccess = { _ ->
+                    emailOrPhone.setText(email)
+                },
+                onFailure = {
+                    Log.e("GetUser", "Failed to retrieve user name")
+                }
+            )
+        }
+
+        val TOTAL_AMOUNT = "₱ ${String.format("%,.2f", productProtectSubtotal + shipSubtotal + merchSubTotalValue)}"
+        totalPaymentEmail.text = TOTAL_AMOUNT
+
+        payButton.setOnClickListener {
+            val emailOrPhoneText = emailOrPhone.text.toString().trim()
+            if (emailOrPhoneText.isEmpty()) {
+                Toast.makeText(this, "Invalid Email Format", Toast.LENGTH_SHORT).show()
+            } else {
+                when (paymentMethodEmail.text.toString()) {
+                    "PayPal" -> {
+                        initPaypalVerification(pageContainer, TOTAL_AMOUNT, productProtectSubtotal, shipSubtotal, merchSubTotalValue)
+                    }
+                    "GCash" -> {
+                        initGcashVerification(pageContainer, TOTAL_AMOUNT, productProtectSubtotal, shipSubtotal, merchSubTotalValue)
+                    }
+                    else -> Toast.makeText(this, "Unsupported Payment Method", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    fun initPaypalVerification(pageContainer: ViewGroup, totalAmount: String, productProtectSubtotal: Double, shipSubtotal: Double, merchSubTotalValue: Double) {
+        val paypalVerification = layoutInflater.inflate(R.layout.activity_paypal_verification, null) as RelativeLayout
+        pageContainer.removeAllViews()
+        pageContainer.addView(paypalVerification)
+
+        backToOrders(paypalVerification)
+        val paypalEmailET: EditText = paypalVerification.findViewById(R.id.editPhoneET)
+        val paypalAmountDueTextView: TextView = paypalVerification.findViewById(R.id.paypal_amount_due)
+        paypalAmountDueTextView.text = totalAmount
+
+        val confirmButton: Button = paypalVerification.findViewById(R.id.confirmButton)
+        confirmButton.setOnClickListener {
+            if (paypalAmountDueTextView.text.isEmpty()){
+                Toast.makeText(this, "Please enter your PayPal Email Address", Toast.LENGTH_SHORT).show()
+            }else {
+                afterCheckoutCompletion(productProtectSubtotal, shipSubtotal, merchSubTotalValue, "PayPal" , paypalEmailET.text.toString())
+            }
+        }
+    }
+
+    fun initGcashVerification(pageContainer: ViewGroup, totalAmount: String, productProtectSubtotal: Double, shipSubtotal: Double, merchSubTotalValue: Double) {
+        val gcashVerificationLayout = layoutInflater.inflate(R.layout.activity_gcash_verification, null) as ScrollView
+        pageContainer.removeAllViews()
+        pageContainer.addView(gcashVerificationLayout)
+
+        backToOrders(gcashVerificationLayout)
+        val gcashNumTV: EditText = gcashVerificationLayout.findViewById(R.id.editPhoneET)
+        val gcashAmountDueTextView: TextView = gcashVerificationLayout.findViewById(R.id.gcash_amount_due)
+        gcashAmountDueTextView.text = totalAmount
+
+        val confirmButton: Button = gcashVerificationLayout.findViewById(R.id.confirmButton)
+        confirmButton.setOnClickListener {
+            // Call afterCheckoutCompletion with the appropriate parameters
+            if (gcashAmountDueTextView.text.isEmpty()){
+                Toast.makeText(this, "Please enter your GCash Mobile Number", Toast.LENGTH_SHORT).show()
+            }else {
+                afterCheckoutCompletion(productProtectSubtotal, shipSubtotal, merchSubTotalValue, "GCash", gcashNumTV.text.toString())
+            }
+        }
+    }
+
+    fun backToOrders(layout: ViewGroup){
+        val backButton: ImageButton = layout.findViewById(R.id.backButton)
+        val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
+        backButton.setOnClickListener {
+            pageContainer.removeAllViews()
+            pageContainer.addView(layoutInflater.inflate(R.layout.activity_orders, null) as RelativeLayout)
+            initOrderPage(pageContainer)
+            setActivePageIcon(cartPage)
+        }
+    }
     fun initAfterCheckOutPage(){
         getOrders()
         val pageContainer: ViewGroup = findViewById(R.id.pageContainer)
@@ -1034,7 +1222,6 @@ class MainActivity : AppCompatActivity() {
     fun fetchAndDisplayDeliveryAddress() {
         val firestore = FirebaseFirestore.getInstance()
         val email = SessionManager.getUserEmail(this)
-
         val nameDeliveryTV: TextView = findViewById(R.id.nameDeliveryTV)
         val phoneDeliveryTV: TextView = findViewById(R.id.phoneDeliveryTV)
         val regionTV: TextView = findViewById(R.id.regionTV)
@@ -1690,12 +1877,13 @@ class MainActivity : AppCompatActivity() {
 
     fun initToPayPage() {
         getOrders()
-        getOrders()
 
         Log.d("asda", orders.size.toString())
         val ordersContentView: ScrollView = findViewById(R.id.orders_content)
         val noOrdersContentView: RelativeLayout = findViewById(R.id.no_orders_section)
 
+        ordersContentView.visibility = View.VISIBLE
+        noOrdersContentView.visibility = View.GONE
         val ordersRecyclerView: RecyclerView = findViewById(R.id.orders_recycler_view)
         val ordersAdapter = OrdersAdapter(orders)
 
@@ -1987,6 +2175,7 @@ class MainActivity : AppCompatActivity() {
             return false
         }
     }
+
     fun initAboutPage(){
         val backButton: ImageButton = findViewById(R.id.backButton)
         val clearCacheButton: Button = findViewById(R.id.clearCacheButton)
@@ -2310,7 +2499,7 @@ class MainActivity : AppCompatActivity() {
 
         val editButton: ImageButton = findViewById(R.id.editButton)
 
-        editButton.setOnClickListener(){
+        editButton.setOnClickListener {
             if (email != null) {
                 showImageSelectionDialog(email)
             } else {
@@ -2498,46 +2687,12 @@ class MainActivity : AppCompatActivity() {
     fun initPaymentMethodsPage() {
         val cashLayout = findViewById<RelativeLayout>(R.id.cashLayout)
         val paypalLayout = findViewById<RelativeLayout>(R.id.paypalLayout)
-        val masterCardLayout = findViewById<RelativeLayout>(R.id.masterCardLayout)
+
         val gcashLayout = findViewById<RelativeLayout>(R.id.gcashLayout)
 
-
-        paypalLayout.setOnLongClickListener {
-            paypalEditDialog()
-            true
-        }
-
     }
 
-    fun paypalEditDialog() {
-        val dialogView = layoutInflater.inflate(R.layout.edit_paypal_dialog, null)
-        val dialog = AlertDialog.Builder(this)
-            .setView(dialogView)
-            .setPositiveButton("Save") { dialogInterface, which ->
-                val newEmail = dialogView.findViewById<EditText>(R.id.editPaypalEmail).text.toString()
-                val emailTextView = findViewById<TextView>(R.id.emailPaypalTextView)
-                emailTextView.text = newEmail
 
-                val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-                val editor = sharedPreferences.edit()
-                editor.putString("paypalEmail", newEmail)
-                editor.apply()
-            }
-            .setNegativeButton("Cancel") { dialogInterface, which ->
-                dialogInterface.dismiss()
-            }
-            .create()
-
-        // Retrieve the saved email from SharedPreferences
-        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-        val savedEmail = sharedPreferences.getString("paypalEmail", "")
-
-        // Set the saved email in the emailPaypalTextView
-        val emailEditText = dialogView.findViewById<EditText>(R.id.editPaypalEmail)
-        emailEditText.setText(savedEmail)
-
-        dialog.show()
-    }
 
     fun initEditNamePage() {
         val email = SessionManager.getUserEmail(this)

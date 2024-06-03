@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView  xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#F4F4F4">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:id="@+id/accountHeader"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="#FFF">
+
+            <ImageButton
+                android:id="@+id/backButton"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="15dp"
+                android:background="@drawable/green_back_button"
+                android:contentDescription="Back" />
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_below="@id/accountHeader"
+            android:background="#223c7f">
+            <TextView
+                android:id="@+id/paymentMethodTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:textStyle="bold"
+                android:fontFamily="@font/spartan_extrabold"
+                android:text="PayPal"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+
+        </RelativeLayout>
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="270dp"
+            app:cardBackgroundColor="@color/white"
+            android:layout_below="@id/accountHeader"
+            android:layout_marginVertical="70dp"
+            android:layout_marginHorizontal="30dp"
+            android:padding="10dp"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="2dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <RelativeLayout
+                    android:id="@+id/header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#f2f2f2"
+                    android:padding="20dp">
+                    <RelativeLayout
+                        android:id="@+id/shopTitleContent"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="start">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/glacial_indifference_regular"
+                            android:text="FurniVision"
+                            android:textColor="#000"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+                    </RelativeLayout>
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_below="@id/shopTitleContent"
+                        android:layout_marginTop="10dp">
+                        <TextView
+                            android:id="@+id/amountDueTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/glacial_indifference_regular"
+                            android:text="Amount Due"
+                            android:textColor="#808080"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/paypal_amount_due"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+
+                            android:fontFamily="@font/glacial_indifference_regular"
+                            android:text="PHP 464.00"
+                            android:textColor="#223c7f"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:gravity="end"/>
+                    </RelativeLayout>
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:layout_below="@id/header"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center">
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:padding="5dp"
+                        android:layout_marginTop="5dp">
+
+                        <ImageView
+                            android:id="@+id/emailIcon"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_centerVertical="true"
+                            android:src="@drawable/email_icon" />
+
+                        <EditText
+                            android:id="@+id/editEmailET"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/white"
+                            android:layout_toEndOf="@id/emailIcon"
+                            android:padding="20dp"
+                            android:layout_marginTop="5dp"
+                            android:hint="Email Address"
+                            android:inputType="textEmailAddress"/>
+                        <TextView
+                            android:id="@+id/line"
+                            android:layout_width="match_parent"
+                            android:layout_height="2dp"
+                            android:background="#d9d9d9"
+                            android:layout_below="@id/editEmailET" />
+
+                    </RelativeLayout>
+                    <Button
+                        android:id="@+id/confirmButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:backgroundTint="#223c7f"
+                        android:background="@drawable/button_radius_bg"
+                        android:fontFamily="@font/spartan_medium"
+                        android:padding="15dp"
+                        android:text="Confirm"
+                        android:textStyle="bold"
+                        app:textAllCaps="true"
+                        android:textColor="@color/white"
+                        android:textSize="15sp"
+                        android:textAllCaps="false"/>
+                </RelativeLayout>
+            </RelativeLayout>
+
+        </androidx.cardview.widget.CardView>
+
+    </RelativeLayout>
+
+</ScrollView>
