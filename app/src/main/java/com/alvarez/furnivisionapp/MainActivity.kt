@@ -1122,16 +1122,16 @@ class MainActivity : AppCompatActivity() {
 
 
             // Handle different payment methods using when statement
-            when (paymentMethodTV.text) {
+            when (paymentMethodTV.text.toString()) {
                 "PayPal"-> {
 
-                    initEmailVerification(pageContainer, productProtectSubtotal, shipSubtotal, merchSubTotalValue)
+                    initEmailVerification(pageContainer,productProtectSubtotal, shipSubtotal, merchSubTotalValue,"PayPal")
 
 
                 }
                 "GCash" -> {
 
-                    initEmailVerification(pageContainer, productProtectSubtotal, shipSubtotal, merchSubTotalValue)
+                    initEmailVerification(pageContainer, productProtectSubtotal, shipSubtotal, merchSubTotalValue,"GCash")
 
                 }
                 "COD" -> {
@@ -1143,7 +1143,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun initEmailVerification(pageContainer: ViewGroup, productProtectSubtotal: Double, shipSubtotal: Double, merchSubTotalValue: Double) {
+    fun initEmailVerification(
+        pageContainer: ViewGroup,
+        productProtectSubtotal: Double,
+        shipSubtotal: Double,
+        merchSubTotalValue: Double,
+        paymentMethod: String
+    ) {
         val emailVerificationLayout = layoutInflater.inflate(R.layout.activity_email_verification, null) as RelativeLayout
         pageContainer.removeAllViews()
         pageContainer.addView(emailVerificationLayout)
@@ -1154,6 +1160,8 @@ class MainActivity : AppCompatActivity() {
         val emailOrPhone: EditText = emailVerificationLayout.findViewById(R.id.emailET)
         val payButton: Button = emailVerificationLayout.findViewById(R.id.payButton)
 
+        // Set payment method
+        paymentMethodEmail.text = paymentMethod
         backToOrders(emailVerificationLayout)
 
         // Get user name
@@ -1178,11 +1186,9 @@ class MainActivity : AppCompatActivity() {
             } else {
                 when (paymentMethodEmail.text.toString()) {
                     "PayPal" -> {
-                        val totalAmount =
                         initPaypalVerification(pageContainer, TOTAL_AMOUNT, productProtectSubtotal, shipSubtotal, merchSubTotalValue)
                     }
                     "GCash" -> {
-
                         initGcashVerification(pageContainer, TOTAL_AMOUNT, productProtectSubtotal, shipSubtotal, merchSubTotalValue)
                     }
                     else -> Toast.makeText(this, "Unsupported Payment Method", Toast.LENGTH_SHORT).show()
