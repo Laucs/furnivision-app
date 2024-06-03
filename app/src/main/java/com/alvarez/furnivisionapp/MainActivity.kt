@@ -993,7 +993,7 @@ class MainActivity : AppCompatActivity() {
 
         // Calculate and display subtotals
         val productProtectSubtotal = 1000.0
-        val merchSubTotalValue = cartList?.let { calculateTotalPrice(it) } ?: 0.0
+        var merchSubTotalValue = cartList?.let { calculateTotalPrice(it) } ?: 0.0
         val merchSubTotal = "₱ " + String.format("%,.2f", merchSubTotalValue)
 
         // Function to update total payment
@@ -1079,6 +1079,7 @@ class MainActivity : AppCompatActivity() {
 
         // Set up CartListAdapter
         val adapter = CartListAdapter(cartList ?: mutableListOf()) { newTotalPrice ->
+            merchSubTotalValue = newTotalPrice
             merchSubTotalTextView.text = "₱ ${String.format("%,.2f", newTotalPrice)}"
             updateTotalPayment()
         }
@@ -2745,43 +2746,9 @@ class MainActivity : AppCompatActivity() {
 
         val gcashLayout = findViewById<RelativeLayout>(R.id.gcashLayout)
 
-
-        paypalLayout.setOnLongClickListener {
-            paypalEditDialog()
-            true
-        }
-
     }
 
-    fun paypalEditDialog() {
-        val dialogView = layoutInflater.inflate(R.layout.edit_paypal_dialog, null)
-        val dialog = AlertDialog.Builder(this)
-            .setView(dialogView)
-            .setPositiveButton("Save") { dialogInterface, which ->
-                val newEmail = dialogView.findViewById<EditText>(R.id.editPaypalEmail).text.toString()
-                val emailTextView = findViewById<TextView>(R.id.emailPaypalTextView)
-                emailTextView.text = newEmail
 
-                val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-                val editor = sharedPreferences.edit()
-                editor.putString("paypalEmail", newEmail)
-                editor.apply()
-            }
-            .setNegativeButton("Cancel") { dialogInterface, which ->
-                dialogInterface.dismiss()
-            }
-            .create()
-
-        // Retrieve the saved email from SharedPreferences
-        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-        val savedEmail = sharedPreferences.getString("paypalEmail", "")
-
-        // Set the saved email in the emailPaypalTextView
-        val emailEditText = dialogView.findViewById<EditText>(R.id.editPaypalEmail)
-        emailEditText.setText(savedEmail)
-
-        dialog.show()
-    }
 
     fun initEditNamePage() {
         val email = SessionManager.getUserEmail(this)

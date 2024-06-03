@@ -8,9 +8,12 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.alvarez.furnivisionapp.R
+import com.alvarez.furnivisionapp.data.Furniture
 import com.alvarez.furnivisionapp.data.ShopCart
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import java.text.DecimalFormat
@@ -56,19 +59,23 @@ class CartItemListAdapter(private val shopCart: ShopCart, private val onItemChan
         // Bind data to views
         if (item != null) {
             holder.itemTitleView.text = item.furniture?.name ?: ""
-        }
-        if (item != null) {
             holder.itemDescTextView.text = item.furniture?.description ?: ""
-        }
-        holder.itemPriceTextView.text = "₱ ${String.format("%,.2f",totalPrice)}"
-        if (item != null) {
+            holder.itemPriceTextView.text = "₱ ${String.format("%,.2f", totalPrice)}"
             holder.itemQuantityTextView.text = item.quantity.toString()
         }
 
         // Add button click listener
         holder.itemAddButton.setOnClickListener {
             if (item != null) {
-                updateItemQuantity(position, item.quantity?.plus(1) ?: 1)
+                getAvailableStock(item.furniture?.id) { availableStock ->
+                    if (availableStock != null && availableStock > (item.quantity ?: 0)) {
+                        updateItemQuantity(position, (item.quantity ?: 0).plus(1))
+                    } else {
+                        // Notify the user that there's insufficient stock
+                        // You can show a toast message or any other appropriate UI indication
+                        Toast.makeText(holder.itemView.context, "Furniture out of Stock", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         }
 
@@ -100,5 +107,18 @@ class CartItemListAdapter(private val shopCart: ShopCart, private val onItemChan
 
     override fun getItemCount(): Int {
         return shopCart.items?.size ?: 0
+    }
+
+    private fun getAvailableStock(furnitureId: String?, callback: (Int?) -> Unit) {
+        // Access Firestore to get the available stock of the furniture item
+        val furnitureRef = furnitureId?.let { Firebase.firestore.collection("furniture").document(it) }
+        furnitureRef?.get()?.addOnSuccessListener { document ->
+            var availableStock: Int? = null
+            if (document != null) {
+                val furniture = document.toObject(Furniture::class.java)
+                availableStock = furniture?.stocks
+            }
+            callback(availableStock)
+        }
     }
 }
