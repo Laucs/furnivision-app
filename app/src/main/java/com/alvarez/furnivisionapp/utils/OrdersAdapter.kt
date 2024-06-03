@@ -29,7 +29,7 @@ class OrdersAdapter(private val orders: List<Order>) : RecyclerView.Adapter<Orde
             orderIdView.text = order.id
             orderDateArrivalView.text = order.arrival?.let { dateFormatter.format(it) }
             orderDateView.text = order.date?.let { dateFormatter.format(it) }
-            orderTotalPriceView.text = "₱ ${MainActivity.PRICE_FORMAT.format(order.totalPrice)}"
+            orderTotalPriceView.text = "₱ " + String.format("%,.2f", order.totalPrice)
 
             // Set up the RecyclerView for the shop items in the order
             orderShopsRecyclerView.apply {

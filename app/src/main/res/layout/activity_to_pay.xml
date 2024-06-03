@@ -37,6 +37,7 @@
     </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/navigation"
         android:layout_below="@id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -98,8 +99,8 @@
         android:id="@+id/orders_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="50dp"
-        android:layout_below="@id/header"
+        android:layout_below="@id/navigation"
+        android:layout_marginTop="30dp"
         >
         <RelativeLayout
             android:layout_width="match_parent"
