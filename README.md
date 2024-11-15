@@ -1,14 +1,14 @@
 TO DO:
 
 *****IMPORTANT*****
-- Signup auth ✔
+- Signup auth ✔✔✔✔✔
 *******************
 
 Navigation
 - change icons when in active page ✔
   
 Dashboard
-- category  ✔✔
+- category  ✔
 - clickable furnitures ✔
 - search functionality (least priority) 
 
