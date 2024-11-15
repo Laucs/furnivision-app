@@ -5,10 +5,10 @@ TO DO:
 *******************
 
 Navigation
-- change icons when in active page
+- change icons when in active page ✔
   
 Dashboard
-- category 
+- category  ✔✔
 - clickable furnitures ✔
 - search functionality (least priority) 
 
