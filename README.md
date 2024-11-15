@@ -1,7 +1,7 @@
 TO DO:
 
 *****IMPORTANT*****
-- Signup auth ✔
+- Signup auth ✔✔✔✔✔
 *******************
 
 Navigation
